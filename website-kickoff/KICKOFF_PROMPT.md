@@ -35,6 +35,16 @@ Müşteri siteye girer, aracını tanıtır (VIN ile ya da elle seçerek), arac�
 
 poisk.vin'de ücretli bir hesabım var. Önce şunu **araştır**, sonra karar ver:
 
+> **Ön bulgular (Avito projesi, araştırma görevi T-037; yeniden doğrula):**
+> - poisk.vin için herkese açık, belgelenmiş bir API bulunamadı *(güven: doğrulanmadı — "unverified")*. Tek ipucu, "Мои доступы" giriş bilgileriyle yapılan bir entegrasyondan söz edilmesi; bağlamı belirsiz *(güven: ikincil kaynak, arama özeti düzeyinde)*.
+> - Bu yüzden: poisk.vin'den **yazılı** API/entegrasyon izni iste (talebi ben iletirim, gerekirse sen metnini hazırla); poisk.vin **asla** kazınmaz (scraping yok).
+> - Resmî API'si olan lisanslı alternatifler, karşılaştırılmak üzere:
+>   - **Laximo** (Laximo.CAT ve Laximo.DOC; GitHub'da SOAP ve REST SDK'ları) *(güven: resmî kaynak, sayfalar gerçekten okundu)*;
+>   - **Parts-Catalogs** (REST API ve widget, istek başına ücret) *(güven: ikincil kaynak, arama özeti düzeyinde)*;
+>   - **ACAT**, **Tradesoft**, **VINPIN**, **VINOPEN** *(güven: ikincil kaynak, arama özeti düzeyinde)*.
+> - TecDoc'un Rusya'daki lisans durumu *(güven: doğrulanmadı)*.
+> - Alternatifler için de aynı sorular geçerli: resmî belge, fiyat, kullanım şartları, sonuçların sitede gösterilmesi ve önbelleğe alınması, döndürülen veriler (özellikle OEM parça kataloğu verip vermediği).
+
 - poisk.vin'in resmî bir API'si veya başka bir resmî entegrasyon yolu var mı? Varsa belgeleri, kimlik doğrulama yöntemi, istek sınırları, ücretlendirme/kotası ve kullanım şartları neler?
 - Kullanım şartları, sorgu sonuçlarının bir sitede müşterilere gösterilmesine, önbelleğe alınmasına ve saklanmasına izin veriyor mu?
 - Bir VIN sorgusu tam olarak hangi verileri döndürüyor: yalnızca araç kimliği (marka, model, kasa kodu, yıl, makyaj, donanım/opsiyon kodları) mı, yoksa OEM parça numaraları ve parça kataloğu da mı?
@@ -105,12 +115,17 @@ Hukuki görüş yazma; bulguları kaynaklarıyla `docs/COMPLIANCE.md`'ye işle, 
 1. Nakit (нал)
 2. QR kod ile ödeme (СБП / QR)
 3. Karta havale (перевод на карту)
-4. Şirketler için banka havalesi (безнал) — tutara **+%10** ek ücret uygulanır
+4. Şirketler için banka havalesi (безнал) — tutara **+%10** ek ücret uygulanır (yalnızca şirket alıcılar, B2B)
+
+> **Dikkat — ek ücret ve tüketici hukuku (T-037 bulgusu; yeniden doğrula):** Bireysel tüketicilerden kartla, QR ile veya СБП ile ödeme için ek ücret almak ЗоЗПП md. 16.1 f.4 uyarınca yasaktır *(güven: resmî Rospotrebnadzor kaynağı, yalnızca arama özeti düzeyinde okundu)*. Bu yüzden:
+> - +%10 **yalnızca şirket alıcıların banka havalesine (безнал, B2B)** uygulanır;
+> - site tüketicilere kart/QR/СБП için **hiçbir zaman** ek ücret göstermez;
+> - bu yorum, benim muhasebecimle **teyit edilecek** madde olarak `docs/COMPLIANCE.md` ve `BLOCKERS.md`'ye yazılır.
 
 Araştırılacaklar:
 
 - Her yöntemin sitede nasıl sunulacağı: çevrim içi mi, teslim/elden teslimde mi, fatura (счёт) ile mi? Kurumsal müşteri için hangi şirket bilgileri (ör. ИНН, КПП, unvan) toplanmalı ve fatura nasıl üretilmeli?
-- **+%10 ek ücret** ödeme yöntemi seçildiği anda, sepet ve sipariş özetinde ayrı bir satır olarak şeffafça gösterilsin; hesap tamsayı kopek ile yapılsın, yuvarlama kuralı belgelenip test edilsin. Ödeme yöntemine göre ek ücret uygulamanın tüketiciye ve şirkete satışta yasal olarak nasıl sunulması gerektiğini araştır. Ek ücretin teslimat dâhil toplam tutara mı yoksa yalnızca ürünlere mi uygulanacağını bana sor.
+- **+%10 ek ücret** yalnızca şirket alıcı banka havalesini (безнал) seçtiği anda, sepet ve sipariş özetinde ayrı bir satır olarak şeffafça gösterilsin; hesap tamsayı kopek ile yapılsın, yuvarlama kuralı belgelenip test edilsin. Tüketiciye açık hiçbir ödeme yönteminde ek ücret satırı oluşmasın (yukarıdaki dikkat notu). B2B satışta ek ücretin fatura ve çekte nasıl gösterileceğini araştır. Ek ücretin teslimat dâhil toplam tutara mı yoksa yalnızca ürünlere mi uygulanacağını bana sor.
 - Çevrim içi ödeme sağlayıcısı seçenekleri (Rusya'da çalışan banka/ödeme aracıları, SBP desteği, komisyonlar, entegrasyon şartları, 54-FZ çek desteği). Hiçbir sağlayıcıyı doğrulamadan önermeyelim; karşılaştırma tablosu hazırla.
 - **54-FZ online kasa (онлайн-касса)** yükümlülükleri: çevrim içi satışta, karta havalede, SBP'de, nakit ve elden teslimde çek düzenleme şartları ve bunların sağlayıcı/OFD ile nasıl karşılanacağı.
 - **152-FZ kişisel veri:** Rusya'da barındırma (yerelleştirme), açık rıza metinleri, gizlilik politikası, çerez/analitik kullanımı, sınır ötesi aktarım, işletmecinin Roskomnadzor bildirimi gerekip gerekmediği.
@@ -129,7 +144,7 @@ Her aşamada sentetik veri ve gerçek veri test sonuçları `docs/TEST_REPORT.md
 | 1 | **Tasarım sistemi ve prototip** | `docs/DESIGN_SYSTEM.md` yazılmış; ana sayfa, katalog, parça sayfası, araç seçimi, görsel model, sepet ve ödeme ekranlarının tıklanabilir prototipi var; mobil ve masaüstü ekran görüntüleri; bağımsız UI/erişilebilirlik incelemesi yapılmış; benim onayım alınmış. |
 | 2 | **Katalog ve araç seçimi (VIN)** | Ortak veri sözleşmesi (bölüm 5) belgelenmiş ve sözleşme testleri geçiyor; sentetik katalogla OEM normalizasyonu, parça adı ve araç araması testli; elle araç seçimi çalışıyor; VIN yolu yalnızca doğrulanmış resmî bir entegrasyonla veya benim onayladığım yöntemle bağlanmış, değilse engel olarak kayıtlı; stok kaynağı kapalı/eski olduğunda "mevcut" iddiası olmadığını gösteren test var. |
 | 3 | **Görsel model pilotu (W213)** | 2D ve 3D prototip karşılaştırması ölçümleriyle (boyut, orta segment mobilde kare hızı/yanıt süresi, varlık maliyeti, lisans durumu) raporlanmış ve karar `docs/DECISIONS.md`'de; W213 için tüm bölgeler tıklanabilir ve `part_type`'a eşli; ayrıntı panelinde uyumluluk durumu kanıt türüyle gösteriliyor; kanıtsız "uyar" iddiası olmadığını gösteren testler; tüm varlıkların kaynağı ve lisansı kayıtlı; klavye ile kullanılabilen liste alternatifi var. |
-| 4 | **Sepet ve ödeme akışı** | Dört ödeme yöntemi akışta; +%10 ek ücret ayrı satırda ve tamsayı kopekle doğru (sınır değer testleri); siparişte stok ve fiyat yeniden kontrol ediliyor; aynı son ürünün iki siparişe (ve ileride Avito'daki satışa) birden ayrılmasını önleyen yöntem testli; tekrarlanan gönderimde çift sipariş oluşmuyor (idempotency); sipariş ve ödeme durumları ayrı; bağımsız inceleme yapılmış. |
+| 4 | **Sepet ve ödeme akışı** | Dört ödeme yöntemi akışta; +%10 ek ücret yalnızca şirket alıcının banka havalesinde, ayrı satırda ve tamsayı kopekle doğru (sınır değer testleri); tüketiciye kart/QR/СБП/nakit için ek ücret gösterilmediğini kanıtlayan test; siparişte stok ve fiyat yeniden kontrol ediliyor; aynı son ürünün iki siparişe (ve ileride Avito'daki satışa) birden ayrılmasını önleyen yöntem testli; tekrarlanan gönderimde çift sipariş oluşmuyor (idempotency); sipariş ve ödeme durumları ayrı; bağımsız inceleme yapılmış. |
 | 5 | **Yönetim paneli** | Ürün, fotoğraf, fiyat, stok, uyumluluk ve sipariş yönetimi; fotoğraf yalnızca stok kaydına bağlanabiliyor; yetkilendirme ve denetim kaydı testli; bağımsız güvenlik incelemesi. |
 | 6 | **Yasal uyum** | `docs/COMPLIANCE.md` maddeleri tamamlanmış ve benim kararlarım kayıtlı; gizlilik politikası, rıza metinleri, оферта ve iade koşulları sitede; 54-FZ çek akışı seçilen sağlayıcının test ortamında doğrulanmış; barındırma yerelleştirme kararı uygulanmış. |
 | 7 | **Performans ve SEO** | Performans bütçeleri ölçülmüş (Lighthouse/Web Vitals raporları, mobil profil); yapılandırılmış veri doğrulanmış; site haritası, robots, canonical ve meta etiketler denetlenmiş; erişilebilirlik denetimi (otomatik + elle klavye/ekran okuyucu kontrolü) geçmiş. |
@@ -147,20 +162,21 @@ Veri modelini Avito projesiyle uyumlu tut. Referanslar (depo `khalilofnijat-eng/
 - **Fotoğraflar** tek bir stok kaydına bağlı referanslardır (`photo_key`, `sku`, `stock_ref`, sıra).
 - **Stok portu:** depo/muhasebe yazılımım henüz belirlenmedi. Bu yüzden salt okunur bir stok arayüzü (port) ve açıkça etiketli **sentetik bir adaptör** kullanılsın; gerçek adaptör, yazılım belirlendikten sonra yazılır. Port sağlık durumu (`up`/`degraded`/`down`) raporlar.
 - **Ortak sözleşme önerisi hazırla:** iki seçeneği karşılaştır — (a) versiyonlu bir API sözleşmesi (OpenAPI/JSON Schema) ve sözleşme testleri, (b) iki projenin kullandığı paylaşılan bir paket/şema. Avito projesinin çekirdek yığını Python 3.11, FastAPI, PostgreSQL 16; birleşmeyi kolaylaştırıp kolaylaştırmadığını yığın kararında değerlendir.
+- **Avito'da çevrim içi ödeme (birleşme konusu, sitenin kapsamı değil):** Avito'da bazı kategorilerde çevrim içi ödemenin zorunlu hâle geldiği ve 2026 kaynaklarına göre oto parçaların da bunlara dâhil olduğu bildiriliyor *(güven: zayıf ikincil kaynak)*. Doğruysa Avito'dan gelen alıcılar için nakit ve karta havale akışları etkilenir; birleşme tasarımında dikkate alınsın ve Avito projesiyle birlikte doğrulansın.
 - **Katalogun tek doğruluk kaynağı** konusunda bir öneri ve karar kaydı hazırla: stok ve fiyatın asıl kaynağı depo sistemi mi, yoksa ortak bir katalog veritabanı mı; site içeriği (açıklamalar, SEO metinleri, görsel model eşlemeleri) nerede tutulur; iki kanal aynı çıkma parçayı aynı anda satarsa çift satış nasıl önlenir. Ortak stok ve rezervasyon kurulana kadar sitedeki siparişler "sahip onayı bekliyor" durumunda başlasın ve müşteriye onaydan önce "ayrıldı" denmesin.
 
 ## 6. Benden istenecek ilk bilgiler (toplu sor)
 
 1. Alan adı var mı, hangisi? Barındırma tercihi (Rusya'da sunucu vb.) ve mevcut hesaplar.
 2. Yasal biçim (ИП / ООО / самозанятый) ve vergi rejimi.
-3. poisk.vin erişim türü: API anahtarı mı, yalnızca web hesabı mı? Paket, sorgu kotası ve sözleşme şartları.
+3. poisk.vin erişim türü: API anahtarı mı, yalnızca web hesabı mı? Paket, sorgu kotası ve sözleşme şartları. poisk.vin'den yazılı API/entegrasyon izni istemeyi kabul ediyor musunuz; olmazsa lisanslı bir alternatif (ör. Laximo) için ayrı ücret ödemeye hazır mısınız?
 4. Marka: işletme adı, logo, renkler, varsa kurumsal kimlik.
 5. Öncelikli markalar/modeller/kasa tipleri (W213'ten sonra hangileri).
 6. Yaklaşık ürün (SKU) sayısı ve yeni/çıkma oranı.
 7. Ürün fotoğrafları şu an nerede ve nasıl adlandırılıyor?
 8. Teslimat yöntemleri, bölgeler ve elden teslim noktası.
 9. İade ve garanti kuralları (yeni ve çıkma parça için ayrı ayrı).
-10. Ödeme: +%10 ek ücretin tabanı (ürün mü, toplam mı), çevrim içi ödeme sağlayıcısı kullanmak istiyor muyum, karta havale kişisel karta mı işletme hesabına mı (kart/hesap numarasını sohbete değil, güvenli yapılandırmaya gireceğim).
+10. Ödeme: +%10 ek ücretin yalnızca şirketlere banka havalesinde uygulanacağını muhasebecinizle teyit eder misiniz; ek ücretin tabanı (ürün mü, toplam mı), çevrim içi ödeme sağlayıcısı kullanmak istiyor muyum, karta havale kişisel karta mı işletme hesabına mı (kart/hesap numarasını sohbete değil, güvenli yapılandırmaya gireceğim).
 11. Rusça dışında dil gerekiyor mu?
 12. Bütçe: barındırma, ödeme sağlayıcısı komisyonu, ücretli tasarım/3D varlık ve lisanslar için aylık/tek seferlik sınır.
 

@@ -15,7 +15,7 @@ Ortak kurallar (her skill için geçerli): bilgi uydurulmaz, her dış olgu kayn
 **Çıktılar:** `docs/INTEGRATIONS.md`'de kaynaklı bir bölüm (entegrasyon yolu, kimlik doğrulama, sınırlar, ücret/kota, gösterme/önbellek/saklama izinleri, döndürülen alanlar); VIN çıktısı → `make`, `model`, `chassis_code`, yıl, `facelift`, donanım koşulları eşleme tablosu; entegrasyon kararı önerisi veya `BLOCKERS.md` kaydı.
 
 **Adımlar:**
-1. Resmî API veya ortaklık/entegrasyon programı var mı araştır; yalnızca resmî kaynakları olgu say, diğerlerini "ikincil kaynak" diye işaretle.
+1. Resmî API veya ortaklık/entegrasyon programı var mı araştır; yalnızca resmî kaynakları olgu say, diğerlerini "ikincil kaynak" diye işaretle. Hizmetin kendisi API sunmuyorsa lisanslı alternatifleri de aynı ölçütlerle karşılaştır (başlangıç listesi ve güven etiketleri: [KICKOFF_PROMPT.md](KICKOFF_PROMPT.md) bölüm 2.1).
 2. Kullanım şartlarını oku: otomatik erişim, sonuçları üçüncü kişilere gösterme, önbellek ve saklama.
 3. Yalnızca web arayüzü varsa **dur**: otomasyon önerisini Main Agent'a soru olarak ilet; sahip onayı olmadan tarayıcı otomasyonu veya scraping kurma.
 4. API varsa, kimlik bilgisi ortam değişkeninde olacak şekilde sunucu tarafı ince bir istemci ve sentetik bir sahte (mock) tasarla; istek sınırı ve önbellek ekle.
@@ -84,13 +84,13 @@ Ortak kurallar (her skill için geçerli): bilgi uydurulmaz, her dış olgu kayn
 **Çıktılar:** Test edilmiş akış; hesap testleri; uyum kontrol listesi sonuçları; `docs/COMPLIANCE.md` güncellemesi; bağımsız inceleme bulguları.
 
 **Adımlar:**
-1. Tutarları tamsayı kopekle hesapla; +%10 ek ücret ayrı satırda, belgelenmiş yuvarlama kuralıyla; ek ücretin tabanı sahibin kararına göre.
+1. Tutarları tamsayı kopekle hesapla; +%10 ek ücret yalnızca şirket alıcının banka havalesinde, ayrı satırda, belgelenmiş yuvarlama kuralıyla; ek ücretin tabanı sahibin kararına göre.
 2. Siparişte stok ve fiyatı yeniden kontrol et; son ürünün iki siparişe ayrılmasını önle; tekrarlanan gönderimde (çift tıklama, ağ tekrarı) tek sipariş oluşsun (idempotency anahtarı).
 3. Sipariş durumu ile ödeme durumunu ayrı tut; ödeme sağlayıcısından doğrulanmadan "ödendi" deme.
 4. Kontrol listesi: 54-FZ çek akışı (her ödeme yöntemi için), 152-FZ (rıza, gizlilik politikası, veri yerelleştirme, yalnızca gerekli verinin toplanması), mesafeli satış bilgilendirmeleri ve iade koşulları, оферта metni. Her madde için kaynak ve sahip kararı kaydı.
 5. Bağımsız inceleme iste.
 
-**Kabul kontrolleri:** Ek ücret sınır değer testleri (0, 1 kopek, büyük tutarlar, çok satırlı sepet) geçiyor; eşzamanlı son ürün testi geçiyor; idempotency testi geçiyor; kontrol listesindeki her madde "karşılandı / sahip kararı bekliyor (BLOCKERS kimliği)" durumunda; hiçbir ödeme gizli değeri kodda veya logda yok.
+**Kabul kontrolleri:** +%10 ek ücret yalnızca şirket alıcının banka havalesinde oluşuyor; tüketiciye açık yöntemlerde (kart, QR/СБП, nakit, karta havale) ek ücret satırı oluşmadığını kanıtlayan test var (bkz. [KICKOFF_PROMPT.md](KICKOFF_PROMPT.md) bölüm 3); ek ücret sınır değer testleri (0, 1 kopek, büyük tutarlar, çok satırlı sepet) geçiyor; eşzamanlı son ürün testi geçiyor; idempotency testi geçiyor; kontrol listesindeki her madde "karşılandı / sahip kararı bekliyor (BLOCKERS kimliği)" durumunda; hiçbir ödeme gizli değeri kodda veya logda yok.
 
 ## 6. `performance-and-seo-audit`
 
