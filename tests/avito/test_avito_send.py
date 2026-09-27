@@ -14,7 +14,7 @@ import pytest
 from app.avito_gateway import AvitoReadClient, ForbiddenEndpointError
 from app.avito_gateway import send as send_module
 from app.avito_gateway.send import (
-    MAX_TEXT_UNITS,
+    PART_LIMITS,
     SEND_TEXT,
     WRITE_ALLOWLIST,
     AvitoSendClient,
@@ -23,10 +23,10 @@ from app.avito_gateway.send import (
     SendClientUsedError,
     SendOutcome,
     SendTextRejected,
-    measure_part,
     text_sha256,
 )
 from app.avito_gateway.token import TokenManager
+from app.safety.filter import measure_part
 from scripts.dev.avito_mock import (
     SYNTHETIC_CLIENT_ID,
     SYNTHETIC_CLIENT_SECRET,
@@ -267,9 +267,11 @@ async def test_client_is_single_use() -> None:
     [
         ("", "empty"),
         ("   \n\t ", "empty"),
-        ("я" * (MAX_TEXT_UNITS + 1), "too long"),
-        ("😀" * 501, "too long"),  # 501 code points, 1002 UTF-16 units
-        ("ﷺ" * 60, "too long"),  # 60 code points, NFKC expands each to 18
+        ("a" * 1001, "too long"),  # 1001 units, 1001 bytes
+        ("я" * 1000, "too long"),  # 1000 UTF-16 units but 2000 UTF-8 bytes
+        ("я" * 501, "too long"),  # 1002 bytes
+        ("😀" * 251, "too long"),  # 502 units, 1004 bytes
+        ("€" * 334, "too long"),  # 334 units, 1002 bytes
     ],
 )
 async def test_text_refused_before_any_request(text: str, why: str) -> None:
@@ -281,13 +283,34 @@ async def test_text_refused_before_any_request(text: str, why: str) -> None:
     assert mock.requests == []
 
 
-async def test_limit_is_inclusive() -> None:
-    text = "😀" * 500  # exactly 1000 UTF-16 units
-    assert measure_part(text) == MAX_TEXT_UNITS
+@pytest.mark.parametrize(
+    "text",
+    [
+        "a" * 1000,  # 1000 units, 1000 bytes
+        "я" * 500,  # 500 units, 1000 bytes
+        "😀" * 250,  # 500 units, 1000 bytes
+        "€" * 333 + "a",  # 334 units, 1000 bytes
+    ],
+)
+async def test_limits_are_inclusive(text: str) -> None:
+    size = measure_part(text)
+    assert size.utf16_units <= PART_LIMITS.max_utf16_units
+    assert size.utf8_bytes == PART_LIMITS.max_utf8_bytes == 1000
     mock = AvitoMock.with_synthetic_data()
     async with make_sender(mock, text) as sender:
         result = await sender.send_text(text)
     assert result.outcome is SendOutcome.DELIVERED
+    assert mock.sent_messages[0]["content"]["text"] == text
+
+
+def test_send_uses_the_filter_measure() -> None:
+    """One measuring function for splitter, filter and send client (no local copy)."""
+    from app.safety import filter as safety_filter
+
+    assert vars(send_module)["measure_part"] is safety_filter.measure_part
+    assert vars(send_module)["part_fits"] is safety_filter.part_fits
+    assert "unicodedata" not in vars(send_module)  # the old local NFC/NFKC copy is gone
+    assert (PART_LIMITS.max_utf16_units, PART_LIMITS.max_utf8_bytes) == (1000, 1000)
 
 
 async def test_text_must_match_authorization() -> None:

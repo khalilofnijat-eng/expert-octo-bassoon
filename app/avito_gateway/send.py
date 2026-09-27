@@ -55,8 +55,10 @@ reading the chat (§6.5 item 6) and never resends automatically (MA-1):
       is "unknown" (a wrong "not delivered" risks a duplicate message; a wrong "unknown" costs
       one reconciliation read).
 
-Text validation: empty or whitespace-only text and text longer than 1000 units under
-:func:`measure_part` are refused before any request (:class:`SendTextRejected`).
+Text validation: empty or whitespace-only text, and text that does not fit the part size limits
+of the output filter – ``app.safety.filter.part_fits``: at most 1000 UTF-16 code units **and** at
+most 1000 UTF-8 bytes (``FilterConfig`` defaults; the splitter and the filter use the same
+``measure_part``) – are refused before any request (:class:`SendTextRejected`).
 
 Body: ``{"type": "text", "message": {"text": ...}}``. The spec copy's request schema says
 ``required: ["url"]``, which is a known error in that spec (INTEGRATIONS §3.1); the body is built
@@ -68,7 +70,6 @@ from __future__ import annotations
 import hashlib
 import logging
 import time
-import unicodedata
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -91,6 +92,7 @@ from app.avito_gateway.http import (
 )
 from app.avito_gateway.ratelimit import Clock, Priority, PriorityRateLimiter
 from app.avito_gateway.token import TokenManager
+from app.safety.filter import FilterConfig, measure_part, part_fits
 
 logger = logging.getLogger("app.avito_gateway.send")
 
@@ -99,7 +101,8 @@ SEND_TEXT: Final = Endpoint(
 )
 # The only endpoint the send client may reach. Kept apart from the read allowlist on purpose.
 WRITE_ALLOWLIST: Final[tuple[Endpoint, ...]] = (SEND_TEXT,)
-MAX_TEXT_UNITS: Final = 1000  # spec copy: "максимум 1000 символов"
+# Part size limits: the output filter's defaults (≤ 1000 UTF-16 units and ≤ 1000 UTF-8 bytes).
+PART_LIMITS: Final = FilterConfig()
 
 _NOT_SENT_ERRORS: Final = (
     httpx.ConnectError,
@@ -110,20 +113,6 @@ _NOT_SENT_ERRORS: Final = (
     httpx.LocalProtocolError,
 )
 _DEFINITE_REJECTIONS: Final = frozenset({400, 401, 403, 404, 422, 429})
-
-
-def measure_part(text: str) -> int:
-    """Conservative length of one message part.
-
-    TODO(T-034): replace with ``app.safety.filter.measure_part`` once T-034 has pushed it; this
-    local copy exists only because it is not available yet.
-
-    How Avito counts its 1000-character limit is UNVERIFIED (code points or UTF-16 units, before
-    or after normalisation; T-010 M4), so this returns the largest of the code point and UTF-16
-    code unit counts of the text and of its NFC and NFKC forms.
-    """
-    forms = {text, unicodedata.normalize("NFC", text), unicodedata.normalize("NFKC", text)}
-    return max(max(len(form), len(form.encode("utf-16-le")) // 2) for form in forms)
 
 
 def text_sha256(text: str) -> str:
@@ -387,9 +376,12 @@ class AvitoSendClient:
     def _validate(self, text: str) -> None:
         if not isinstance(text, str) or not text.strip():
             raise SendTextRejected("empty text")
-        units = measure_part(text)
-        if units > MAX_TEXT_UNITS:
-            raise SendTextRejected(f"text too long: {units} > {MAX_TEXT_UNITS} units")
+        if not part_fits(text, PART_LIMITS):
+            size = measure_part(text)
+            raise SendTextRejected(
+                f"text too long: {size.utf16_units} UTF-16 units / {size.utf8_bytes} UTF-8 bytes "
+                f"(limits {PART_LIMITS.max_utf16_units} / {PART_LIMITS.max_utf8_bytes})"
+            )
         if text_sha256(text) != self._authorization.text_sha256:
             raise SendTextRejected("text does not match the authorization")
 
