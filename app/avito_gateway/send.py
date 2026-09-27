@@ -32,8 +32,8 @@ Outcome of an attempt (:class:`SendOutcome`)
     * 401, 403: authentication/authorisation failed; the request was not processed.
     * 429: refused by rate limiting before processing.
     * the request never left this process: connection could not be established
-      (``ConnectError``, ``ConnectTimeout``, ``PoolTimeout``, ``ProxyError``,
-      ``UnsupportedProtocol``, ``LocalProtocolError``), or no token could be obtained.
+      (``ConnectError``, ``ConnectTimeout``, ``PoolTimeout``, ``UnsupportedProtocol``,
+      ``LocalProtocolError``), or no token could be obtained.
 
     Treating 401/403/429 as "not delivered" is valid **only because there is no transport
     retry**: this call sent exactly one request and it is the one that was rejected, so no earlier
@@ -45,6 +45,10 @@ reading the chat (§6.5 item 6) and never resends automatically (MA-1):
     * timeout or connection loss after the request was (partly) sent: ``ReadTimeout``,
       ``WriteTimeout``, ``ReadError``, ``WriteError``, ``RemoteProtocolError``, ``CloseError``
       and any other transport error.
+    * ``ProxyError`` (T-018b): whether a proxy failure happens before any request byte reaches
+      Avito depends on the proxy and is not verified, so it is ``unknown`` (reason
+      ``transport_error``). A false "unknown" costs one reconciliation read; a false
+      "not delivered" risks a duplicate message.
     * a 2xx that is not JSON, not an object, or has no ``id`` ("malformed 2xx").
     * every other status (1xx, 3xx – redirects are not followed –, and 4xx codes not listed
       above, e.g. 405/408/409/410/413): not a documented definite rejection, so the safe answer
@@ -101,7 +105,7 @@ _NOT_SENT_ERRORS: Final = (
     httpx.ConnectError,
     httpx.ConnectTimeout,
     httpx.PoolTimeout,
-    httpx.ProxyError,
+    # httpx.ProxyError is deliberately absent (T-018b): it falls through to "unknown".
     httpx.UnsupportedProtocol,
     httpx.LocalProtocolError,
 )

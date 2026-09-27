@@ -163,6 +163,14 @@ CASES: list[tuple[str, Fault, SendOutcome, str, bool, int]] = [
     ("408-unlisted", client_error(408), SendOutcome.UNKNOWN, "http_408", True, 0),
     ("409-unlisted", client_error(409), SendOutcome.UNKNOWN, "http_409", True, 0),
     ("302-not-followed", redirect(), SendOutcome.UNKNOWN, "http_302", True, 0),
+    (
+        "proxy-error-is-unknown",  # T-018b: not provably "not sent"
+        Fault(name="proxy", raise_exc=httpx.ProxyError),
+        SendOutcome.UNKNOWN,
+        "transport_error",
+        True,
+        0,
+    ),
     ("connect-error", connect_error(), SendOutcome.NOT_DELIVERED, "not_sent_connect", False, 0),
     (
         "connect-timeout",
@@ -455,3 +463,8 @@ async def test_no_text_or_secrets_in_logs(caplog: pytest.LogCaptureFixture) -> N
     assert "outbound_message_id=outbox-synthetic-0" in ours
     assert CHAT not in ours  # our log lines carry no chat id either
     assert send_module.logger.name == "app.avito_gateway.send"
+
+
+def test_proxy_error_is_not_in_not_sent_errors() -> None:
+    not_sent: tuple[type[BaseException], ...] = send_module._NOT_SENT_ERRORS
+    assert not any(issubclass(httpx.ProxyError, e) for e in not_sent)
