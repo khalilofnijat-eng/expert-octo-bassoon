@@ -69,6 +69,11 @@ __pycache__/
 .venv/
 venv/
 node_modules/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+htmlcov/
 
 # İşletim sistemi / editör
 .DS_Store

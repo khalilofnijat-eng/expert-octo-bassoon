@@ -26,4 +26,4 @@ Kaynak: T-002 teslim metni (Main Agent kabul etti; metin repoda yok — bkz. B-0
 
 ## Uygulama notları
 
-(Henüz uygulama yok.)
+- Uygulama iskeleti ve PII maskeleyici T-014 ile eklendi (commit `11694f5`); düzen: [../app/README.md](../app/README.md). Maskeleyiciyle ilgili kararlar: [DECISIONS.md](DECISIONS.md) D-037, D-038.

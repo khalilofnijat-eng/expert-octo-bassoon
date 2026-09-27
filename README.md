@@ -19,7 +19,7 @@ Bu depo, Avito'da otomotiv parçası satan işletme için kurulacak müşteri as
 | [CHANGELOG.md](CHANGELOG.md) | Önemli değişiklikler |
 | [docs/OWNER_REQUEST_2026-09-27.md](docs/OWNER_REQUEST_2026-09-27.md) | Sahibin ilk talimatı (değiştirilmez) |
 | [docs/PROJECT_BRIEF.md](docs/PROJECT_BRIEF.md) | Hedef, kapsam, başarı ölçütleri |
-| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Mimari (taslak) ve veri akışları |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Mimari ve veri akışları (durumu: [STATE.md](STATE.md)) |
 | [docs/PLAN.md](docs/PLAN.md) | Aşamalar ve bağımlılıklar |
 | [docs/DECISIONS.md](docs/DECISIONS.md) | Kararlar ve verilen canlı yetkiler (tek kaynak) |
 | [docs/NOTES.md](docs/NOTES.md) | İşletme ve uygulama notları |
@@ -38,9 +38,9 @@ Bu depo, Avito'da otomotiv parçası satan işletme için kurulacak müşteri as
 | `docs/` (giriş: [docs/PROJECT_BRIEF.md](docs/PROJECT_BRIEF.md)) | Referans belgeler (talep, özet, mimari, plan, kararlar, notlar, entegrasyon, test, runbook) |
 | [sessions/](sessions/README.md) | Oturum özetleri |
 | [tasks/](tasks/README.md) | Görev brief'leri ve teslim raporları |
-| [knowledge/](knowledge/README.md) | Onaylı, sürümlü bilgi tabanı kaynakları |
+| [knowledge/](knowledge/README.md) | Bilgi tabanının PII içermeyen dökümleri (doğruluk kaynağı DB) |
 | [operations/](operations/README.md) | İşletim yapılandırma şablonları, izleme ve denetim politikaları |
-| [app/](app/README.md) | Uygulama kodu (henüz yok) |
+| [app/](app/README.md) | Uygulama kodu |
 | [tests/](tests/README.md) | Testler ve sabit değerlendirme senaryoları |
 | [scripts/](scripts/README.md) | Yardımcı betikler |
 | [data/](data/README.md) | Yalnızca README Git'te; canlı veri Git ve Vault dışında |

@@ -2,7 +2,19 @@
 
 En yeni kayıt en üstte. Her kayıt, değişikliği içeren commit'in kısa hash'ini taşır; kaydı içeren commit'in kendi hash'i bir sonraki kayıt güncellemesinde eklenir.
 
-## 2026-09-27 (T-013) — commit: bir sonraki güncellemede eklenecek
+## 2026-09-27 (T-016) — commit: bir sonraki güncellemede eklenecek
+
+- Mimari rev.2 kabulü kayda geçti; `docs/ARCHITECTURE.md` rev.2'nin commit'i sahip iznini bekliyor (yeni engel B-013). Mimari kararları D-015–D-035, T-014 soruları üzerine kararlar D-036–D-038 — [docs/DECISIONS.md](docs/DECISIONS.md).
+- T-004 (rev.2), T-012, T-012b, T-013, T-014 kabul edildi; T-013b engelli; uygulama dalgası T-015…T-031 bağımlılık, kabul özeti ve zorunlu bağımsız incelemelerle eklendi; B-012 listesi genişletildi — [TASKS.md](TASKS.md).
+- T-010 kapsamı: GET-only ölçüm betiği, M1–M9 ve okundu yan etkisinin canlı doğrulaması, çıktı biçimi, kabul ölçütleri, güvenlik kontrol listesi — [tasks/T-010/brief.md](tasks/T-010/brief.md).
+- BLOCKERS: B-013, B-014 ve B-002/B-004/B-005/B-006'ya sahibe sorulan ek sorular.
+- Brief'ler: T-012, T-013, T-014, T-015, T-016, T-019. `.gitignore`: araç önbellekleri ve kapsam çıktıları. `knowledge/README.md`: KB'nin doğruluk kaynağı DB (D-028). PLAN'a aşama–görev eşlemesi; TEST_REPORT'a T-014 sentetik testleri; STATE, HANDOFF, oturum kaydı güncellendi.
+
+## 2026-09-27 (T-014) — commit `11694f5`
+
+- Python proje iskeleti (uv, FastAPI, ayarlar, `/healthz`), PII maskeleyici, sentetik birim testleri ve CI — [app/README.md](app/README.md), [tests/README.md](tests/README.md). CI çalıştırması #1 başarılı ([docs/TEST_REPORT.md](docs/TEST_REPORT.md)).
+
+## 2026-09-27 (T-013) — commit `8a51f3c`
 
 - Bağımsız inceleme (T-005) bulguları düzeltildi.
 - STATE, HANDOFF ve oturum kaydı görev durumlarını tekrar etmeyecek biçimde yeniden yazıldı; durumların tek kaynağı [TASKS.md](TASKS.md).
