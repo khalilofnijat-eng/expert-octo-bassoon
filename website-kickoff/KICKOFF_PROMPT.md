@@ -160,7 +160,7 @@ Veri modelini Avito projesiyle uyumlu tut. Referanslar (depo `khalilofnijat-eng/
 7. Ürün fotoğrafları şu an nerede ve nasıl adlandırılıyor?
 8. Teslimat yöntemleri, bölgeler ve elden teslim noktası.
 9. İade ve garanti kuralları (yeni ve çıkma parça için ayrı ayrı).
-10. Ödeme: +%10 ek ücretin tabanı (ürün mü, toplam mı), çevrim içi ödeme sağlayıcısı kullanmak istiyor muyum, karta havale hangi hesaba.
+10. Ödeme: +%10 ek ücretin tabanı (ürün mü, toplam mı), çevrim içi ödeme sağlayıcısı kullanmak istiyor muyum, karta havale kişisel karta mı işletme hesabına mı (kart/hesap numarasını sohbete değil, güvenli yapılandırmaya gireceğim).
 11. Rusça dışında dil gerekiyor mu?
 12. Bütçe: barındırma, ödeme sağlayıcısı komisyonu, ücretli tasarım/3D varlık ve lisanslar için aylık/tek seferlik sınır.
 
