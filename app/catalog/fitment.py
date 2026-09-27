@@ -27,9 +27,14 @@ How records combine into a verdict (hard rules first)
 - ``verified`` needs a ``full`` match on a ``verified`` record with accepted evidence **and** at
   least one matched attribute beyond make/model/chassis code. A record that only says "W213"
   therefore never verifies anything (reason ``body_code_only``).
-- ``incompatible`` needs accepted evidence: either a ``full`` match on an ``incompatible``
-  record, or every record mismatches and at least one mismatching record is ``verified`` with
-  accepted evidence (the part's verified applicability excludes this vehicle).
+- ``incompatible`` needs explicit incompatibility evidence: a ``full`` match on an
+  ``incompatible`` record whose evidence is accepted. Nothing else makes a part incompatible.
+- Absence of positive evidence is not evidence of incompatibility (Main Agent decision, T-022b):
+  when the vehicle falls outside every verified record of the part (all records mismatch and at
+  least one of them is ``verified`` with accepted evidence), the verdict is
+  ``needs_verification`` with reason ``outside_verified_range``. Such candidates are
+  ``owner_only_by_default``: the offer builder (T-026) hides them from customers by default and
+  shows them to the owner. A set inherits the reason from its components.
 - A verified and an incompatible full match together → ``needs_verification``
   (``conflicting_records``).
 - Everything else is ``needs_verification`` with reasons. ``missing_attributes`` lists what to
@@ -107,7 +112,7 @@ class MatchOutcome(StrEnum):
 class FitmentReason(StrEnum):
     VERIFIED_RECORD_MATCHES = "verified_record_matches"
     EXPLICIT_INCOMPATIBLE_RECORD = "explicit_incompatible_record"
-    OUTSIDE_VERIFIED_APPLICABILITY = "outside_verified_applicability"
+    OUTSIDE_VERIFIED_RANGE = "outside_verified_range"
     NO_FITMENT_RECORD = "no_fitment_record"
     MISSING_VEHICLE_ATTRIBUTES = "missing_vehicle_attributes"
     RECORD_NOT_VERIFIED = "record_not_verified"
@@ -118,6 +123,10 @@ class FitmentReason(StrEnum):
     COMPONENT_INCOMPATIBLE = "component_incompatible"
     COMPONENT_NEEDS_VERIFICATION = "component_needs_verification"
     ALL_COMPONENTS_VERIFIED = "all_components_verified"
+
+
+# Reasons that make a candidate owner-only by default (T-026 hides it from customers).
+OWNER_ONLY_REASONS: frozenset[FitmentReason] = frozenset({FitmentReason.OUTSIDE_VERIFIED_RANGE})
 
 
 @dataclass(frozen=True)
@@ -160,6 +169,12 @@ class FitmentResult:
     def customer_can_resolve(self) -> bool:
         """Whether asking the customer for ``missing_attributes`` could settle it."""
         return bool(self.missing_attributes)
+
+    @property
+    def owner_only_by_default(self) -> bool:
+        """Whether the offer builder should hide this candidate from the customer by default
+        (still shown to the owner): see ``OWNER_ONLY_REASONS``."""
+        return any(r in OWNER_ONLY_REASONS for r in self.reasons)
 
 
 def _norm(value: object) -> str:
@@ -334,9 +349,10 @@ def evaluate(
             a for a in assessed if a.record.status is FitmentStatus.VERIFIED and a.accepted
         ]
         if excluding:
+            # Not "incompatible": no record says the part does not fit this vehicle.
             return result(
-                FitmentStatus.INCOMPATIBLE,
-                [FitmentReason.OUTSIDE_VERIFIED_APPLICABILITY],
+                FitmentStatus.NEEDS_VERIFICATION,
+                [FitmentReason.OUTSIDE_VERIFIED_RANGE],
                 excluding,
             )
         return result(
@@ -403,7 +419,8 @@ def evaluate_set(
     Members: every non-optional component (for a stocked set only the ones present in the kit)
     plus the set's own result when it has records. Any member ``incompatible`` → incompatible;
     all ``verified`` → verified; otherwise needs_verification. A component without a result is
-    treated as ``needs_verification``.
+    treated as ``needs_verification``. ``outside_verified_range`` on any member is carried over,
+    so the whole set is owner-only by default.
     """
     lines = [c for c in components if c.set_sku == set_product.sku and not c.optional]
     if set_product.set_kind is SetKind.STOCKED_SET:
@@ -456,10 +473,13 @@ def evaluate_set(
             (),
             synthetic,
         )
+    reasons = [FitmentReason.COMPONENT_NEEDS_VERIFICATION]
+    if any(m.owner_only_by_default for m in members):
+        reasons.append(FitmentReason.OUTSIDE_VERIFIED_RANGE)
     return FitmentResult(
         set_product.sku,
         FitmentStatus.NEEDS_VERIFICATION,
-        (FitmentReason.COMPONENT_NEEDS_VERIFICATION,),
+        tuple(reasons),
         evidence,
         missing,
         synthetic,

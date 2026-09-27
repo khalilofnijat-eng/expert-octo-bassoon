@@ -159,17 +159,63 @@ def test_explicit_incompatible_record() -> None:
     r = evaluate(p, [rec], FULL_PRE_AMG, TEST)
     assert r.status is FitmentStatus.INCOMPATIBLE
     assert r.reasons == (FitmentReason.EXPLICIT_INCOMPATIBLE_RECORD,)
+    assert not r.owner_only_by_default
 
 
-def test_outside_verified_applicability_is_incompatible_with_evidence() -> None:
+def test_incompatible_record_needs_accepted_evidence() -> None:
+    p = product("SYN-GR-1")
+    for kind in (EvidenceKind.VISUAL_SIMILARITY, EvidenceKind.CUSTOMER_STATEMENT, None):
+        rec = record(
+            "SYN-F1", p.sku, status=FitmentStatus.INCOMPATIBLE, kind=kind, front_camera=False
+        )
+        r = evaluate(p, [rec], FULL_PRE_AMG, TEST)
+        assert r.status is FitmentStatus.NEEDS_VERIFICATION
+        assert FitmentReason.EVIDENCE_NOT_ACCEPTED in r.reasons
+    # Synthetic incompatibility evidence counts only in test mode.
+    rec = record("SYN-F1", p.sku, status=FitmentStatus.INCOMPATIBLE, front_camera=False)
+    assert evaluate(p, [rec], FULL_PRE_AMG, DEV).status is FitmentStatus.NEEDS_VERIFICATION
+
+
+def test_outside_verified_range_is_not_incompatible() -> None:
+    """Absence of positive evidence is not evidence of incompatibility (T-022b)."""
     p = product("SYN-GR-1")
     rec = record("SYN-F1", p.sku, trim_line="amg_line", front_camera=True)
     r = evaluate(p, [rec], FULL_PRE_AMG, TEST)
-    assert r.status is FitmentStatus.INCOMPATIBLE
-    assert r.reasons == (FitmentReason.OUTSIDE_VERIFIED_APPLICABILITY,)
+    assert r.status is FitmentStatus.NEEDS_VERIFICATION
+    assert r.reasons == (FitmentReason.OUTSIDE_VERIFIED_RANGE,)
+    assert r.owner_only_by_default
+    assert not r.customer_can_resolve
     [item] = r.evidence
     mismatch = [c for c in item.checks if c.outcome is Check.MISMATCH]
     assert [(c.attribute, c.required, c.given) for c in mismatch] == [("front_camera", "yes", "no")]
+
+
+def test_outside_verified_range_with_several_verified_ranges() -> None:
+    p = product("SYN-GR-1")
+    recs = [
+        record("SYN-F1", p.sku, vehicle=W213_POST, trim_line="amg_line"),
+        record("SYN-F2", p.sku, trim_line="standard"),
+    ]
+    r = evaluate(p, recs, FULL_PRE_AMG, TEST)
+    assert (r.status, r.reasons) == (
+        FitmentStatus.NEEDS_VERIFICATION,
+        (FitmentReason.OUTSIDE_VERIFIED_RANGE,),
+    )
+    assert [e.record_id for e in r.evidence] == ["SYN-F1", "SYN-F2"]
+
+
+def test_only_outside_verified_range_is_owner_only() -> None:
+    p = product("SYN-GR-1")
+    cases = [
+        [],  # no record
+        [record("SYN-F1", p.sku, vehicle=W213_ANY)],  # body code only
+        [record("SYN-F1", p.sku, status=FitmentStatus.NEEDS_VERIFICATION, trim_line="amg_line")],
+        [record("SYN-F1", p.sku, kind=EvidenceKind.VISUAL_SIMILARITY, trim_line="standard")],
+    ]
+    for recs in cases:
+        r = evaluate(p, recs, FULL_PRE_AMG, TEST)
+        assert r.status is FitmentStatus.NEEDS_VERIFICATION
+        assert not r.owner_only_by_default, r.reasons
 
 
 def test_conflicting_records_stay_undecided() -> None:
@@ -332,8 +378,21 @@ def test_set_verdict_combines_components() -> None:
     results = {r.sku: r for r in evaluate_candidates([a, b], recs, FULL_PRE_AMG, TEST)}
     assert evaluate_set(s, comps, results).status is FitmentStatus.VERIFIED
 
+    # A component outside its verified range: the set is undecided and owner-only by default.
     recs[1] = record("SYN-F2", b.sku, trim_line="standard")
     results = {r.sku: r for r in evaluate_candidates([a, b], recs, FULL_PRE_AMG, TEST)}
+    combined = evaluate_set(s, comps, results)
+    assert combined.status is FitmentStatus.NEEDS_VERIFICATION
+    assert combined.reasons == (
+        FitmentReason.COMPONENT_NEEDS_VERIFICATION,
+        FitmentReason.OUTSIDE_VERIFIED_RANGE,
+    )
+    assert combined.owner_only_by_default
+
+    # Only an explicit incompatibility of a component makes the set incompatible.
+    explicit = [*recs, record("SYN-F3", a.sku, status=FitmentStatus.INCOMPATIBLE)]
+    explicit[0] = record("SYN-F1", a.sku, trim_line="standard")
+    results = {r.sku: r for r in evaluate_candidates([a, b], explicit, FULL_PRE_AMG, TEST)}
     combined = evaluate_set(s, comps, results)
     assert combined.status is FitmentStatus.INCOMPATIBLE
     assert combined.reasons == (FitmentReason.COMPONENT_INCOMPATIBLE,)

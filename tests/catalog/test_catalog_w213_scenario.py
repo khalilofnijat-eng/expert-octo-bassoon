@@ -126,8 +126,12 @@ def test_partial_answer_narrows_candidates_and_questions(
     results = _verdicts(dataset, _candidates(adapter), query, test_policy)
     split = _by_status(results)
     assert split[FitmentStatus.VERIFIED] == set()
-    # Year 2018 is outside every facelift record; "standard" trim records mismatch.
-    assert split[FitmentStatus.INCOMPATIBLE] == {
+    # No explicit incompatibility matches yet (GR-002's needs front_camera=no).
+    assert split[FitmentStatus.INCOMPATIBLE] == set()
+    # Year 2018 is outside every facelift record and "standard" trim records mismatch: those
+    # parts are outside their verified range, which is not incompatibility. They stay
+    # needs_verification and are owner-only by default.
+    assert {s for s, r in results.items() if r.owner_only_by_default} == {
         "SYN-W213-FB-002",
         "SYN-W213-FB-003",
         "SYN-W213-FB-004",
@@ -135,6 +139,7 @@ def test_partial_answer_narrows_candidates_and_questions(
         "SYN-W213-GR-004",
         "SYN-W213-FBSET-002",
     }
+    assert results["SYN-W213-FB-003"].reasons == (FitmentReason.OUTSIDE_VERIFIED_RANGE,)
     assert questions_to_ask(results.values()) == (
         "facelift",
         "front_camera",
@@ -166,20 +171,29 @@ def test_full_answer_splits_verified_needs_verification_incompatible(
         "SYN-W213-GR-001",
         "SYN-W213-FBSET-001",
     }
-    assert split[FitmentStatus.NEEDS_VERIFICATION] == {
+    # Only an explicit, accepted incompatibility record makes a part incompatible.
+    assert split[FitmentStatus.INCOMPATIBLE] == {
+        "SYN-W213-GR-002",  # SYN-FIT-017: camera-mount grille, car has no camera
+    }
+    assert results["SYN-W213-GR-002"].reasons == (FitmentReason.EXPLICIT_INCOMPATIBLE_RECORD,)
+    # Undecided, shown to the customer as "needs checking" (the owner checks first) ...
+    shown = {
         "SYN-W213-GR-005",  # visual similarity only
         "SYN-W213-GR-006",  # body code only
         "SYN-W213-GR-007",  # no fitment record
     }
-    assert split[FitmentStatus.INCOMPATIBLE] == {
+    # ... and outside the verified range: undecided too, but owner-only by default.
+    outside_range = {
         "SYN-W213-FB-002",
         "SYN-W213-FB-003",
         "SYN-W213-FB-004",
-        "SYN-W213-GR-002",  # camera mount, car has no camera
         "SYN-W213-GR-003",
         "SYN-W213-GR-004",
-        "SYN-W213-FBSET-002",
+        "SYN-W213-FBSET-002",  # via its components
     }
+    assert split[FitmentStatus.NEEDS_VERIFICATION] == shown | outside_range
+    assert {s for s, r in results.items() if r.owner_only_by_default} == outside_range
+    assert all(FitmentReason.OUTSIDE_VERIFIED_RANGE in results[s].reasons for s in outside_range)
     assert questions_to_ask(results.values()) == ()
     # Every verdict is flagged synthetic: it must not be reported as a real verification.
     assert all(r.synthetic for r in results.values())

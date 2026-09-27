@@ -1,5 +1,5 @@
 {
- "_comment": "SYNTHETIC test data for T-022. Every identifier, price, colour, location, timestamp and fitment statement here is made up. Year ranges and variant splits are illustrative only and are NOT verified Mercedes-Benz fitment facts. Photo keys point at no file.",
+ "_comment": "SYNTHETIC test data for T-022. Every identifier, price, colour, location, timestamp and fitment statement here is made up. Year ranges and variant splits are illustrative only and are NOT verified Mercedes-Benz fitment facts. Photo keys point at no file. SYN-FIT-017 is a made-up explicit incompatibility record (camera-mount grille on a car without camera).",
  "dataset": "SYN-W213-front-bumper",
  "data_origin": "synthetic",
  "source": "synthetic_fixture",
@@ -402,6 +402,20 @@
    "conditions": {},
    "evidence_type": "synthetic_fixture",
    "evidence_ref": "SYN-EVID-016",
+   "verified_by": "synthetic-fixture",
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "id": "SYN-FIT-017",
+   "sku": "SYN-W213-GR-002",
+   "vehicle_spec": "SYN-VS-W213-PRE",
+   "status": "incompatible",
+   "conditions": {
+    "trim_line": "amg_line",
+    "front_camera": false
+   },
+   "evidence_type": "synthetic_fixture",
+   "evidence_ref": "SYN-EVID-017",
    "verified_by": "synthetic-fixture",
    "verified_at": "2026-09-20T09:00:00Z"
   },
