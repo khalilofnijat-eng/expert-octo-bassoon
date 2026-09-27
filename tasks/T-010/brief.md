@@ -2,20 +2,20 @@
 
 - **Aşama:** 3 ([PLAN](../../docs/PLAN.md))
 - **Sahip (agent rolü):** atanmadı (betiği yazan uygulama agent'ı; çalıştıran **sahip**)
-- **Tarih:** 2026-09-27 (kapsam: T-016)
+- **Tarih:** 2026-09-27 (kapsam: T-016; M10, M11 ve uygulama notları: T-036)
 
 ## Amaç
 
-Tam geçmiş aktarımından (T-006, T-020) önce, Avito Messenger API'sinin gerçek davranışını **hiçbir yan etki yaratmadan** ölçmek (D-012). Betik yalnızca okur, sahibin makinesinde sahibin kendi kimlik bilgileriyle çalışır ve yalnızca toplu sayılar, tarihler ve biçimler raporlar. Sonuçlar [docs/ARCHITECTURE.md](../../docs/ARCHITECTURE.md) §10.1'deki doğrulanmamış varsayımları (M1–M9) kesinleştirir.
+Tam geçmiş aktarımından (T-006, T-020) önce, Avito Messenger API'sinin gerçek davranışını **hiçbir yan etki yaratmadan** ölçmek (D-012). Betik yalnızca okur, sahibin makinesinde sahibin kendi kimlik bilgileriyle çalışır ve yalnızca toplu sayılar, tarihler ve biçimler raporlar. Sonuçlar [docs/ARCHITECTURE.md](../../docs/ARCHITECTURE.md) §10.1'deki doğrulanmamış varsayımları (M1–M10) kesinleştirir.
 
 ## Kapsam
 
-- **Dahil:** GET-only ölçüm betiği; M1–M9 ölçümleri ve okundu yan etkisinin canlı doğrulaması (aşağıdaki tablo); izin listesiyle sınırlanmış istemci; toplu çıktı raporu; mock üzerinde testler.
-- **Hariç:** Mesaj içeriğinin veya ham yanıtların saklanması; tam aktarım (T-020); gönderim gerektiren ölçümler (M4'ün tamamı pilotun ilk `approve_to_send` gönderimlerinde yapılır — ARCHITECTURE §10.1); tarayıcı kullanımı; bu bulut ortamından Avito çağrısı (B-009).
+- **Dahil:** GET-only ölçüm betiği; M1–M10 ölçümleri ve okundu yan etkisinin canlı doğrulaması (aşağıdaki tablo); izin listesiyle sınırlanmış istemci; toplu çıktı raporu; mock üzerinde testler.
+- **Hariç:** Mesaj içeriğinin veya ham yanıtların saklanması; tam aktarım (T-020); gönderim gerektiren ölçümler (M4'ün tamamı ve M11 — Avito'nun 1000 karakter sınırının birimi: UTF-16, kod noktası ya da bayt — pilotun ilk `approve_to_send` gönderimlerinde yapılır; o zamana kadar filtrenin muhafazakâr ölçüsü `measure_part` geçerlidir — ARCHITECTURE §10.1); tarayıcı kullanımı; bu bulut ortamından Avito çağrısı (B-009).
 
 ## Bağımlılıklar
 
-- **Görevler:** T-016 (bu kapsam), T-017 (Avito gateway okuma istemcisi + spec tabanlı mock; betik bu istemciyi kullanır).
+- **Görevler:** T-016 (bu kapsam), T-017 (Avito gateway okuma istemcisi + spec tabanlı mock; betik bu istemciyi kullanır — kabul edildi, `57e2029`).
 - **Engeller:** B-007 (Messenger API erişimi / abonelik, ana hesap anahtarı), B-009 (bu ortamdan avito.ru'ya erişim yok → betik sahibin makinesinde çalışır), B-011 (kimlik bilgileri sahibin makinesinde ortam değişkeni olarak). İlgili: B-014 (çalışan hesapları — M6 yorumunu etkiler).
 - Uç noktalar ve güven etiketleri: [docs/INTEGRATIONS.md](../../docs/INTEGRATIONS.md) §3.1 (hiçbiri canlı doğrulanmadı).
 
@@ -39,6 +39,7 @@ Tam geçmiş aktarımından (T-006, T-020) önce, Avito Messenger API'sinin ger�
 - **Sayfalama:** `limit` ≤ 99 (varsayılan 50; INTEGRATIONS §3.1). İlk çalıştırma için sohbet ve sayfa sayısı üst sınırı yapılandırılabilir (ör. önce küçük bir örneklem).
 - **Hız:** Messenger limitleri belgelenmemiş; muhafazakâr ve ayarlanabilir bir istek hızı kullanılır (ARCHITECTURE §6.10). Paralel istek yoktur.
 - **Durma:** 401, 403 veya 429 alınınca betik **hemen durur**, yeniden denemez ve o ana kadarki toplu raporu durma nedeniyle birlikte yazar. 5xx ve zaman aşımında sınırlı sayıda geri çekilmeli yeniden deneme, sonra aynı şekilde durma.
+- **Gateway kullanımı (T-017):** Betik okuma istemcisini `refresh_on_401=False` ile (401'de yenileyip tekrar denemez, durur), `Priority.BULK` önceliğiyle ve `silence_httpx_url_logs()` çağrısıyla (URL'ler loglanmaz) kullanır. Kuru çalıştırma (dry-run), gerçek ağ yerine `AvitoMock(...).transport()` ile yapılır ([scripts/dev/avito_mock/](../../scripts/dev/avito_mock/)).
 - **Kesilme:** Ctrl+C her an güvenlidir (yan etki yok); o ana kadarki toplu rapor yazılır.
 - **Kimlik bilgileri:** `AVITO_CLIENT_ID`, `AVITO_CLIENT_SECRET` yalnızca sahibin makinesindeki ortam değişkenlerinden veya `.env` dosyasından okunur ([BLOCKERS](../../BLOCKERS.md) B-011); sohbete, loglara ve rapora yazılmaz. Anahtar şirketin **ana** hesabından olmalıdır (B-007).
 - **Veri:** Ham yanıtlar ve mesaj içeriği yalnızca bellekte işlenir; diske, loglara ve rapora yazılmaz. Rapor depo dışındaki bir yola yazılır.
@@ -58,12 +59,14 @@ Kaynak: [docs/ARCHITECTURE.md](../../docs/ARCHITECTURE.md) §10.1. Her kalemin r
 | M7 | Karşı taraf kimliğinin kararlılığı | Karşı taraf kimliklerinin birden fazla sohbette görülüp görülmediğini say. | Farklı kimlik sayısı; birden fazla sohbette görülen kimlik sayısı. |
 | M8 | Geçmiş derinliği ve ek dosya URL'lerinin ömrü | En eski ve en yeni mesaj tarihleri; aylık mesaj sayısı; ek dosyaları yaş gruplarına göre sınırlı sayıda GET ile dene. | Tarih aralığı; aylık histogram; yaş grubuna göre ek indirme başarı/hata sayıları. |
 | M9 | Sohbet detayındaki karşı taraf kimliği, mesajlardaki `author_id` ile aynı biçimde mi? | Aynı sohbette detaydaki kullanıcı kimlikleri ile müşteri mesajlarının `author_id` değerlerini karşılaştır. | Eşleşen/eşleşmeyen sohbet sayısı; her iki alanın biçimi (uzunluk, karakter sınıfı: sayısal/hex/diğer). |
+| M10 | Messenger `offset` üst sınırı (spec kopyasına göre muhtemelen 1000; gerçekse ilan başına erişilebilir geçmiş sınırlanır) | Sayfalamada `offset_cap` durma nedenini say; sınırın ötesine istek atılmaz. | `offset_cap` ile duran sohbet listesi / sohbet sayısı; bu sohbetlerde en eski ulaşılan mesaj tarihi. |
 | Okundu | **Okundu yan etkisi olmadığı canlı doğrulanır** (mesaj okumak sohbeti okundu yapmaz — INTEGRATIONS §3.1, canlı doğrulanmadı) | `unread_only=true` listesinden okunmamış bir sohbet seç; mesajlarını GET ile oku; listeyi ve mesajların `is_read`/`read` alanlarını yeniden oku. Sahip ayrıca kendi Avito arayüzünde sohbetin hâlâ okunmamış göründüğünü kontrol edebilir. | Önce/sonra okunmamış sohbet ve mesaj sayıları; sonuç (değişmedi / değişti). Karşı tarafın gördüğü durum API'den gözlenemez; bu sınır raporda yazılır. |
 
 ## Çıktı biçimi
 
-- Tek bir toplu rapor (makine okunur biçim + kısa Türkçe özet): çalışma tarihi (UTC), betik sürümü/commit'i, kullanılan parametreler (limit, hız, üst sınırlar), yapılan istek sayısı (uç nokta başına), durma nedeni (varsa), M1–M9 ve okundu sonuçları.
+- Tek bir toplu rapor (makine okunur biçim + kısa Türkçe özet): çalışma tarihi (UTC), betik sürümü/commit'i, kullanılan parametreler (limit, hız, üst sınırlar), yapılan istek sayısı (uç nokta başına), durma nedeni (varsa), M1–M10 ve okundu sonuçları.
 - **Yalnızca toplu sayılar, tarihler ve biçimler.** Rapor şunları içermez: mesaj metni, ad, telefon, ilan başlığı, sohbet/mesaj/kullanıcı kimliklerinin değerleri, URL'ler, token.
+- M10 sonucu da aynı raporda yer alır; M11 bu betikte ölçülmez (gönderim gerektirir).
 - Sahip raporu Main Agent'a iletir; hangi sonuçların kayda ([docs/INTEGRATIONS.md](../../docs/INTEGRATIONS.md) §4, [docs/ARCHITECTURE.md](../../docs/ARCHITECTURE.md) §10.1) geçeceğine Main Agent karar verir.
 
 ## Dosya sahipliği
@@ -79,7 +82,7 @@ Kaynak: [docs/ARCHITECTURE.md](../../docs/ARCHITECTURE.md) §10.1. Her kalemin r
 ## Kabul ölçütleri
 
 - [ ] İstemci yalnızca yukarıdaki izin listesindeki çağrıları yapar; `chatRead` ve yasak listedeki her çağrı için ağ isteği yapılmadan reddedildiğini gösteren test var.
-- [ ] Mock üzerinde uçtan uca çalıştırma: M1–M9 ve okundu kontrolünün her biri raporda bir sonuç üretir (sentetik olarak işaretli).
+- [ ] Mock üzerinde uçtan uca çalıştırma (`AvitoMock(...).transport()`): M1–M10 ve okundu kontrolünün her biri raporda bir sonuç üretir (sentetik olarak işaretli).
 - [ ] 401, 403 ve 429 durumlarında betiğin durduğu, yeniden denemediği ve durma nedenini raporladığı testle gösterilir.
 - [ ] Sayfalama `limit` ≤ 99 kullanır; istek hızı ve üst sınırlar yapılandırılabilir; paralel istek yok.
 - [ ] Rapor ve loglarda mesaj içeriği, kimlik değeri, URL veya token bulunmadığını doğrulayan test var (sentetik PII içeren mock verisiyle).

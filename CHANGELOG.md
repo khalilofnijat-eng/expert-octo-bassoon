@@ -2,7 +2,22 @@
 
 En yeni kayıt en üstte. Her kayıt, değişikliği içeren commit'in kısa hash'ini taşır; kaydı içeren commit'in kendi hash'i bir sonraki kayıt güncellemesinde eklenir.
 
-## 2026-09-27 (T-016) — commit: bir sonraki güncellemede eklenecek
+## 2026-09-27 (T-036, kayıt eşitlemesi) — commit: bir sonraki güncellemede eklenecek
+
+- TASKS: T-004 commit edildi, T-013b yapıldı; T-015, T-017, T-019, T-022, T-022b, T-018c, T-035, T-037 kabul; T-032, T-033 düzeltmelerle kabul; T-016 ve T-036 teslim edildi; T-018, T-034, T-033b, T-039, T-040 sürüyor; T-018b, T-038 eklendi; B-012 listesi genişletildi — [TASKS.md](TASKS.md).
+- BLOCKERS: B-013 çözüldü; B-005 kısmen çözüldü (ödeme yöntemleri, ИП, Avito Доставка); B-002, B-004 yeniden soruldu; yeni B-015 (poisk.vin API) — [BLOCKERS.md](BLOCKERS.md).
+- DECISIONS: D-039 (ödeme yöntemleri; +%10 yalnızca B2B), D-040 (Avito moderasyonu atlatılmaz), D-041 (web sitesi ayrı proje), D-042 (Messenger API tarifesi için üç seçenek) — [docs/DECISIONS.md](docs/DECISIONS.md).
+- INTEGRATIONS: M10/M11 ve T-037 belirsizlikleri, uygulanan gateway bölümü (§7). NOTES: sahip cevapları ve T-037 bulguları. T-010 brief'ine M10, M11 ve gateway kullanım notları. `tests/README.md`: yeni test paketleri ve DB testleri. `.env.example`: `APP_ENV`. Brief'ler: T-017, T-018, T-022, T-032–T-036. STATE, HANDOFF, PLAN, oturum kaydı, TEST_REPORT güncellendi.
+
+## 2026-09-27 (T-036, mimari) — commit `1f7c2dc`
+
+- Mimari rev.2 sahip onayıyla commit edildi (B-013). Küçük düzeltmeler: başlık "KABUL EDİLDİ"; §6.10 uç nokta başına token bucket (T-017); §10.1 M10 ve M11; §7.4 `[TYPE_n]` — [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+
+## 2026-09-27 — kabul edilen uygulama commit'leri
+
+- T-019 output filter `ecb73e0`; T-015 çekirdek DB/kuyruk/kilitler/CAS `747775e`; T-022 inventory + catalog/fitment `2e0e2d3`; T-017 Avito okuma istemcisi + mock `57e2029`; T-022b fitment kuralı `fb6c0ea`; T-018c gönderim istemcisinde ortak `measure_part` `afd6ad5`; T-035 T-015 düzeltmeleri `15da795`. CI sonuçları: [docs/TEST_REPORT.md](docs/TEST_REPORT.md). Kabulü kayıtta olmayan commit'ler (T-018 `c86b942`, T-018b `3a5f198`, T-034 `9bb67b7`) ve web sitesi başlangıç dosyaları (T-038) için: [TASKS.md](TASKS.md).
+
+## 2026-09-27 (T-016) — commit `93d2ee5`
 
 - Mimari rev.2 kabulü kayda geçti; `docs/ARCHITECTURE.md` rev.2'nin commit'i sahip iznini bekliyor (yeni engel B-013). Mimari kararları D-015–D-035, T-014 soruları üzerine kararlar D-036–D-038 — [docs/DECISIONS.md](docs/DECISIONS.md).
 - T-004 (rev.2), T-012, T-012b, T-013, T-014 kabul edildi; T-013b engelli; uygulama dalgası T-015…T-031 bağımlılık, kabul özeti ve zorunlu bağımsız incelemelerle eklendi; B-012 listesi genişletildi — [TASKS.md](TASKS.md).

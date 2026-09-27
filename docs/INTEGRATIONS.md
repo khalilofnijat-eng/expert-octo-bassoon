@@ -10,6 +10,7 @@ Engeller: [../BLOCKERS.md](../BLOCKERS.md). Görevler: [../TASKS.md](../TASKS.md
 | resmî spec'in topluluk kopyası — resmî kaynakla karşılaştırılmadı, canlı doğrulanmadı | Avito'nun resmî OpenAPI spec'inin GitHub'daki topluluk kopyalarından alındı (§6). Resmî portal bu ortamdan açılamadığı için karşılaştırılmadı (B-009); canlı çağrı yapılmadı. |
 | ikincil kaynak | Üçüncü taraf blog, entegratör veya forum; çoğu yalnızca arama özetiyle görüldü. |
 | doğrulanamadı | Hiçbir kaynakta bulunamadı ya da kaynaklar çelişiyor. |
+| arama özeti düzeyi | Yalnızca arama motoru özetinde görüldü; kaynak sayfa okunmadı (ikincil kaynağın en zayıf hâli). |
 
 Kaynak: T-001 ve T-002 teslim metinleri (Main Agent kabul etti). Metinlerin kendisi repoda yok ([../TASKS.md](../TASKS.md) → B-012 listesi); kabul edilen bulguların kalıcı özeti bu dosyadadır (§2–§6).
 
@@ -17,7 +18,7 @@ Kaynak: T-001 ve T-002 teslim metinleri (Main Agent kabul etti). Metinlerin kend
 
 | Entegrasyon | Amaç | Yöntem | Durum | Yetenekler | Kanıt | Engel |
 |---|---|---|---|---|---|---|
-| Avito resmî API (Messenger + Items) | Yeni mesaj alma, yetkili gönderim, geçmiş okuma, ilan bilgisi | Resmî REST API, OAuth2 `client_credentials`; webhook + periyodik uzlaştırma (D-011); kendi ince istemcimiz (D-013) | seçildi, bağlı değil | §3 — **hiçbiri canlı doğrulanmadı** | §3–§6 (T-002) | B-007, B-009, B-011 |
+| Avito resmî API (Messenger + Items) | Yeni mesaj alma, yetkili gönderim, geçmiş okuma, ilan bilgisi | Resmî REST API, OAuth2 `client_credentials`; webhook + periyodik uzlaştırma (D-011); kendi ince istemcimiz (D-013) | seçildi, bağlı değil; okuma istemcisi ve spec tabanlı mock yazıldı (T-017, §7), yalnızca sentetik testler | §3 — **hiçbiri canlı doğrulanmadı** | §3–§6 (T-002), §7 (kod) | B-007, B-009, B-011 |
 | Avito web arayüzü / Chrome | Yalnızca API'nin ulaşamadığı eski geçmiş için, tek seferlik (D-011) | Sahibin bilgisayarındaki oturum — BİLİNMİYOR | erişim yok | — | §2.4 (tarayıcı kontrol aracı yok); riskler §5 | B-001 |
 | Depo / muhasebe sistemi | Ürün, stok, fiyat, rezervasyon, sipariş | BİLİNMİYOR | bilinmiyor | — | — | B-002 |
 | Ürün fotoğrafları | Gerçek stok kaydına bağlı fotoğraflar | BİLİNMİYOR | bilinmiyor | — | — | B-002 |
@@ -89,7 +90,7 @@ Base URL `https://api.avito.ru`. `{user_id}` sayısal hesap kimliğidir ve `GET 
 |---|---|---|---|
 | POST | `/token` | `grant_type=client_credentials`, `client_id`, `client_secret` | Satıcının kendi hesabı. Belgelenen ömür 24 saat; bir örnekte `expires_in: 3600` → yanıttaki `expires_in` esas alınır. Refresh token yok; süre dolunca yeniden alınır. (`authorization_code` akışı da var; bizim senaryoda gerekmez.) |
 | GET | `/core/v1/accounts/self` | — | `user_id` kaynağı. 401, 403 ("Неверный Token/Oauth Scope"), 500, 503 belgelenmiş. |
-| GET | `/messenger/v2/accounts/{user_id}/chats` | `item_ids`, `unread_only`, `chat_types` (u2i/u2u/a2u; varsayılan u2i), `limit`, `offset` | `limit` açıklamada "<100", varsayılanı 100 (çelişki) → ≤ 99, tercihen 50. `offset` üst sınırı ve sıralama belgelenmemiş. Okuma yan etkisi belgelenmemiş (doğrulanamadı). |
+| GET | `/messenger/v2/accounts/{user_id}/chats` | `item_ids`, `unread_only`, `chat_types` (u2i/u2u/a2u; varsayılan u2i), `limit`, `offset` | `limit` açıklamada "<100", varsayılanı 100 (çelişki) → ≤ 99, tercihen 50. `offset` üst sınırı: T-017 spec kopyasında 1000 okudu (§4, M10); sıralama belgelenmemiş. Okuma yan etkisi belgelenmemiş (doğrulanamadı). |
 | GET | `/messenger/v2/accounts/{user_id}/chats/{chat_id}` | — | İlan bağlamı `context.value`: id, title, price_string, url, status_id, 140x105 ana görsel, görsel sayısı; kullanıcılar; son mesaj. Kullanıcı ID'leri hash'lenmiş olabilir → kalıcı anahtar `chat_id`. |
 | GET | `/messenger/v3/accounts/{user_id}/chats/{chat_id}/messages/` | `limit` (<100), `offset` | **Sohbeti okundu yapmaz.** Alanlar: id, author_id, created, direction, type, content, is_read, read, quote. Tipler: text, image, link, item, location, call, deleted, voice, system. Geçmiş derinliği belgelenmemiş (§4). |
 | POST | `/messenger/v1/accounts/{user_id}/chats/{chat_id}/messages` | Gövde `{"type":"text","message":{"text":"…"}}` | Yalnızca metin; **en fazla 1000 karakter**. Spec şemasındaki `required: ["url"]` hatalı; şemaya körü körüne güvenilmez. |
@@ -130,11 +131,17 @@ Sayım: Messenger 13 uç, Items/Autoload 3 uç (D-013).
 
 - Geçmişin ne kadar geriye okunabildiği: belgelenmemiş (doğrulanamadı) → T-010 ölçecek (D-012).
 - Messenger uçlarının hız sınırı: belgelenmemiş.
+- Messenger `offset` üst sınırı: spec kopyasına göre muhtemelen 1000 (resmî spec'in topluluk kopyası — resmî kaynakla karşılaştırılmadı, canlı doğrulanmadı). Gerçekse ilan başına erişilebilir geçmiş sınırlanır → T-010 ölçüm kalemi M10 ([ARCHITECTURE.md](ARCHITECTURE.md) §10.1).
+- Metin mesajının 1000 karakter sınırının birimi (UTF-16 kod birimi, kod noktası ya da bayt): doğrulanamadı → M11, pilotun ilk gönderimlerinde ölçülür; o zamana kadar filtrenin muhafazakâr ölçüsü `measure_part` kullanılır ([ARCHITECTURE.md](ARCHITECTURE.md) §10.1).
 - Webhook imza algoritması, retry ve teslim garantisi: §3.3.
 - İlanın tam fotoğraf seti, açıklaması, parça numarası: bunları döndüren uç bulunamadı (doğrulanamadı). Sohbet bağlamında yalnızca 140x105 ana görsel var.
 - `chatRead`'in alıcı tarafta "okundu" gösterip göstermediği: doğrulanamadı.
 - Messenger dışındaki uçların da ücretli olup olmadığı: doğrulanamadı.
 - API kullanım şartları (https://www.avito.ru/legal/pro_tools/public-api): bu ortamdan okunamadı (B-009); canlıya geçmeden okunmalı.
+- Doğrulanmış profesyonel profil istisnasının kapsamı (Товары sohbetlerinde iletişim bilgisi yasağı): belirsiz → Avito desteğinden yazılı teyit gerekir. — T-037, ikincil kaynak; ayrıntı [NOTES.md](NOTES.md) → "T-037 bulguları"
+- Sohbet görsellerinde OCR moderasyonu: doğrulanmadı (ilan görsellerinde yapıldığı Avito teknoloji blogunda anlatılıyor). — T-037, ikincil kaynak
+- Oto parçalarda çevrim içi ödemenin zorunlu olup olmadığı: zayıf kanıt. — T-037, arama özeti düzeyi
+- poisk.vin: herkese açık API bulunamadı; resmî API'li alternatifler Laximo, Parts-Catalogs, ACAT ([../BLOCKERS.md](../BLOCKERS.md) B-015). — T-037, arama özeti düzeyi
 
 ## 5. Avito web arayüzü (tarayıcı otomasyonu) — riskler
 
@@ -160,3 +167,17 @@ Topluluk kütüphaneleri (resmî değil):
 - Sonuç (D-013): SDK'ya bağlanmak yerine §3.1'deki uçlar için kendi ince istemcimiz yazılır.
 
 Resmî adresler (bu ortamdan erişilemedi — B-009): https://developers.avito.ru/api-catalog, https://developers.avito.ru/api-catalog/messenger/documentation, https://developers.avito.ru/applications, https://www.avito.ru/legal/pro_tools/public-api.
+
+## 7. Uygulanan Avito gateway (T-017; kod bağlantıları)
+
+Durum: kod yazıldı, yalnızca mock ve sentetik veriyle test edildi; gerçek Avito çağrısı yapılmadı (B-007, B-009, B-011). Ayrıntılar kodun docstring'lerindedir; burada tekrar edilmez.
+
+| Olgu | Kod |
+|---|---|
+| Salt okunur izin listesi (`ALLOWLIST`): yalnızca §3.1'deki okuma uçları; tek POST `/token`. | [../app/avito_gateway/endpoints.py](../app/avito_gateway/endpoints.py) |
+| Transport guard: izin listesinde olmayan istek veya yapılandırılmış host dışındaki istek, ağ isteği yapılmadan reddedilir; transport retry ve redirect takibi yok; her HTTP denemesi ayrı kaydedilir. | [../app/avito_gateway/http.py](../app/avito_gateway/http.py) |
+| Uç nokta başına token bucket; `live` > `bulk` önceliği, `bulk` payı sınırı, 429'da o bucket'ta duraklama ([ARCHITECTURE.md](ARCHITECTURE.md) §6.10). | [../app/avito_gateway/ratelimit.py](../app/avito_gateway/ratelimit.py) |
+| Token yönetimi (`expires_in` + güvenlik payı; 401'de bir yenileme, `refresh_on_401=False` ile kapatılabilir). | [../app/avito_gateway/token.py](../app/avito_gateway/token.py), [../app/avito_gateway/config.py](../app/avito_gateway/config.py) |
+| Sayfalama: her zaman sonlanır, sıralama varsaymaz; `offset_cap` (M10). | [../app/avito_gateway/pagination.py](../app/avito_gateway/pagination.py) |
+| Spec tabanlı mock (sentetik veri, hata enjeksiyonu). | [../scripts/dev/avito_mock/](../scripts/dev/avito_mock/) |
+| Gönderim istemcisi (yalnızca metin), okuma izin listesinden ayrı `WRITE_ALLOWLIST` — T-018, kabul kararı kayıtta yok ([../TASKS.md](../TASKS.md)). | [../app/avito_gateway/send.py](../app/avito_gateway/send.py) |
