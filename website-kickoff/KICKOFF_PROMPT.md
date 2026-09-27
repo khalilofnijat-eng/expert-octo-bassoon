@@ -169,14 +169,14 @@ Veri modelini Avito projesiyle uyumlu tut. Referanslar (depo `khalilofnijat-eng/
 
 1. Alan adı var mı, hangisi? Barındırma tercihi (Rusya'da sunucu vb.) ve mevcut hesaplar.
 2. Yasal biçim (ИП / ООО / самозанятый) ve vergi rejimi.
-3. poisk.vin erişim türü: API anahtarı mı, yalnızca web hesabı mı? Paket, sorgu kotası ve sözleşme şartları. poisk.vin'den yazılı API/entegrasyon izni istemeyi kabul ediyor musunuz; olmazsa lisanslı bir alternatif (ör. Laximo) için ayrı ücret ödemeye hazır mısınız?
+3. poisk.vin erişim türü: API anahtarı mı, yalnızca web hesabı mı? Paket, sorgu kotası ve sözleşme şartları. poisk.vin'den yazılı API/entegrasyon izni isteyip istemeyeceğim; izin çıkmazsa lisanslı bir alternatif (ör. Laximo) için ayrıca ödeme yapmaya hazır olup olmadığım.
 4. Marka: işletme adı, logo, renkler, varsa kurumsal kimlik.
 5. Öncelikli markalar/modeller/kasa tipleri (W213'ten sonra hangileri).
 6. Yaklaşık ürün (SKU) sayısı ve yeni/çıkma oranı.
 7. Ürün fotoğrafları şu an nerede ve nasıl adlandırılıyor?
 8. Teslimat yöntemleri, bölgeler ve elden teslim noktası.
 9. İade ve garanti kuralları (yeni ve çıkma parça için ayrı ayrı).
-10. Ödeme: +%10 ek ücretin yalnızca şirketlere banka havalesinde uygulanacağını muhasebecinizle teyit eder misiniz; ek ücretin tabanı (ürün mü, toplam mı), çevrim içi ödeme sağlayıcısı kullanmak istiyor muyum, karta havale kişisel karta mı işletme hesabına mı (kart/hesap numarasını sohbete değil, güvenli yapılandırmaya gireceğim).
+10. Ödeme: +%10 ek ücretin yalnızca şirketlere banka havalesinde uygulanacağının muhasebecimce teyidi; ek ücretin tabanı (ürün mü, toplam mı), çevrim içi ödeme sağlayıcısı kullanmak istiyor muyum, karta havale kişisel karta mı işletme hesabına mı (kart/hesap numarasını sohbete değil, güvenli yapılandırmaya gireceğim).
 11. Rusça dışında dil gerekiyor mu?
 12. Bütçe: barındırma, ödeme sağlayıcısı komisyonu, ücretli tasarım/3D varlık ve lisanslar için aylık/tek seferlik sınır.
 
