@@ -1,0 +1,46 @@
+# SYNTHETIC: test double only; never talks to Avito.
+"""Spec-shaped Avito API mock with fault injection (see ``mock.py``)."""
+
+from scripts.dev.avito_mock.mock import (
+    MOCK_BASE_URL,
+    SYNTHETIC_CLIENT_ID,
+    SYNTHETIC_CLIENT_SECRET,
+    SYNTHETIC_USER_ID,
+    AvitoMock,
+    Fault,
+    MockChat,
+    RecordedRequest,
+    client_error,
+    config_for_mock,
+    connect_error,
+    forbidden,
+    malformed_json,
+    rate_limited,
+    redirect,
+    server_error,
+    timeout,
+    unauthorized,
+    wrong_shape,
+)
+
+__all__ = [
+    "MOCK_BASE_URL",
+    "SYNTHETIC_CLIENT_ID",
+    "SYNTHETIC_CLIENT_SECRET",
+    "SYNTHETIC_USER_ID",
+    "AvitoMock",
+    "Fault",
+    "MockChat",
+    "RecordedRequest",
+    "client_error",
+    "config_for_mock",
+    "connect_error",
+    "forbidden",
+    "malformed_json",
+    "rate_limited",
+    "redirect",
+    "server_error",
+    "timeout",
+    "unauthorized",
+    "wrong_shape",
+]

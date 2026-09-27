@@ -1,0 +1,46 @@
+{
+  "_synthetic": "SYNTHETIC: made-up data shaped after the community spec copy (Chats schema). Entry 1 has a hashed-looking user id and an unknown field; entry 2 lacks the required id.",
+  "body": {
+    "chats": [
+      {
+        "id": "u2i-fixture0001~chat",
+        "created": 1750000100,
+        "updated": 1750000900,
+        "context": {
+          "type": "item",
+          "value": {
+            "id": 700000001,
+            "title": "Синтетический фильтр масляный",
+            "price_string": "1 200 ₽",
+            "status_id": 0,
+            "url": "https://avito-mock.invalid/items/700000001",
+            "user_id": 900000001,
+            "images": {"count": 3, "main": {"140x105": "https://avito-mock.invalid/img/1.jpg"}}
+          }
+        },
+        "users": [
+          {"id": 900000001, "name": "Синтетический продавец", "public_user_profile": {"user_id": 900000001, "item_id": 700000001, "url": "https://avito-mock.invalid/user/s", "avatar": {"default": "https://avito-mock.invalid/a.png", "images": {"24x24": "https://avito-mock.invalid/a24.png"}}}},
+          {"id": 800000001, "name": "Синтетический покупатель", "public_user_profile": {"user_id": 800000001, "item_id": 700000001, "url": "https://avito-mock.invalid/user/c", "avatar": {"default": "https://avito-mock.invalid/c.png", "images": {}}}}
+        ],
+        "last_message": {"id": "msg-fixture-0009", "author_id": 800000001, "created": 1750000900, "direction": "in", "type": "text", "content": {"text": "Синтетический вопрос: подойдёт на синтетическую модель?"}}
+      },
+      {
+        "id": "u2i-fixture0002~chat",
+        "created": 1750000200,
+        "updated": 1750000800,
+        "future_field_not_in_spec": {"anything": true},
+        "context": {"type": "item", "value": {"id": 700000002, "title": "Синтетический ремень ГРМ", "price_string": "2 500 ₽", "status_id": 0, "url": "https://avito-mock.invalid/items/700000002", "user_id": 900000001, "images": {"count": 1, "main": {"140x105": "https://avito-mock.invalid/img/2.jpg"}}}},
+        "users": [
+          {"id": 900000001, "name": "Синтетический продавец"},
+          {"id": "3f2a9c0e5b7d41a8b6c2d9e0f1a2b3c4", "name": "Синтетический покупатель 2"}
+        ],
+        "last_message": {"id": "msg-fixture-0018", "author_id": "3f2a9c0e5b7d41a8b6c2d9e0f1a2b3c4", "created": 1750000800, "direction": "in", "type": "image", "content": {"image": {"sizes": {"140x105": "https://avito-mock.invalid/img/m1.jpg"}}}}
+      },
+      {
+        "created": 1750000300,
+        "updated": 1750000700,
+        "context": {"type": "item", "value": {"id": 700000003}}
+      }
+    ]
+  }
+}

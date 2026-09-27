@@ -1,0 +1,9 @@
+{
+  "_synthetic": "SYNTHETIC: made-up single-object replies shaped after the community spec copy.",
+  "auth_reply": {"access_token": "fixture-access-token-synthetic", "expires_in": 3600, "token_type": "Bearer"},
+  "account_self": {"id": 900000001, "name": "Синтетический продавец", "email": "seller@example.com", "phone": 70000000000, "phones": ["70000000000"], "profile_url": "https://avito-mock.invalid/user/abc/profile"},
+  "chat_detail": {"id": "u2i-fixture0001~chat", "created": 1750000100, "updated": 1750000900, "context": {"type": "item", "value": {"id": 700000001, "title": "Синтетический фильтр", "price_string": "1 200 ₽", "status_id": 0, "url": "https://avito-mock.invalid/items/700000001", "user_id": 900000001, "images": {"count": 3, "main": {"140x105": "https://avito-mock.invalid/img/1.jpg"}}}}, "users": [{"id": 900000001, "name": "Синтетический продавец"}, {"id": 800000001, "name": "Синтетический покупатель"}], "last_message": {"id": "msg-fixture-0009", "author_id": 800000001, "created": 1750000900, "direction": "in", "type": "text", "content": {"text": "Синтетический вопрос"}}},
+  "voice_files": {"voices_urls": {"voice-fx-0001": "https://avito-mock.invalid/voice/voice-fx-0001.mp4"}},
+  "items_page": {"meta": {"page": 1, "per_page": 25}, "resources": [{"id": 700000001, "title": "Синтетический фильтр", "price": 1200, "status": "active", "url": "https://avito-mock.invalid/items/700000001", "category": {"id": 10, "name": "Запчасти"}, "address": "Синтетический город"}, {"id": 700000002, "title": "Синтетический ремень", "price": null, "status": "old", "url": null, "category": {"id": 10, "name": "Запчасти"}, "address": "Синтетический город"}]},
+  "item_detail": {"status": "active", "url": "https://avito-mock.invalid/items/700000001", "start_time": "2025-06-01T10:00:00+03:00", "finish_time": null, "autoload_item_id": null, "vas": [{"vas_id": "highlight", "finish_time": null, "schedule": null}]}
+}

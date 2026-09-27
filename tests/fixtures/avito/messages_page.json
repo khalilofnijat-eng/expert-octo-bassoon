@@ -1,0 +1,18 @@
+{
+  "_synthetic": "SYNTHETIC: made-up data shaped after the community spec copy (Messages schema, a bare array). Covers every listed message type; one entry has an unknown field, one lacks the required created, one has created of the wrong type.",
+  "body": [
+    {"id": "msg-fx-0001", "author_id": 800000001, "created": 1750001000, "direction": "in", "type": "text", "content": {"text": "Синтетика: мой телефон +7 900 000-00-01"}, "is_read": true, "read": 1750001010},
+    {"id": "msg-fx-0002", "author_id": 900000001, "created": 1750001020, "direction": "out", "type": "text", "content": {"text": "Синтетический ответ продавца"}, "is_read": true, "read": null, "quote": {"id": "msg-fx-0001", "author_id": 800000001, "created": 1750001000, "type": "text", "content": {"text": "Синтетика: мой телефон +7 900 000-00-01"}}},
+    {"id": "msg-fx-0003", "author_id": 800000001, "created": 1750001030, "direction": "in", "type": "image", "content": {"image": {"sizes": {"1280x960": "https://avito-mock.invalid/img/x.jpg"}}}, "is_read": false},
+    {"id": "msg-fx-0004", "author_id": 800000001, "created": 1750001040, "direction": "in", "type": "link", "content": {"link": {"text": "https://example.com/synthetic", "url": "https://example.com/synthetic", "preview": null}}, "is_read": false},
+    {"id": "msg-fx-0005", "author_id": 800000001, "created": 1750001050, "direction": "in", "type": "item", "content": {"item": {"title": "Синтетическая деталь", "item_url": "https://avito-mock.invalid/items/1", "image_url": "https://avito-mock.invalid/img/1.jpg", "price_string": "1 000 ₽"}}, "is_read": false},
+    {"id": "msg-fx-0006", "author_id": 800000001, "created": 1750001060, "direction": "in", "type": "location", "content": {"location": {"kind": "street", "lat": 55.0, "lon": 37.0, "text": "Синтетическая улица", "title": "Синтетика"}}, "is_read": false},
+    {"id": "msg-fx-0007", "author_id": 800000001, "created": 1750001070, "direction": "in", "type": "call", "content": {"call": {"status": "missed", "target_user_id": 900000001}}, "is_read": false},
+    {"id": "msg-fx-0008", "author_id": 800000001, "created": 1750001080, "direction": "in", "type": "deleted", "content": {}, "is_read": false},
+    {"id": "msg-fx-0009", "author_id": 800000001, "created": 1750001090, "direction": "in", "type": "voice", "content": {"voice": {"voice_id": "voice-fx-0001"}}, "is_read": false},
+    {"id": "msg-fx-0010", "author_id": 0, "created": 1750001100, "direction": "in", "type": "system", "content": {"text": "Синтетический автоответ", "flow_id": "flower_000000"}, "is_read": true},
+    {"id": "msg-fx-0011", "author_id": 800000001, "created": 1750001110, "direction": "in", "type": "video_note", "content": {"text": null}, "is_read": false, "brand_new_field": [1, 2, 3]},
+    {"id": "msg-fx-0012", "author_id": 800000001, "direction": "in", "type": "text", "content": {"text": "Синтетика без поля created"}},
+    {"id": "msg-fx-0013", "author_id": 800000001, "created": "not-a-timestamp", "direction": "in", "type": "text", "content": {"text": "Синтетика с неверным created"}}
+  ]
+}
