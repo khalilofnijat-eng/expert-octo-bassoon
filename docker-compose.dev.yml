@@ -1,0 +1,22 @@
+# Local development PostgreSQL 16 only (not a deployment file). Bound to 127.0.0.1.
+# The password is a local dev placeholder, not a secret; never reuse it anywhere else.
+#   docker compose -f docker-compose.dev.yml up -d
+#   export TEST_DATABASE_URL=postgresql+psycopg://postgres:dev-only@127.0.0.1:5432/postgres
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: dev-only
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+
+volumes:
+  pgdata:

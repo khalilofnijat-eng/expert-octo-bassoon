@@ -11,6 +11,25 @@ jobs:
   checks:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    # Real PostgreSQL 16 for tests/db (ARCHITECTURE §13). Throwaway CI container: the password
+    # below is not a secret and protects nothing outside this job.
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 2s
+          --health-timeout 5s
+          --health-retries 30
+    env:
+      TEST_DATABASE_URL: postgresql+psycopg://postgres:postgres@localhost:5432/postgres
+      # Fail instead of skipping the DB tests if the database is missing.
+      REQUIRE_TEST_DATABASE: "1"
     steps:
       - uses: actions/checkout@v4
 
@@ -30,6 +49,12 @@ jobs:
 
       - name: Mypy
         run: uv run mypy app
+
+      - name: Alembic upgrade on a clean database (CLI path via DATABASE_URL)
+        run: |
+          psql "postgresql://postgres:postgres@localhost:5432/postgres" -c "CREATE DATABASE ci_migrate"
+          DATABASE_URL=postgresql+psycopg://postgres:postgres@localhost:5432/ci_migrate \
+            uv run alembic upgrade head
 
       - name: Pytest
         run: uv run pytest -q

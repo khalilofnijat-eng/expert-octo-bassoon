@@ -42,6 +42,10 @@ class Settings(BaseSettings):
     # Live data (database files, raw Avito data, photo cache). Must live outside git and the vault.
     data_dir: Path | None = None
     automation_mode: AutomationMode = AutomationMode.DRAFT_ONLY
+    # Worker (docs/ARCHITECTURE.md §6.1): how often the singleton connection is checked, and how
+    # long a job waits before retrying when its conversation lock is busy.
+    worker_singleton_poll_s: float = 5.0
+    worker_lock_busy_delay_s: float = 5.0
 
     @field_validator("data_dir")
     @classmethod
