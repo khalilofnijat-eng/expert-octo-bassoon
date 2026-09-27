@@ -1,7 +1,7 @@
 # SYNTHETIC: every text, price, OEM number, phone, e-mail, card, handle and URL below is invented
 # test data. Card numbers are public test numbers; domains are example.*. No real customer data,
 # no real business rules, prices or templates (the disclosure template is a stand-in).
-"""Unit tests for app.safety.filter (T-019, docs/ARCHITECTURE.md §7.2)."""
+"""Unit tests for app.safety.filter (T-019, T-034, docs/ARCHITECTURE.md §7.2)."""
 
 from __future__ import annotations
 
@@ -17,6 +17,8 @@ from app.safety.filter import (
     FilterContext,
     ReasonCode,
     check_parts,
+    measure_part,
+    part_fits,
 )
 
 R = ReasonCode
@@ -230,28 +232,56 @@ def test_no_parts_is_trivially_allowed() -> None:
 
 
 # --- Length and empty parts --------------------------------------------------------------------
+# T-034 / D-k: a part must fit into 1000 UTF-16 units AND 1000 UTF-8 bytes (Avito's counting unit
+# is not verified). The T-019 tests used 1000 Cyrillic letters (2000 bytes); they now use ASCII
+# for the unit limit and Cyrillic for the byte limit.
 
 
-def test_part_of_exactly_1000_chars_passes() -> None:
-    assert check_parts(["а" * 1000]).allowed
+def test_part_of_exactly_1000_ascii_chars_passes() -> None:
+    assert check_parts(["a" * 1000]).allowed
 
 
 def test_part_over_1000_chars_is_denied_with_span_at_the_limit() -> None:
-    verdict = check_parts(["а" * 1001]).parts[0]
+    verdict = check_parts(["a" * 1001]).parts[0]
     assert verdict.codes == (R.PART_TOO_LONG,)
     assert (verdict.findings[0].start, verdict.findings[0].end) == (1000, 1001)
 
 
 def test_length_counts_utf16_units() -> None:
-    # An emoji outside the BMP is two UTF-16 code units.
-    verdict = check_parts(["а" * 999 + "🙂"]).parts[0]
+    # An emoji outside the BMP is two UTF-16 code units (and four UTF-8 bytes).
+    verdict = check_parts(["a" * 996 + "🙂"]).parts[0]
+    assert verdict.allowed
+    verdict = check_parts(["a" * 999 + "🙂"]).parts[0]
     assert verdict.codes == (R.PART_TOO_LONG,)
     assert verdict.findings[0].start == 999
 
 
-def test_max_part_units_is_configurable() -> None:
-    config = FilterConfig(max_part_units=10)
-    assert not check_parts(["а" * 11], config=config).allowed
+def test_length_counts_utf8_bytes() -> None:
+    assert check_parts(["а" * 500]).allowed  # Cyrillic: two bytes each
+    verdict = check_parts(["а" * 501]).parts[0]
+    assert verdict.codes == (R.PART_TOO_LONG,)
+    assert verdict.findings[0].start == 500
+
+
+def test_measure_part_and_part_fits() -> None:
+    size = measure_part("аb🙂")
+    assert (size.code_points, size.utf16_units, size.utf8_bytes) == (3, 4, 7)
+    assert part_fits("a" * 1000)
+    assert not part_fits("а" * 501)
+    assert part_fits("а" * 10, FilterConfig(max_utf16_units=10, max_utf8_bytes=20))
+
+
+def test_measure_part_does_not_encode_lone_surrogates() -> None:
+    assert measure_part("\ud800").utf16_units == 1
+
+
+def test_size_limits_are_configurable_and_validated() -> None:
+    config = FilterConfig(max_utf16_units=10, max_utf8_bytes=10_000)
+    assert not check_parts(["a" * 11], config=config).allowed
+    with pytest.raises(ValueError):
+        FilterConfig(max_utf16_units=0)
+    with pytest.raises(ValueError):
+        FilterConfig(max_utf8_bytes=-1)
 
 
 @pytest.mark.parametrize("text", ["", "   ", "\n\t"])
@@ -315,41 +345,57 @@ def test_allowlist_never_allows_social_links() -> None:
     assert R.CONTACT_SOCIAL in check_parts(["t.me/syn_parts_shop"], config=config).parts[0].codes
 
 
-# --- Templates and confirmation flags ----------------------------------------------------------
+# --- Template spans and confirmation flags (T-034 / D-f) ---------------------------------------
+# The T-019 tests passed template TEXTS (``template_texts``); D-f replaced them with renderer-
+# provided SPANS, so repeating template wording no longer earns an exemption. Same intent below.
 
 
-def test_rule_template_may_carry_promises_and_numbers() -> None:
+def span_of(text: str, fragment: str) -> tuple[int, int]:
+    start = text.index(fragment)
+    return (start, start + len(fragment))
+
+
+def test_rule_template_span_may_carry_promises() -> None:
     text = f"Фара есть. {RULE_WARRANTY}"
     assert codes_of(text) == {R.PROMISE_WARRANTY}
-    assert codes_of(text, template_texts=(RULE_WARRANTY,)) == set()
+    assert codes_of(text, template_spans=((span_of(text, RULE_WARRANTY),),)) == set()
 
 
-def test_same_promise_outside_the_template_is_still_denied() -> None:
+def test_same_promise_outside_the_template_span_is_still_denied() -> None:
     text = f"{RULE_WARRANTY} Гарантия год!"
-    assert codes_of(text, template_texts=(RULE_WARRANTY,)) == {R.PROMISE_WARRANTY}
+    spans = ((span_of(text, RULE_WARRANTY),),)
+    assert codes_of(text, template_spans=spans) == {R.PROMISE_WARRANTY}
 
 
-def test_template_does_not_exempt_contacts_or_payment() -> None:
+def test_repeated_template_wording_gets_no_exemption() -> None:
+    # The LLM copies the rule text into its own sentence: no span, no exemption (O-5).
+    assert codes_of(f"Кстати: {RULE_WARRANTY}") == {R.PROMISE_WARRANTY}
+
+
+def test_template_span_does_not_exempt_contacts_or_payment() -> None:
     rule = "Предоплата на карту, звоните 8 900 000-00-01"
-    assert codes_of(rule, template_texts=(rule,)) >= {
+    assert codes_of(rule, template_spans=(((0, len(rule)),),)) >= {
         R.PAYMENT_OFF_PLATFORM,
         R.CONTACT_PHONE,
         R.CONTACT_REDIRECT,
     }
 
 
-def test_completion_claim_needs_flag_and_template() -> None:
+def test_completion_claim_needs_flag_and_template_span() -> None:
+    whole = (((0, len(RULE_CONFIRMED)),),)
     assert codes_of(RULE_CONFIRMED) == {R.COMPLETION_CLAIM}
     assert codes_of(RULE_CONFIRMED, completion_confirmed=True) == {R.COMPLETION_CLAIM}
-    assert codes_of(RULE_CONFIRMED, template_texts=(RULE_CONFIRMED,)) == {R.COMPLETION_CLAIM}
-    ok = codes_of(RULE_CONFIRMED, completion_confirmed=True, template_texts=(RULE_CONFIRMED,))
+    assert codes_of(RULE_CONFIRMED, template_spans=whole) == {R.COMPLETION_CLAIM}
+    ok = codes_of(RULE_CONFIRMED, completion_confirmed=True, template_spans=whole)
     assert ok == set()
 
 
 def test_payment_claim_needs_its_own_flag() -> None:
-    kwargs: dict[str, object] = {"template_texts": (RULE_PAYMENT,)}
-    assert codes_of(RULE_PAYMENT, completion_confirmed=True, **kwargs) == {R.PAYMENT_RECEIVED_CLAIM}
-    assert codes_of(RULE_PAYMENT, payment_confirmed=True, **kwargs) == set()
+    whole = (((0, len(RULE_PAYMENT)),),)
+    assert codes_of(RULE_PAYMENT, completion_confirmed=True, template_spans=whole) == {
+        R.PAYMENT_RECEIVED_CLAIM
+    }
+    assert codes_of(RULE_PAYMENT, payment_confirmed=True, template_spans=whole) == set()
 
 
 def test_fitment_certainty_needs_verified_flag() -> None:
@@ -358,31 +404,41 @@ def test_fitment_certainty_needs_verified_flag() -> None:
     assert codes_of(text, fitment_verified=True) == set()
 
 
-# --- Owner edit (warn mode) and automation mode ------------------------------------------------
+# --- Owner edit (fail-closed, T-034 / D-g) and automation mode ---------------------------------
+# T-019 let owner edits through with warnings (allowed=True). D-g made the filter fail-closed:
+# a finding always means allowed=False; an owner edit is only ``overridable``.
 
 
-def test_owner_edit_warns_but_does_not_block() -> None:
+def test_owner_edit_is_denied_but_overridable() -> None:
     text = "Звоните 8 900 000-00-01, сделаю скидку"
     normal = check_parts([text])
     edit = check_parts([text], context=FilterContext(is_owner_edit=True))
     assert not normal.allowed
-    assert edit.allowed
+    assert not normal.overridable
+    assert not normal.parts[0].overridable
+    assert not edit.allowed
     assert edit.warn_only
-    assert edit.needs_owner_confirmation
+    assert edit.overridable
+    assert edit.parts[0].overridable
     assert edit.parts[0].findings == normal.parts[0].findings
 
 
-def test_owner_edit_without_findings_needs_no_confirmation() -> None:
+def test_owner_edit_without_findings_is_allowed_and_not_overridable() -> None:
     ctx = FilterContext(is_owner_edit=True)
     edit = check_parts(["W213 есть"], allowed_literals=LITERALS, context=ctx)
     assert edit.allowed
-    assert not edit.needs_owner_confirmation
+    assert not edit.overridable
+    assert not edit.parts[0].overridable
 
 
-def test_owner_edit_still_hard_blocks_length_and_empty() -> None:
-    assert frozenset({R.EMPTY_PART, R.PART_TOO_LONG}) == HARD_BLOCK_CODES
-    edit = check_parts(["а" * 1001, ""], context=FilterContext(is_owner_edit=True))
-    assert [p.allowed for p in edit.parts] == [False, False]
+def test_owner_edit_cannot_override_hard_blocks() -> None:
+    assert frozenset({R.EMPTY_PART, R.PART_TOO_LONG, R.INVALID_TEXT}) == HARD_BLOCK_CODES
+    edit = check_parts(
+        ["a" * 1001, "", "текст \x00", "скидка"], context=FilterContext(is_owner_edit=True)
+    )
+    assert [p.allowed for p in edit.parts] == [False, False, False, False]
+    assert [p.overridable for p in edit.parts] == [False, False, False, True]
+    assert not edit.overridable
 
 
 @pytest.mark.parametrize("mode", list(AutomationMode))
@@ -395,6 +451,7 @@ def test_context_defaults_are_strict() -> None:
     fields = {f.name: f.default for f in dataclasses.fields(FilterContext)}
     assert fields["automation_mode"] is AutomationMode.DRAFT_ONLY
     assert fields["is_owner_edit"] is False
+    assert fields["template_spans"] == ()
     assert fields["completion_confirmed"] is False
     assert fields["payment_confirmed"] is False
     assert fields["fitment_verified"] is False
@@ -403,14 +460,13 @@ def test_context_defaults_are_strict() -> None:
 
 # --- Known limitations (documented in the module docstring) -----------------------------------
 # strict xfail: if one of these starts passing, the test fails and the docstring must be updated.
+# T-034 fixed "пятихатка", the look-alike/zero-width "WhatsApp" and "ещё не забронировано"; they
+# moved to tests/test_filter_t032.py as regular deny/allow cases.
 
 MISSED = [
-    pytest.param("Отдам за пятихатку", id="slang-pyatikhatka"),
     pytest.param("Цена пятсот", id="typo-pyatsot"),
     pytest.param("Fiyatı on bin", id="turkish-on-bin"),
     pytest.param("Остался всего один", id="odin-quantity"),
-    pytest.param("Пишите в WhatsАpp", id="homoglyph-channel"),
-    pytest.param("Пишите в What​sApp", id="zero-width-channel"),
 ]
 
 
@@ -421,8 +477,8 @@ def test_known_limitations_missed(text: str) -> None:
 
 
 OVERBLOCKED = [
-    pytest.param("OEM A 213 885 14 00", id="oem-other-format"),
-    pytest.param("Пока ещё не забронировано", id="negated-booking"),
+    # Literals match as written; the fact-sheet builder adds spellings with literal_variants().
+    pytest.param("OEM A 213 885 14 00", id="oem-other-format-without-variants"),
     pytest.param("Мы не используем WhatsApp", id="negated-channel"),
 ]
 
