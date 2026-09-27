@@ -13,7 +13,6 @@ SETTINGS_ENV = [
     "AVITO_CLIENT_ID",
     "AVITO_CLIENT_SECRET",
     "AVITO_USER_ID",
-    "ASSISTANT_SECRETS_FILE",
     "DATABASE_URL",
     "DATA_DIR",
     "AUTOMATION_MODE",
@@ -30,7 +29,10 @@ def anyio_backend() -> str:
 
 @pytest.fixture(autouse=True)
 def _isolated_settings(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    """No developer or owner settings leak in: clean environment, empty working directory."""
+    """No developer or owner settings leak in: clean environment, empty working directory.
+
+    ``ASSISTANT_SECRETS_FILE`` stays ``none`` from the root ``tests/conftest.py``; tests of the
+    platform default delete it themselves."""
     for name in SETTINGS_ENV:
         monkeypatch.delenv(name, raising=False)
     work = tmp_path / "cwd"

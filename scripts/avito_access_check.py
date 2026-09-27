@@ -57,7 +57,7 @@ EXIT_OK = 0
 EXIT_ACCESS_PROBLEM = 1
 EXIT_CONFIG_PROBLEM = 2
 
-MESSENGER_403_HINT = "403 → muhtemelen tarife (Максимальный gerekir) — doğrulanmadı"
+MESSENGER_403_HINT = "403 → muhtemelen tarife kısıtı (hangi tarifenin gerektiği canlı doğrulanmadı)"
 DRY_RUN_SCENARIOS = ("ok", "messenger-403", "token-401")
 
 

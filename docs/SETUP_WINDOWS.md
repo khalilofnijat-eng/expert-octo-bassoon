@@ -111,12 +111,16 @@ Bu kontrol Avito'da **hiçbir şeyi değiştirmez**: en fazla 4 okuma isteği ya
 | `AVITO_USER_ID: … AYNI DEĞİL` | Girdiğiniz hesap kimliği, anahtarın ait olduğu hesapla eşleşmiyor. | 4. adımda hesap kimliğini `-` ile silin veya düzeltin. |
 | `Items API erişilebilir: evet (HTTP 200)` | İlan listesi okunabiliyor. | — |
 | `Messenger API erişilebilir: evet (HTTP 200)` | Sohbetler okunabiliyor. | — |
-| `Messenger API erişilebilir: hayır (HTTP 403 …)` + `403 → muhtemelen tarife (Максимальный gerekir) — doğrulanmadı` | Sohbet erişimi reddedildi. Spec kopyasına göre "Товары" kategorisinde Messenger API yalnızca «Максимальный» abonelikte açık; sizin tarifeniz Базовый. Bu yorum **doğrulanmadı**; ana hesap yerine çalışan hesabının anahtarı kullanılması da Messenger hatalarına yol açar ([INTEGRATIONS.md](INTEGRATIONS.md) §3.2). | Çıktıyı Main Agent'a iletin; karar birlikte verilir (B-007). |
+| `Messenger API erişilebilir: hayır (HTTP 403 …)` + `403 → muhtemelen tarife kısıtı (hangi tarifenin gerektiği canlı doğrulanmadı)` | Sohbet erişimi reddedildi; en olası neden tarife. Hangi tarifenin yettiği **canlı doğrulanmadı**: spec kopyası "Товары" için «Максимальный» diyor, sizin bilginize göre «Расширенный» yeterli. Ana hesap yerine çalışan hesabının anahtarı kullanılması da Messenger hatalarına yol açar ([INTEGRATIONS.md](INTEGRATIONS.md) §3.2). | Çıktıyı Main Agent'a iletin (B-007). Tarifeyi değiştirdikten sonra kontrolü **yeniden çalıştırın**; karar bu sonuca göre verilir. |
 | `hız sınırı (HTTP 429)` | Kısa sürede çok istek yapıldı. | Birkaç dakika bekleyip bir kez daha çalıştırın. |
 | `Avito sunucu hatası (HTTP 5xx)` | Avito tarafında geçici sorun. | Daha sonra tekrar deneyin. |
 | `Ayar hatası: …` | Kimlik bilgileri eksik veya gizli dosya kabul edilmeyen bir yerde. | Mesajdaki talimatı izleyin (genellikle 4. adım). |
 
 Komutun çıkış kodu: `0` her şey erişilebilir, `1` en az bir kontrol başarısız, `2` ayar hatası.
+
+**Tarife değişikliğinden sonra:** Avito tarifenizi değiştirdiyseniz (ör. «Расширенный» tarifesine geçiş) bu kontrolü yeniden çalıştırın ve çıktıyı Main Agent'a iletin. Messenger API'nin o tarifede açık olup olmadığına belgeler değil, bu kontrolün sonucu karar verir.
+
+**Sonraki adım:** erişim kontrolünden sonra `docs/VAULT_SURVEY.md` belgesindeki adımlara geçin (T-043; belge hazırlanıyor, henüz yoksa Main Agent size haber verir).
 
 ## 6. Main Agent'ın bu bilgisayarda çalışması için yerel Claude oturumu
 

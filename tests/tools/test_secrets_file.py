@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import os
 import sys
 from pathlib import Path
 
@@ -68,6 +69,7 @@ def test_secret_values_and_user_id_not_in_repr(
 def test_precedence_environment_then_secrets_file_then_dotenv(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
+    monkeypatch.delenv("ASSISTANT_SECRETS_FILE")  # read from .env in this test
     secrets = ps_style_file(tmp_path / "local" / "secrets.env", extra="DATA_DIR=")
     Path(".env").write_text(
         f"ASSISTANT_SECRETS_FILE={secrets}\n"
@@ -144,6 +146,7 @@ def test_windows_default_location(tmp_path: Path) -> None:
 def test_windows_default_is_loaded_by_settings(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
+    monkeypatch.delenv("ASSISTANT_SECRETS_FILE")
     ps_style_file(tmp_path / "AvitoAssistant" / "secrets.env")
     monkeypatch.setenv("LOCALAPPDATA", str(tmp_path))
     monkeypatch.setattr(sys, "platform", "win32")
@@ -153,6 +156,7 @@ def test_windows_default_is_loaded_by_settings(
 
 
 def test_no_default_file_means_no_secrets(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    monkeypatch.delenv("ASSISTANT_SECRETS_FILE")
     monkeypatch.setenv("LOCALAPPDATA", str(tmp_path))
     monkeypatch.setattr(sys, "platform", "win32")
     assert Settings().avito_client_id is None
@@ -163,3 +167,15 @@ def test_rejects_invalid_user_id(monkeypatch: pytest.MonkeyPatch, value: str) ->
     monkeypatch.setenv("AVITO_USER_ID", value)
     with pytest.raises(ValidationError):
         Settings()
+
+
+def test_root_fixture_disables_secrets_file_by_default(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """tests/conftest.py sets ASSISTANT_SECRETS_FILE=none: even an existing Windows default
+    file is ignored unless a test unsets the variable."""
+    ps_style_file(tmp_path / "AvitoAssistant" / "secrets.env")
+    monkeypatch.setenv("LOCALAPPDATA", str(tmp_path))
+    monkeypatch.setattr(sys, "platform", "win32")
+    assert os.environ["ASSISTANT_SECRETS_FILE"] == "none"
+    assert Settings().avito_client_id is None
