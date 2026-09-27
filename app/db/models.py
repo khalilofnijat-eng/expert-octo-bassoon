@@ -289,3 +289,268 @@ class AuditEvent(Base):
     result: Mapped[str] = mapped_column(Text, nullable=False)
     kb_release: Mapped[int | None] = mapped_column(Integer)
     prompt_version: Mapped[str | None] = mapped_column(Text)
+
+
+# --- Catalog and stock (T-022, ARCHITECTURE §5 "Katalog ve stok") ---------------------------
+# Field meanings that depend on the owner's warehouse system are pending B-002. Every row
+# carries data_origin/source/fetched_at and a verification time. Synthetic rows are labelled:
+# data_origin='synthetic' iff the SKU starts with 'SYN-' (product) or the photo key is a
+# 'synthetic://' placeholder (photo). Migration: migrations/versions/0002_catalog_inventory.py.
+
+DATA_ORIGINS = ("real", "synthetic")
+PRODUCT_CONDITIONS = ("new", "used")
+SET_KINDS = ("single", "virtual_set", "stocked_set")
+FITMENT_STATUSES = ("verified", "needs_verification", "incompatible")
+# Kinds that can make a fitment row 'verified' (app.catalog.types.QUALIFYING_EVIDENCE_KINDS).
+QUALIFYING_EVIDENCE_TYPES = ("oem_catalog", "manufacturer_doc", "owner_confirmed")
+EVIDENCE_TYPES = (
+    *QUALIFYING_EVIDENCE_TYPES,
+    "synthetic_fixture",
+    "visual_similarity",
+    "customer_statement",
+    "llm_output",
+    "listing_title",
+    "body_code_only",
+)
+
+
+def _origin_check(table: str) -> CheckConstraint:
+    return CheckConstraint(_in("data_origin", DATA_ORIGINS), name=f"ck_{table}_data_origin")
+
+
+def _fetched_at() -> Mapped[datetime]:
+    return mapped_column(DateTime(timezone=True), nullable=False)
+
+
+class Product(Base):
+    __tablename__ = "product"
+    __table_args__ = (
+        UniqueConstraint("source", "sku", name="uq_product_source_sku"),
+        CheckConstraint(_in("condition", PRODUCT_CONDITIONS), name="ck_product_condition"),
+        CheckConstraint(_in("set_kind", SET_KINDS), name="ck_product_set_kind"),
+        _origin_check("product"),
+        CheckConstraint(
+            "(data_origin = 'synthetic') = (sku LIKE 'SYN-%')", name="ck_product_synthetic_sku"
+        ),
+    )
+
+    id: Mapped[int] = mapped_column(BigInteger, Identity(), primary_key=True)
+    sku: Mapped[str] = mapped_column(Text, nullable=False)
+    title: Mapped[str] = mapped_column(Text, nullable=False)
+    brand: Mapped[str | None] = mapped_column(Text)
+    part_type: Mapped[str] = mapped_column(Text, nullable=False)
+    condition: Mapped[str] = mapped_column(Text, nullable=False)
+    color: Mapped[str | None] = mapped_column(Text)
+    condition_notes: Mapped[str | None] = mapped_column(Text)
+    set_kind: Mapped[str] = mapped_column(Text, nullable=False, server_default="single")
+    data_origin: Mapped[str] = mapped_column(Text, nullable=False)
+    source: Mapped[str] = mapped_column(Text, nullable=False)
+    source_ref: Mapped[str | None] = mapped_column(Text)
+    fetched_at: Mapped[datetime] = _fetched_at()
+    last_verified_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    version: Mapped[int] = mapped_column(Integer, nullable=False, server_default="0")
+    created_at: Mapped[datetime] = _created_at()
+
+
+class ProductOemNumber(Base):
+    """OEM/part numbers as written by the source plus a normalised form for search."""
+
+    __tablename__ = "product_oem_number"
+    __table_args__ = (
+        UniqueConstraint("product_id", "oem_number_norm", name="uq_product_oem_number"),
+        Index("ix_product_oem_number_norm", "oem_number_norm"),
+    )
+
+    id: Mapped[int] = mapped_column(BigInteger, Identity(), primary_key=True)
+    product_id: Mapped[int] = mapped_column(
+        ForeignKey("product.id", ondelete="CASCADE"), nullable=False
+    )
+    oem_number: Mapped[str] = mapped_column(Text, nullable=False)
+    oem_number_norm: Mapped[str] = mapped_column(Text, nullable=False)
+    created_at: Mapped[datetime] = _created_at()
+
+
+class VehicleSpec(Base):
+    """Vehicle applicability range. facelift: false = pre-facelift, true = facelift, NULL = the
+    range does not distinguish."""
+
+    __tablename__ = "vehicle_spec"
+    __table_args__ = (
+        CheckConstraint(
+            "year_from IS NULL OR year_to IS NULL OR year_from <= year_to",
+            name="ck_vehicle_spec_years",
+        ),
+        _origin_check("vehicle_spec"),
+        Index("ix_vehicle_spec_chassis_code", "chassis_code"),
+    )
+
+    id: Mapped[int] = mapped_column(BigInteger, Identity(), primary_key=True)
+    make: Mapped[str] = mapped_column(Text, nullable=False)
+    model: Mapped[str] = mapped_column(Text, nullable=False)
+    chassis_code: Mapped[str] = mapped_column(Text, nullable=False)
+    year_from: Mapped[int | None] = mapped_column(SmallInteger)
+    year_to: Mapped[int | None] = mapped_column(SmallInteger)
+    facelift: Mapped[bool | None] = mapped_column(Boolean)
+    data_origin: Mapped[str] = mapped_column(Text, nullable=False)
+    source: Mapped[str] = mapped_column(Text, nullable=False)
+    source_ref: Mapped[str | None] = mapped_column(Text)
+    created_at: Mapped[datetime] = _created_at()
+
+
+_VERIFIED_EVIDENCE_SQL = (
+    "status <> 'verified' OR ("
+    "evidence_ref IS NOT NULL AND btrim(evidence_ref) <> '' AND verified_at IS NOT NULL AND ("
+    f"{_in('evidence_type', QUALIFYING_EVIDENCE_TYPES)} "
+    "OR (evidence_type = 'synthetic_fixture' AND data_origin = 'synthetic')))"
+)
+
+
+class Fitment(Base):
+    """Stored fitment statement; the engine (app.catalog.fitment) turns rows into verdicts.
+    conditions: equipment/variant requirements, e.g. {"trim_line": "amg_line",
+    "parktronic_sensors": 6}. 'verified' needs a qualifying evidence type, a reference and a
+    verification time; 'synthetic_fixture' evidence is allowed only on synthetic rows."""
+
+    __tablename__ = "fitment"
+    __table_args__ = (
+        CheckConstraint(_in("status", FITMENT_STATUSES), name="ck_fitment_status"),
+        CheckConstraint(
+            f"evidence_type IS NULL OR {_in('evidence_type', EVIDENCE_TYPES)}",
+            name="ck_fitment_evidence_type",
+        ),
+        CheckConstraint(_VERIFIED_EVIDENCE_SQL, name="ck_fitment_verified_evidence"),
+        CheckConstraint(
+            "evidence_type IS DISTINCT FROM 'synthetic_fixture' OR data_origin = 'synthetic'",
+            name="ck_fitment_synthetic_evidence",
+        ),
+        CheckConstraint("jsonb_typeof(conditions) = 'object'", name="ck_fitment_conditions"),
+        _origin_check("fitment"),
+        UniqueConstraint("source", "source_ref", name="uq_fitment_source_ref"),
+        Index("ix_fitment_product_id", "product_id"),
+    )
+
+    id: Mapped[int] = mapped_column(BigInteger, Identity(), primary_key=True)
+    product_id: Mapped[int] = mapped_column(ForeignKey("product.id"), nullable=False)
+    vehicle_spec_id: Mapped[int] = mapped_column(ForeignKey("vehicle_spec.id"), nullable=False)
+    conditions: Mapped[dict[str, Any]] = mapped_column(
+        JSONB, nullable=False, server_default=text("'{}'::jsonb")
+    )
+    status: Mapped[str] = mapped_column(Text, nullable=False)
+    evidence_type: Mapped[str | None] = mapped_column(Text)
+    evidence_ref: Mapped[str | None] = mapped_column(Text)
+    verified_by: Mapped[str | None] = mapped_column(Text)
+    verified_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    data_origin: Mapped[str] = mapped_column(Text, nullable=False)
+    source: Mapped[str] = mapped_column(Text, nullable=False)
+    source_ref: Mapped[str | None] = mapped_column(Text)
+    fetched_at: Mapped[datetime] = _fetched_at()
+    version: Mapped[int] = mapped_column(Integer, nullable=False, server_default="0")
+    created_at: Mapped[datetime] = _created_at()
+
+
+class SetComponent(Base):
+    """Set → component lines. present=false: the stocked kit lacks this component (only
+    meaningful for set_kind='stocked_set'; a virtual set derives missing items from stock)."""
+
+    __tablename__ = "set_component"
+    __table_args__ = (
+        CheckConstraint("qty > 0", name="ck_set_component_qty"),
+        CheckConstraint("set_product_id <> component_product_id", name="ck_set_component_not_self"),
+        _origin_check("set_component"),
+    )
+
+    set_product_id: Mapped[int] = mapped_column(ForeignKey("product.id"), primary_key=True)
+    component_product_id: Mapped[int] = mapped_column(ForeignKey("product.id"), primary_key=True)
+    qty: Mapped[int] = mapped_column(Integer, nullable=False, server_default="1")
+    present: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default="true")
+    optional: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default="false")
+    data_origin: Mapped[str] = mapped_column(Text, nullable=False)
+    source: Mapped[str] = mapped_column(Text, nullable=False)
+    created_at: Mapped[datetime] = _created_at()
+
+
+class InventoryItem(Base):
+    """Stock line per location, as last read from the warehouse system. available_qty is the
+    sellable quantity reported by the source (B-002); held_qty is our local hold (T-027,
+    §6.7: hold only if available_qty - held_qty >= qty)."""
+
+    __tablename__ = "inventory_item"
+    __table_args__ = (
+        CheckConstraint("physical_qty >= 0", name="ck_inventory_item_physical_qty"),
+        CheckConstraint(
+            "external_reserved_qty >= 0", name="ck_inventory_item_external_reserved_qty"
+        ),
+        CheckConstraint("available_qty >= 0", name="ck_inventory_item_available_qty"),
+        CheckConstraint("held_qty >= 0", name="ck_inventory_item_held_qty"),
+        _origin_check("inventory_item"),
+        UniqueConstraint("source", "source_ref", name="uq_inventory_item_source_ref"),
+        Index("ix_inventory_item_product_id", "product_id"),
+    )
+
+    id: Mapped[int] = mapped_column(BigInteger, Identity(), primary_key=True)
+    product_id: Mapped[int] = mapped_column(ForeignKey("product.id"), nullable=False)
+    location: Mapped[str | None] = mapped_column(Text)
+    physical_qty: Mapped[int] = mapped_column(Integer, nullable=False)
+    external_reserved_qty: Mapped[int] = mapped_column(Integer, nullable=False, server_default="0")
+    available_qty: Mapped[int] = mapped_column(Integer, nullable=False)
+    held_qty: Mapped[int] = mapped_column(Integer, nullable=False, server_default="0")
+    data_origin: Mapped[str] = mapped_column(Text, nullable=False)
+    source: Mapped[str] = mapped_column(Text, nullable=False)
+    source_ref: Mapped[str | None] = mapped_column(Text)
+    fetched_at: Mapped[datetime] = _fetched_at()
+    verified_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    version: Mapped[int] = mapped_column(Integer, nullable=False, server_default="0")
+    created_at: Mapped[datetime] = _created_at()
+
+
+class Price(Base):
+    """Price in integer minor units. discount_rule_key names the business_rule holding the
+    allowed discount; the discount value itself is never stored here (§9.2)."""
+
+    __tablename__ = "price"
+    __table_args__ = (
+        CheckConstraint("amount_minor >= 0", name="ck_price_amount_minor"),
+        CheckConstraint("currency ~ '^[A-Z]{3}$'", name="ck_price_currency"),
+        _origin_check("price"),
+        Index("ix_price_product_id_fetched_at", "product_id", "fetched_at"),
+    )
+
+    id: Mapped[int] = mapped_column(BigInteger, Identity(), primary_key=True)
+    product_id: Mapped[int] = mapped_column(ForeignKey("product.id"), nullable=False)
+    inventory_item_id: Mapped[int | None] = mapped_column(ForeignKey("inventory_item.id"))
+    amount_minor: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    currency: Mapped[str] = mapped_column(Text, nullable=False)
+    discount_rule_key: Mapped[str | None] = mapped_column(Text)
+    data_origin: Mapped[str] = mapped_column(Text, nullable=False)
+    source: Mapped[str] = mapped_column(Text, nullable=False)
+    source_ref: Mapped[str | None] = mapped_column(Text)
+    fetched_at: Mapped[datetime] = _fetched_at()
+    verified_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    created_at: Mapped[datetime] = _created_at()
+
+
+class Photo(Base):
+    """Photo reference of one stock record (§8): never a product-level or listing image.
+    storage_uri is a key, not image bytes; synthetic rows use 'synthetic://' placeholders."""
+
+    __tablename__ = "photo"
+    __table_args__ = (
+        _origin_check("photo"),
+        CheckConstraint(
+            "(data_origin = 'synthetic') = (storage_uri LIKE 'synthetic://%')",
+            name="ck_photo_synthetic_uri",
+        ),
+        UniqueConstraint("inventory_item_id", "storage_uri", name="uq_photo_item_uri"),
+    )
+
+    id: Mapped[int] = mapped_column(BigInteger, Identity(), primary_key=True)
+    inventory_item_id: Mapped[int] = mapped_column(ForeignKey("inventory_item.id"), nullable=False)
+    storage_uri: Mapped[str] = mapped_column(Text, nullable=False)
+    sha256: Mapped[str | None] = mapped_column(Text)
+    sort_order: Mapped[int] = mapped_column(Integer, nullable=False, server_default="1")
+    data_origin: Mapped[str] = mapped_column(Text, nullable=False)
+    source: Mapped[str] = mapped_column(Text, nullable=False)
+    source_ref: Mapped[str | None] = mapped_column(Text)
+    fetched_at: Mapped[datetime] = _fetched_at()
+    verified_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    created_at: Mapped[datetime] = _created_at()

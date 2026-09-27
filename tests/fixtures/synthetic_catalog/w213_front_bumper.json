@@ -1,0 +1,886 @@
+{
+ "_comment": "SYNTHETIC test data for T-022. Every identifier, price, colour, location, timestamp and fitment statement here is made up. Year ranges and variant splits are illustrative only and are NOT verified Mercedes-Benz fitment facts. Photo keys point at no file.",
+ "dataset": "SYN-W213-front-bumper",
+ "data_origin": "synthetic",
+ "source": "synthetic_fixture",
+ "snapshot_at": "2026-09-27T08:00:00Z",
+ "vehicle_specs": [
+  {
+   "id": "SYN-VS-W213-PRE",
+   "make": "Mercedes-Benz",
+   "model": "E-Class",
+   "chassis_code": "W213",
+   "year_from": 2016,
+   "year_to": 2020,
+   "facelift": false
+  },
+  {
+   "id": "SYN-VS-W213-POST",
+   "make": "Mercedes-Benz",
+   "model": "E-Class",
+   "chassis_code": "W213",
+   "year_from": 2020,
+   "year_to": 2023,
+   "facelift": true
+  },
+  {
+   "id": "SYN-VS-W213-ANY",
+   "make": "Mercedes-Benz",
+   "model": "E-Class",
+   "chassis_code": "W213",
+   "year_from": null,
+   "year_to": null,
+   "facelift": null
+  }
+ ],
+ "products": [
+  {
+   "sku": "SYN-W213-FB-001",
+   "title": "SYN front bumper W213 pre-facelift AMG-line, 6 PDC holes, headlamp-washer holes",
+   "part_type": "front_bumper",
+   "condition": "used",
+   "color": "SYN-colour-silver",
+   "condition_notes": "SYN: light scratch on lower edge",
+   "set_kind": "single",
+   "brand": "SYN-Brand-A",
+   "oem_numbers": [
+    "SYN-A213-885-0001"
+   ],
+   "last_verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "sku": "SYN-W213-FB-002",
+   "title": "SYN front bumper W213 pre-facelift standard, no PDC holes, no washer holes",
+   "part_type": "front_bumper",
+   "condition": "new",
+   "color": "SYN-unpainted-primer",
+   "condition_notes": null,
+   "set_kind": "single",
+   "brand": "SYN-Brand-A",
+   "oem_numbers": [
+    "SYN-A213-885-0002"
+   ],
+   "last_verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "sku": "SYN-W213-FB-003",
+   "title": "SYN front bumper W213 facelift AMG-line, 6 PDC holes, camera cut-out",
+   "part_type": "front_bumper",
+   "condition": "used",
+   "color": "SYN-colour-black",
+   "condition_notes": "SYN: mounting tab repaired",
+   "set_kind": "single",
+   "brand": "SYN-Brand-A",
+   "oem_numbers": [
+    "SYN-A213-885-0003"
+   ],
+   "last_verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "sku": "SYN-W213-FB-004",
+   "title": "SYN front bumper W213 facelift standard, 6 PDC holes",
+   "part_type": "front_bumper",
+   "condition": "used",
+   "color": "SYN-colour-white",
+   "condition_notes": null,
+   "set_kind": "single",
+   "brand": "SYN-Brand-A",
+   "oem_numbers": [
+    "SYN-A213-885-0004"
+   ],
+   "last_verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "sku": "SYN-W213-GR-001",
+   "title": "SYN radiator grille W213 pre-facelift AMG-line, no camera",
+   "part_type": "front_grille",
+   "condition": "new",
+   "color": "SYN-black-gloss",
+   "condition_notes": null,
+   "set_kind": "single",
+   "brand": "SYN-Brand-A",
+   "oem_numbers": [
+    "SYN-A213-880-0101"
+   ],
+   "last_verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "sku": "SYN-W213-GR-002",
+   "title": "SYN radiator grille W213 pre-facelift AMG-line, with camera mount",
+   "part_type": "front_grille",
+   "condition": "used",
+   "color": "SYN-black-gloss",
+   "condition_notes": "SYN: one clip missing",
+   "set_kind": "single",
+   "brand": "SYN-Brand-A",
+   "oem_numbers": [
+    "SYN-A213-880-0102"
+   ],
+   "last_verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "sku": "SYN-W213-GR-003",
+   "title": "SYN radiator grille W213 pre-facelift standard",
+   "part_type": "front_grille",
+   "condition": "new",
+   "color": "SYN-chrome",
+   "condition_notes": null,
+   "set_kind": "single",
+   "brand": "SYN-Brand-A",
+   "oem_numbers": [
+    "SYN-A213-880-0103"
+   ],
+   "last_verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "sku": "SYN-W213-GR-004",
+   "title": "SYN radiator grille W213 facelift AMG-line",
+   "part_type": "front_grille",
+   "condition": "used",
+   "color": "SYN-black-gloss",
+   "condition_notes": null,
+   "set_kind": "single",
+   "brand": "SYN-Brand-A",
+   "oem_numbers": [
+    "SYN-A213-880-0104"
+   ],
+   "last_verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "sku": "SYN-W213-GR-005",
+   "title": "SYN radiator grille, looks like W213 AMG-line (unverified)",
+   "part_type": "front_grille",
+   "condition": "used",
+   "color": "SYN-black-matte",
+   "condition_notes": null,
+   "set_kind": "single",
+   "brand": "SYN-Brand-B",
+   "oem_numbers": [],
+   "last_verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "sku": "SYN-W213-GR-006",
+   "title": "SYN radiator grille W213 (applicability recorded by body code only)",
+   "part_type": "front_grille",
+   "condition": "new",
+   "color": "SYN-black-matte",
+   "condition_notes": null,
+   "set_kind": "single",
+   "brand": "SYN-Brand-B",
+   "oem_numbers": [
+    "SYN-AFT-GR-0006"
+   ],
+   "last_verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "sku": "SYN-W213-GR-007",
+   "title": "SYN radiator grille for W213 (no fitment record)",
+   "part_type": "front_grille",
+   "condition": "used",
+   "color": "SYN-chrome",
+   "condition_notes": null,
+   "set_kind": "single",
+   "brand": "SYN-Brand-B",
+   "oem_numbers": [],
+   "last_verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "sku": "SYN-W213-LG-001",
+   "title": "SYN lower bumper grille W213 pre-facelift AMG-line",
+   "part_type": "lower_grille",
+   "condition": "new",
+   "color": "SYN-black-textured",
+   "condition_notes": null,
+   "set_kind": "single",
+   "brand": "SYN-Brand-A",
+   "oem_numbers": [
+    "SYN-A213-885-0201"
+   ],
+   "last_verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "sku": "SYN-W213-FC-L-001",
+   "title": "SYN fog-lamp cover left W213 pre-facelift AMG-line",
+   "part_type": "fog_cover",
+   "condition": "new",
+   "color": "SYN-black-textured",
+   "condition_notes": null,
+   "set_kind": "single",
+   "brand": "SYN-Brand-A",
+   "oem_numbers": [
+    "SYN-A213-885-0301"
+   ],
+   "last_verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "sku": "SYN-W213-FC-R-001",
+   "title": "SYN fog-lamp cover right W213 pre-facelift AMG-line",
+   "part_type": "fog_cover",
+   "condition": "new",
+   "color": "SYN-black-textured",
+   "condition_notes": null,
+   "set_kind": "single",
+   "brand": "SYN-Brand-A",
+   "oem_numbers": [
+    "SYN-A213-885-0302"
+   ],
+   "last_verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "sku": "SYN-W213-LG-002",
+   "title": "SYN lower bumper grille W213 facelift AMG-line",
+   "part_type": "lower_grille",
+   "condition": "used",
+   "color": "SYN-black-textured",
+   "condition_notes": null,
+   "set_kind": "single",
+   "brand": "SYN-Brand-A",
+   "oem_numbers": [
+    "SYN-A213-885-0202"
+   ],
+   "last_verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "sku": "SYN-W213-FBSET-001",
+   "title": "SYN complete front bumper W213 pre-facelift AMG-line (virtual set)",
+   "part_type": "front_bumper_set",
+   "condition": "used",
+   "color": "SYN-colour-silver",
+   "condition_notes": null,
+   "set_kind": "virtual_set",
+   "brand": "SYN-Brand-A",
+   "oem_numbers": [],
+   "last_verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "sku": "SYN-W213-FBSET-002",
+   "title": "SYN front bumper assembly W213 facelift AMG-line, stocked kit without lower grille",
+   "part_type": "front_bumper_set",
+   "condition": "used",
+   "color": "SYN-colour-black",
+   "condition_notes": "SYN: kit as removed from a donor car; lower grille missing",
+   "set_kind": "stocked_set",
+   "brand": "SYN-Brand-A",
+   "oem_numbers": [],
+   "last_verified_at": "2026-09-20T09:00:00Z"
+  }
+ ],
+ "fitments": [
+  {
+   "id": "SYN-FIT-001",
+   "sku": "SYN-W213-FB-001",
+   "vehicle_spec": "SYN-VS-W213-PRE",
+   "status": "verified",
+   "conditions": {
+    "trim_line": "amg_line",
+    "parktronic_sensors": 6,
+    "headlamp_washer": true
+   },
+   "evidence_type": "synthetic_fixture",
+   "evidence_ref": "SYN-EVID-001",
+   "verified_by": "synthetic-fixture",
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "id": "SYN-FIT-002",
+   "sku": "SYN-W213-FB-002",
+   "vehicle_spec": "SYN-VS-W213-PRE",
+   "status": "verified",
+   "conditions": {
+    "trim_line": "standard",
+    "parktronic_sensors": 0,
+    "headlamp_washer": false
+   },
+   "evidence_type": "synthetic_fixture",
+   "evidence_ref": "SYN-EVID-002",
+   "verified_by": "synthetic-fixture",
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "id": "SYN-FIT-003",
+   "sku": "SYN-W213-FB-003",
+   "vehicle_spec": "SYN-VS-W213-POST",
+   "status": "verified",
+   "conditions": {
+    "trim_line": "amg_line",
+    "parktronic_sensors": 6,
+    "headlamp_washer": false,
+    "front_camera": true
+   },
+   "evidence_type": "synthetic_fixture",
+   "evidence_ref": "SYN-EVID-003",
+   "verified_by": "synthetic-fixture",
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "id": "SYN-FIT-004",
+   "sku": "SYN-W213-FB-004",
+   "vehicle_spec": "SYN-VS-W213-POST",
+   "status": "verified",
+   "conditions": {
+    "trim_line": "standard",
+    "parktronic_sensors": 6,
+    "headlamp_washer": false
+   },
+   "evidence_type": "synthetic_fixture",
+   "evidence_ref": "SYN-EVID-004",
+   "verified_by": "synthetic-fixture",
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "id": "SYN-FIT-011",
+   "sku": "SYN-W213-GR-001",
+   "vehicle_spec": "SYN-VS-W213-PRE",
+   "status": "verified",
+   "conditions": {
+    "trim_line": "amg_line",
+    "front_camera": false
+   },
+   "evidence_type": "synthetic_fixture",
+   "evidence_ref": "SYN-EVID-011",
+   "verified_by": "synthetic-fixture",
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "id": "SYN-FIT-012",
+   "sku": "SYN-W213-GR-002",
+   "vehicle_spec": "SYN-VS-W213-PRE",
+   "status": "verified",
+   "conditions": {
+    "trim_line": "amg_line",
+    "front_camera": true
+   },
+   "evidence_type": "synthetic_fixture",
+   "evidence_ref": "SYN-EVID-012",
+   "verified_by": "synthetic-fixture",
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "id": "SYN-FIT-013",
+   "sku": "SYN-W213-GR-003",
+   "vehicle_spec": "SYN-VS-W213-PRE",
+   "status": "verified",
+   "conditions": {
+    "trim_line": "standard"
+   },
+   "evidence_type": "synthetic_fixture",
+   "evidence_ref": "SYN-EVID-013",
+   "verified_by": "synthetic-fixture",
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "id": "SYN-FIT-014",
+   "sku": "SYN-W213-GR-004",
+   "vehicle_spec": "SYN-VS-W213-POST",
+   "status": "verified",
+   "conditions": {
+    "trim_line": "amg_line"
+   },
+   "evidence_type": "synthetic_fixture",
+   "evidence_ref": "SYN-EVID-014",
+   "verified_by": "synthetic-fixture",
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "id": "SYN-FIT-015",
+   "sku": "SYN-W213-GR-005",
+   "vehicle_spec": "SYN-VS-W213-PRE",
+   "status": "needs_verification",
+   "conditions": {
+    "trim_line": "amg_line"
+   },
+   "evidence_type": "visual_similarity",
+   "evidence_ref": "SYN-PHOTO-COMPARISON-015",
+   "verified_by": null,
+   "verified_at": null
+  },
+  {
+   "id": "SYN-FIT-016",
+   "sku": "SYN-W213-GR-006",
+   "vehicle_spec": "SYN-VS-W213-ANY",
+   "status": "verified",
+   "conditions": {},
+   "evidence_type": "synthetic_fixture",
+   "evidence_ref": "SYN-EVID-016",
+   "verified_by": "synthetic-fixture",
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "id": "SYN-FIT-021",
+   "sku": "SYN-W213-LG-001",
+   "vehicle_spec": "SYN-VS-W213-PRE",
+   "status": "verified",
+   "conditions": {
+    "trim_line": "amg_line"
+   },
+   "evidence_type": "synthetic_fixture",
+   "evidence_ref": "SYN-EVID-021",
+   "verified_by": "synthetic-fixture",
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "id": "SYN-FIT-022",
+   "sku": "SYN-W213-FC-L-001",
+   "vehicle_spec": "SYN-VS-W213-PRE",
+   "status": "verified",
+   "conditions": {
+    "trim_line": "amg_line"
+   },
+   "evidence_type": "synthetic_fixture",
+   "evidence_ref": "SYN-EVID-022",
+   "verified_by": "synthetic-fixture",
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "id": "SYN-FIT-023",
+   "sku": "SYN-W213-FC-R-001",
+   "vehicle_spec": "SYN-VS-W213-PRE",
+   "status": "verified",
+   "conditions": {
+    "trim_line": "amg_line"
+   },
+   "evidence_type": "synthetic_fixture",
+   "evidence_ref": "SYN-EVID-023",
+   "verified_by": "synthetic-fixture",
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "id": "SYN-FIT-024",
+   "sku": "SYN-W213-LG-002",
+   "vehicle_spec": "SYN-VS-W213-POST",
+   "status": "verified",
+   "conditions": {
+    "trim_line": "amg_line"
+   },
+   "evidence_type": "synthetic_fixture",
+   "evidence_ref": "SYN-EVID-024",
+   "verified_by": "synthetic-fixture",
+   "verified_at": "2026-09-20T09:00:00Z"
+  }
+ ],
+ "set_components": [
+  {
+   "set_sku": "SYN-W213-FBSET-001",
+   "component_sku": "SYN-W213-FB-001",
+   "qty": 1,
+   "present": true,
+   "optional": false
+  },
+  {
+   "set_sku": "SYN-W213-FBSET-001",
+   "component_sku": "SYN-W213-GR-001",
+   "qty": 1,
+   "present": true,
+   "optional": false
+  },
+  {
+   "set_sku": "SYN-W213-FBSET-001",
+   "component_sku": "SYN-W213-LG-001",
+   "qty": 1,
+   "present": true,
+   "optional": false
+  },
+  {
+   "set_sku": "SYN-W213-FBSET-001",
+   "component_sku": "SYN-W213-FC-L-001",
+   "qty": 1,
+   "present": true,
+   "optional": false
+  },
+  {
+   "set_sku": "SYN-W213-FBSET-001",
+   "component_sku": "SYN-W213-FC-R-001",
+   "qty": 1,
+   "present": true,
+   "optional": false
+  },
+  {
+   "set_sku": "SYN-W213-FBSET-002",
+   "component_sku": "SYN-W213-FB-003",
+   "qty": 1,
+   "present": true,
+   "optional": false
+  },
+  {
+   "set_sku": "SYN-W213-FBSET-002",
+   "component_sku": "SYN-W213-GR-004",
+   "qty": 1,
+   "present": true,
+   "optional": false
+  },
+  {
+   "set_sku": "SYN-W213-FBSET-002",
+   "component_sku": "SYN-W213-LG-002",
+   "qty": 1,
+   "present": false,
+   "optional": false
+  }
+ ],
+ "stock": [
+  {
+   "ref": "SYN-STK-001",
+   "sku": "SYN-W213-FB-001",
+   "location": "SYN-WH1-R01-S01",
+   "physical_qty": 1,
+   "external_reserved_qty": 0,
+   "available_qty": 1,
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "ref": "SYN-STK-002",
+   "sku": "SYN-W213-FB-002",
+   "location": "SYN-WH1-R01-S02",
+   "physical_qty": 2,
+   "external_reserved_qty": 1,
+   "available_qty": 1,
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "ref": "SYN-STK-003",
+   "sku": "SYN-W213-FB-003",
+   "location": "SYN-WH1-R01-S03",
+   "physical_qty": 1,
+   "external_reserved_qty": 1,
+   "available_qty": 0,
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "ref": "SYN-STK-004",
+   "sku": "SYN-W213-FB-004",
+   "location": "SYN-WH1-R01-S04",
+   "physical_qty": 0,
+   "external_reserved_qty": 0,
+   "available_qty": 0,
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "ref": "SYN-STK-011",
+   "sku": "SYN-W213-GR-001",
+   "location": "SYN-WH1-R02-S01",
+   "physical_qty": 2,
+   "external_reserved_qty": 0,
+   "available_qty": 2,
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "ref": "SYN-STK-012",
+   "sku": "SYN-W213-GR-001",
+   "location": "SYN-WH2-R05-S03",
+   "physical_qty": 1,
+   "external_reserved_qty": 0,
+   "available_qty": 1,
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "ref": "SYN-STK-013",
+   "sku": "SYN-W213-GR-002",
+   "location": "SYN-WH1-R02-S02",
+   "physical_qty": 1,
+   "external_reserved_qty": 0,
+   "available_qty": 1,
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "ref": "SYN-STK-014",
+   "sku": "SYN-W213-GR-003",
+   "location": "SYN-WH1-R02-S03",
+   "physical_qty": 2,
+   "external_reserved_qty": 0,
+   "available_qty": 2,
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "ref": "SYN-STK-015",
+   "sku": "SYN-W213-GR-004",
+   "location": "SYN-WH1-R02-S04",
+   "physical_qty": 1,
+   "external_reserved_qty": 0,
+   "available_qty": 1,
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "ref": "SYN-STK-016",
+   "sku": "SYN-W213-GR-005",
+   "location": "SYN-WH1-R02-S05",
+   "physical_qty": 1,
+   "external_reserved_qty": 0,
+   "available_qty": 1,
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "ref": "SYN-STK-017",
+   "sku": "SYN-W213-GR-006",
+   "location": "SYN-WH1-R02-S06",
+   "physical_qty": 1,
+   "external_reserved_qty": 0,
+   "available_qty": 1,
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "ref": "SYN-STK-018",
+   "sku": "SYN-W213-GR-007",
+   "location": "SYN-WH1-R02-S07",
+   "physical_qty": 1,
+   "external_reserved_qty": 0,
+   "available_qty": 1,
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "ref": "SYN-STK-021",
+   "sku": "SYN-W213-LG-001",
+   "location": "SYN-WH1-R03-S01",
+   "physical_qty": 1,
+   "external_reserved_qty": 0,
+   "available_qty": 1,
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "ref": "SYN-STK-022",
+   "sku": "SYN-W213-FC-L-001",
+   "location": "SYN-WH1-R03-S02",
+   "physical_qty": 0,
+   "external_reserved_qty": 0,
+   "available_qty": 0,
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "ref": "SYN-STK-023",
+   "sku": "SYN-W213-FC-R-001",
+   "location": "SYN-WH1-R03-S03",
+   "physical_qty": 1,
+   "external_reserved_qty": 0,
+   "available_qty": 1,
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "ref": "SYN-STK-024",
+   "sku": "SYN-W213-LG-002",
+   "location": "SYN-WH1-R03-S04",
+   "physical_qty": 0,
+   "external_reserved_qty": 0,
+   "available_qty": 0,
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "ref": "SYN-STK-031",
+   "sku": "SYN-W213-FBSET-002",
+   "location": "SYN-WH1-R09-S01",
+   "physical_qty": 1,
+   "external_reserved_qty": 0,
+   "available_qty": 1,
+   "verified_at": "2026-09-20T09:00:00Z"
+  }
+ ],
+ "prices": [
+  {
+   "sku": "SYN-W213-FB-001",
+   "amount_minor": 1850000,
+   "currency": "RUB",
+   "discount_rule_key": "SYN-discount-rule-default",
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "sku": "SYN-W213-FB-002",
+   "amount_minor": 2400000,
+   "currency": "RUB",
+   "discount_rule_key": "SYN-discount-rule-default",
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "sku": "SYN-W213-FB-003",
+   "amount_minor": 2100000,
+   "currency": "RUB",
+   "discount_rule_key": "SYN-discount-rule-default",
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "sku": "SYN-W213-FB-004",
+   "amount_minor": 1500000,
+   "currency": "RUB",
+   "discount_rule_key": "SYN-discount-rule-default",
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "sku": "SYN-W213-GR-001",
+   "amount_minor": 650000,
+   "currency": "RUB",
+   "discount_rule_key": "SYN-discount-rule-default",
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "sku": "SYN-W213-GR-002",
+   "amount_minor": 700000,
+   "currency": "RUB",
+   "discount_rule_key": "SYN-discount-rule-default",
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "sku": "SYN-W213-GR-003",
+   "amount_minor": 420000,
+   "currency": "RUB",
+   "discount_rule_key": "SYN-discount-rule-default",
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "sku": "SYN-W213-GR-004",
+   "amount_minor": 690000,
+   "currency": "RUB",
+   "discount_rule_key": "SYN-discount-rule-default",
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "sku": "SYN-W213-GR-005",
+   "amount_minor": 300000,
+   "currency": "RUB",
+   "discount_rule_key": "SYN-discount-rule-default",
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "sku": "SYN-W213-GR-006",
+   "amount_minor": 250000,
+   "currency": "RUB",
+   "discount_rule_key": "SYN-discount-rule-default",
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "sku": "SYN-W213-GR-007",
+   "amount_minor": 200000,
+   "currency": "RUB",
+   "discount_rule_key": "SYN-discount-rule-default",
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "sku": "SYN-W213-LG-001",
+   "amount_minor": 180000,
+   "currency": "RUB",
+   "discount_rule_key": "SYN-discount-rule-default",
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "sku": "SYN-W213-FC-L-001",
+   "amount_minor": 90000,
+   "currency": "RUB",
+   "discount_rule_key": "SYN-discount-rule-default",
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "sku": "SYN-W213-FC-R-001",
+   "amount_minor": 90000,
+   "currency": "RUB",
+   "discount_rule_key": "SYN-discount-rule-default",
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "sku": "SYN-W213-LG-002",
+   "amount_minor": 190000,
+   "currency": "RUB",
+   "discount_rule_key": "SYN-discount-rule-default",
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "sku": "SYN-W213-FBSET-002",
+   "amount_minor": 3300000,
+   "currency": "RUB",
+   "discount_rule_key": "SYN-discount-rule-default",
+   "verified_at": "2026-09-20T09:00:00Z"
+  }
+ ],
+ "photos": [
+  {
+   "stock_ref": "SYN-STK-001",
+   "key": "synthetic://placeholder/SYN-STK-001/1",
+   "sort_order": 1,
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "stock_ref": "SYN-STK-001",
+   "key": "synthetic://placeholder/SYN-STK-001/2",
+   "sort_order": 2,
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "stock_ref": "SYN-STK-001",
+   "key": "synthetic://placeholder/SYN-STK-001/3",
+   "sort_order": 3,
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "stock_ref": "SYN-STK-002",
+   "key": "synthetic://placeholder/SYN-STK-002/1",
+   "sort_order": 1,
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "stock_ref": "SYN-STK-003",
+   "key": "synthetic://placeholder/SYN-STK-003/1",
+   "sort_order": 1,
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "stock_ref": "SYN-STK-003",
+   "key": "synthetic://placeholder/SYN-STK-003/2",
+   "sort_order": 2,
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "stock_ref": "SYN-STK-011",
+   "key": "synthetic://placeholder/SYN-STK-011/1",
+   "sort_order": 1,
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "stock_ref": "SYN-STK-011",
+   "key": "synthetic://placeholder/SYN-STK-011/2",
+   "sort_order": 2,
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "stock_ref": "SYN-STK-013",
+   "key": "synthetic://placeholder/SYN-STK-013/1",
+   "sort_order": 1,
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "stock_ref": "SYN-STK-014",
+   "key": "synthetic://placeholder/SYN-STK-014/1",
+   "sort_order": 1,
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "stock_ref": "SYN-STK-015",
+   "key": "synthetic://placeholder/SYN-STK-015/1",
+   "sort_order": 1,
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "stock_ref": "SYN-STK-016",
+   "key": "synthetic://placeholder/SYN-STK-016/1",
+   "sort_order": 1,
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "stock_ref": "SYN-STK-021",
+   "key": "synthetic://placeholder/SYN-STK-021/1",
+   "sort_order": 1,
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "stock_ref": "SYN-STK-023",
+   "key": "synthetic://placeholder/SYN-STK-023/1",
+   "sort_order": 1,
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "stock_ref": "SYN-STK-031",
+   "key": "synthetic://placeholder/SYN-STK-031/1",
+   "sort_order": 1,
+   "verified_at": "2026-09-20T09:00:00Z"
+  },
+  {
+   "stock_ref": "SYN-STK-031",
+   "key": "synthetic://placeholder/SYN-STK-031/2",
+   "sort_order": 2,
+   "verified_at": "2026-09-20T09:00:00Z"
+  }
+ ]
+}
