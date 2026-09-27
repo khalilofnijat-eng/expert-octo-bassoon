@@ -16,11 +16,13 @@ Resmî kaynaklardan Avito entegrasyon olanaklarını ve erişim koşullarını b
 - Yok. (Sonuçları [B-007](../../BLOCKERS.md) ve T-006'yı etkiler.)
 
 ## Dosya sahipliği
-- Yazabileceği dosya: yalnızca `tasks/T-002/report.md`.
+- Yazabileceği dosya: yok (salt okunur görev).
 
 ## Beklenen çıktı
 
-`tasks/T-002/report.md` ([şablon](../_TEMPLATE/report.md) biçiminde), her bulguya resmî kaynak bağlantısıyla.
+Main Agent'a **metin olarak** teslim raporu ([şablon](../_TEMPLATE/report.md) yapısında), her bulguya resmî kaynak bağlantısıyla. Rapor dosyası beklenmez ([BLOCKERS](../../BLOCKERS.md) B-012).
+
+> Not (T-011, 2026-09-27): Bu brief ilk hâlinde `tasks/T-002/report.md` dosyasını istiyordu; alt agent'ların rapor dosyası yazamadığı anlaşıldıktan sonra B-012 kuralına uyarlandı.
 
 ## Kabul ölçütleri
 - [ ] Resmî kaynağı olmayan yetenek "destekleniyor" diye yazılmaz.

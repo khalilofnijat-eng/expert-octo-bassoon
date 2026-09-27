@@ -16,11 +16,13 @@ Geliştirme ortamının ve deponun doğrulanmış olgularını çıkarmak.
 - Yok.
 
 ## Dosya sahipliği
-- Yazabileceği dosya: yalnızca `tasks/T-001/report.md`.
+- Yazabileceği dosya: yok (salt okunur görev).
 
 ## Beklenen çıktı
 
-`tasks/T-001/report.md` ([şablon](../_TEMPLATE/report.md) biçiminde).
+Main Agent'a **metin olarak** teslim raporu ([şablon](../_TEMPLATE/report.md) yapısında). Rapor dosyası beklenmez ([BLOCKERS](../../BLOCKERS.md) B-012).
+
+> Not (T-011, 2026-09-27): Bu brief ilk hâlinde `tasks/T-001/report.md` dosyasını istiyordu; alt agent'ların rapor dosyası yazamadığı anlaşıldıktan sonra B-012 kuralına uyarlandı.
 
 ## Kabul ölçütleri
 - [ ] Her ifade komut çıktısıyla desteklenir.

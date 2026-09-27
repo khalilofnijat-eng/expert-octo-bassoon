@@ -11,7 +11,7 @@ Kaynak notu: T-001 ve T-002 raporları Main Agent tarafından kabul edildi, anca
 | Depo / muhasebe sistemi | Ürün, stok, fiyat, rezervasyon, sipariş | BİLİNMİYOR | bilinmiyor | — | — | B-002 |
 | Ürün fotoğrafları | Gerçek stok kaydına bağlı fotoğraflar | BİLİNMİYOR | bilinmiyor | — | — | B-002 |
 | Obsidian Vault | Proje belgelerinin son yerleşimi | BİLİNMİYOR | bilinmiyor | — | — | B-003 |
-| GitHub | Kod ve geliştirme sürümleme | Git, HTTPS remote | çalışıyor; depo **public**, varsayılan dal `main`; geliştirme dalı `claude/youthful-goldberg-l427nm` origin'de mevcut | Doğrulanmış: okuma ve push | T-001 raporu (GitHub API: `visibility: public`, `default_branch: main`); T-003 push ve `git ls-remote` | B-008 |
+| GitHub | Kod ve geliştirme sürümleme | Git, HTTPS remote | çalışıyor; depo **public**; 2026-09-27 itibarıyla varsayılan dal `claude/youthful-goldberg-l427nm` ve depodaki tek dal bu (`main` dalı yok) | Doğrulanmış: okuma ve push | 2026-09-27, T-011: GitHub API `search_repositories` → `default_branch: "claude/youthful-goldberg-l427nm"`, `visibility: "public"`, `private: false`; `list_branches` → yalnızca `claude/youthful-goldberg-l427nm` (sha `9b4bdc1`). Önceki gözlem (T-001, ilk push'tan önce, depo boşken): `default_branch: main`. | B-008 |
 | Bulut geliştirme ortamı | Kod geliştirme, birim testleri | Geçici bulut konteyner | çalışıyor; **avito.ru engelli** (403) | Doğrulanmış: Python 3.11, Node 22, Docker, PostgreSQL/Redis istemcileri, headless Playwright/Chromium; PyPI, npm, GitHub ve Anthropic API'ye ağ erişimi. Doğrulanmış olumsuz: www/api/developers.avito.ru erişilemiyor | T-001 raporu (komut çıktıları) | B-009 |
 | AI hizmeti | Cevap taslağı üretimi | BİLİNMİYOR | seçilmedi | — | — | B-006, B-010 |
 

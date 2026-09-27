@@ -14,7 +14,8 @@ Durum değerleri: `planlandı` · `sürüyor` · `teslim edildi — Main Agent i
 | T-006 | Avito geçmiş konuşmalarının salt okunur aktarımı | 3 | — | B-001/B-007 + T-010 | engelli | — | — |
 | T-007 | Depo/muhasebe sistemi keşfi ve salt okunur bağlantı | 1/5 | — | B-002 | engelli | — | — |
 | T-008 | Obsidian Vault yerleşimi ve senkronizasyon kontrolü | 10 | — | B-003 | engelli | — | — |
-| T-009 | T-001/T-002 bulgularının ortak kayıtlara işlenmesi | 2 | Dokümantasyon agent'ı | T-001, T-002 | teslim edildi — Main Agent incelemesi bekliyor | [brief](tasks/T-009/brief.md) | Main Agent'a metin olarak teslim edildi (B-012) |
-| T-010 | Salt okunur Avito geçmiş derinlik ölçüm betiği (GET-only, chatRead yok) | 3 | — | B-007, B-011 | planlandı | — | — |
+| T-009 | T-001/T-002 bulgularının ortak kayıtlara işlenmesi | 2 | Dokümantasyon agent'ı | T-001, T-002 | kabul edildi | [brief](tasks/T-009/brief.md) | Main Agent'a metin olarak teslim edildi (B-012) |
+| T-010 | Salt okunur Avito geçmiş derinlik ölçüm betiği (GET-only, chatRead yok) | 3 | — | B-007, B-009, B-011 | planlandı | — | — |
+| T-011 | Görev kurallarının B-012'ye uyarlanması (rapor metin olarak teslim) | 2 | Dokümantasyon agent'ı | T-009 | teslim edildi — Main Agent incelemesi bekliyor | [brief](tasks/T-011/brief.md) | Main Agent'a metin olarak teslim edildi (B-012) |
 
-Not: Alt agent'lar rapor dosyası yazamadığı için T-001, T-002 ve T-009 raporları repoda yok; kalıcı kayıt yöntemi sahip kararını bekliyor ([BLOCKERS.md](BLOCKERS.md) B-012). Kabul edilen bulgular ilgili kayıtlara işlendi: [docs/INTEGRATIONS.md](docs/INTEGRATIONS.md), [docs/NOTES.md](docs/NOTES.md), [docs/DECISIONS.md](docs/DECISIONS.md), [BLOCKERS.md](BLOCKERS.md).
+Not: Alt agent'lar rapor dosyası yazamadığı için T-001, T-002, T-009 ve T-011 raporları repoda yok; kalıcı kayıt yöntemi sahip kararını bekliyor ([BLOCKERS.md](BLOCKERS.md) B-012). Kabul edilen bulgular ilgili kayıtlara işlendi: [docs/INTEGRATIONS.md](docs/INTEGRATIONS.md), [docs/NOTES.md](docs/NOTES.md), [docs/DECISIONS.md](docs/DECISIONS.md), [BLOCKERS.md](BLOCKERS.md).

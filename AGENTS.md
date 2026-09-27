@@ -22,9 +22,9 @@ Geliştirme ekibindeki agent'lar, üretimdeki müşteri asistanının çalışma
 
 1. **Brief:** Main Agent `tasks/T-NNN/brief.md` oluşturur/oluşturtur: amaç, kapsam, bağımlılıklar, dosya sahipliği, beklenen çıktı, kabul ölçütleri. Şablon: [tasks/_TEMPLATE/brief.md](tasks/_TEMPLATE/brief.md).
 2. **Uygulama:** Sorumlu alt agent yalnızca kendi dosyalarında çalışır.
-3. **Teslim:** Alt agent `tasks/T-NNN/report.md` yazar: yapılan iş, değişen dosyalar, doğrulama kanıtı, kalan sorunlar, sorular, sonraki somut adım. Şablon: [tasks/_TEMPLATE/report.md](tasks/_TEMPLATE/report.md).
+3. **Teslim:** Alt agent teslim raporunu Main Agent'a **metin olarak** verir; yapı [tasks/_TEMPLATE/report.md](tasks/_TEMPLATE/report.md) şablonudur: yapılan iş, değişen dosyalar, doğrulama kanıtı, kalan sorunlar, sorular, sonraki somut adım. Sahip [BLOCKERS.md](BLOCKERS.md) B-012 hakkında karar verene kadar rapor diske (`tasks/T-NNN/report.md` dahil) **yazılmaz**; hiçbir agent rapor dosyasını kabuk komutuyla veya başka bir geçici çözümle de yazmaz.
 4. **Değerlendirme:** Main Agent kabul eder veya düzeltme ister.
-5. **Kayıt:** [TASKS.md](TASKS.md) güncellenir (tek durum kaynağı).
+5. **Kayıt:** [TASKS.md](TASKS.md) güncellenir (tek durum kaynağı). Kabul edilen bulgular Dokümantasyon agent'ı tarafından ilgili kayıtlara işlenir ([docs/INTEGRATIONS.md](docs/INTEGRATIONS.md), [docs/NOTES.md](docs/NOTES.md), [docs/DECISIONS.md](docs/DECISIONS.md), [BLOCKERS.md](BLOCKERS.md)).
 
 Bağımsız işler paralel, bağımlı işler sırayla yürür. Kritik bileşenler, geliştiren agent dışındaki bir agent tarafından incelenip doğrulanır.
 

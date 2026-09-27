@@ -2,6 +2,12 @@
 
 En yeni kayıt en üstte.
 
+## 2026-09-27 (T-011)
+
+- Görev teslim kuralı B-012'ye uyarlandı: teslim raporu Main Agent'a metin olarak, şablon yapısında verilir; sahip kararına kadar diske yazılmaz — [AGENTS.md](AGENTS.md) §3, [tasks/README.md](tasks/README.md), şablonlar, T-001/T-002 brief'leri.
+- T-010 bağımlılığına B-009 eklendi; T-009 kabul edildi; T-011 eklendi — [TASKS.md](TASKS.md).
+- GitHub varsayılan dalı doğrulandı ve kaydedildi — [docs/INTEGRATIONS.md](docs/INTEGRATIONS.md).
+
 ## 2026-09-27 (T-009)
 
 - T-001 ve T-002 bulguları ortak kayıtlara işlendi: [docs/INTEGRATIONS.md](docs/INTEGRATIONS.md), [docs/NOTES.md](docs/NOTES.md), [BLOCKERS.md](BLOCKERS.md).
