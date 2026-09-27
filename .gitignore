@@ -1,0 +1,40 @@
+# UYARI: Müşteri konuşmaları, fotoğraflar, kimlik bilgileri (şifre, token, çerez,
+# API anahtarı) ve üretim veritabanları ASLA commit edilmez.
+# Bkz. AGENTS.md (Git kuralları) ve data/README.md.
+
+# Gizli değerler / kimlik bilgileri
+.env
+*.env
+!.env.example
+secrets/
+*.key
+*.pem
+
+# Canlı veri (yalnızca data/README.md Git'te)
+data/*
+!data/README.md
+
+# Veritabanları
+*.db
+*.sqlite
+*.sqlite3
+*-journal
+*-wal
+*-shm
+
+# Günlükler, ham veri, dışa aktarımlar
+logs/
+*.log
+raw/
+exports/
+
+# Python / Node
+__pycache__/
+*.pyc
+.venv/
+venv/
+node_modules/
+
+# İşletim sistemi / editör
+.DS_Store
+.obsidian/
