@@ -115,18 +115,18 @@ ALLOWLIST: Final[tuple[Endpoint, ...]] = (
 BY_NAME: Final[dict[str, Endpoint]] = {e.name: e for e in ALLOWLIST}
 
 
-def match(method: str, path: str) -> Endpoint | None:
-    """Return the allowlisted endpoint for a concrete request, or ``None``."""
-    for endpoint in ALLOWLIST:
+def match(method: str, path: str, allowlist: tuple[Endpoint, ...] = ALLOWLIST) -> Endpoint | None:
+    """Return the endpoint of ``allowlist`` (default: the read allowlist) for a request."""
+    for endpoint in allowlist:
         if endpoint.matches(method, path):
             return endpoint
     return None
 
 
-def check_allowed(method: str, path: str) -> Endpoint:
+def check_allowed(method: str, path: str, allowlist: tuple[Endpoint, ...] = ALLOWLIST) -> Endpoint:
     """Return the matching endpoint or raise :class:`ForbiddenEndpointError` (no network I/O)."""
-    endpoint = match(method, path)
+    endpoint = match(method, path, allowlist)
     if endpoint is None:
         # The concrete path may carry ids; only the method goes into the message.
-        raise ForbiddenEndpointError(f"{method.upper()} request is not on the read allowlist")
+        raise ForbiddenEndpointError(f"{method.upper()} request is not on the allowlist")
     return endpoint

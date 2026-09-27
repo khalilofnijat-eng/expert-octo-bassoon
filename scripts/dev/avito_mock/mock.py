@@ -16,6 +16,13 @@ Behaviour switches for things the spec does not settle (all UNVERIFIED, see T-01
 * ``on_messages_request``: hook run before a messages page is served, e.g. to add a message
   and so simulate a sliding offset (M2)
 
+Sending (T-018): ``POST /messenger/v1/accounts/{user_id}/chats/{chat_id}/messages`` stores the
+text as an outgoing message of the chat, so later ``messages_list`` reads show it (reconciliation
+tests, T-025); stored sends are also listed in :attr:`AvitoMock.sent_messages`. A fault with
+``store_first=True`` is applied *after* the message was stored (delivered-then-timeout, 5xx after
+store, connection reset after store, malformed 2xx); without it the fault replaces processing
+(nothing stored).
+
 Fault injection: :meth:`AvitoMock.inject` queues a :class:`Fault` for an endpoint (or any
 endpoint); it is consumed by the next matching request(s). Every request that reaches the mock is
 recorded in :attr:`AvitoMock.requests`; requests that match no read endpoint are also counted in
@@ -29,6 +36,7 @@ import json
 import re
 from collections.abc import Callable
 from dataclasses import dataclass, field
+from datetime import UTC, datetime
 from typing import Any, Literal
 from urllib.parse import parse_qs, unquote
 
@@ -36,6 +44,7 @@ import httpx
 from pydantic import SecretStr
 
 from app.avito_gateway.config import Credentials, GatewayConfig, RateLimit
+from app.avito_gateway.send import SendAuthorization
 
 MOCK_BASE_URL = "https://avito-mock.invalid"
 SYNTHETIC_CLIENT_ID = "synthetic-client-id-0001"
@@ -64,6 +73,11 @@ _ROUTES: list[tuple[str, str, re.Pattern[str]]] = [
     ("voice_files", "GET", re.compile(r"^/messenger/v1/accounts/(?P<user_id>\d+)/getVoiceFiles$")),
     ("items_list", "GET", re.compile(r"^/core/v1/items$")),
     (
+        "send_text",
+        "POST",
+        re.compile(r"^/messenger/v1/accounts/(?P<user_id>\d+)/chats/(?P<chat_id>[^/]+)/messages$"),
+    ),
+    (
         "item_detail",
         "GET",
         re.compile(r"^/core/v1/accounts/(?P<user_id>\d+)/items/(?P<item_id>\d+)/$"),
@@ -90,6 +104,8 @@ class Fault:
     headers: dict[str, str] = field(default_factory=dict)
     raise_exc: type[httpx.TransportError] | None = None
     delay_s: float = 0.0
+    # send_text only: process (and store) the message normally first, then apply the fault.
+    store_first: bool = False
 
     @staticmethod
     def json_status(
@@ -151,6 +167,42 @@ def wrong_shape(body: Any) -> Fault:
     return Fault.json_status("wrong_shape", 200, body)
 
 
+def delivered_then_timeout() -> Fault:
+    """send_text: the message is stored, then the client times out waiting for the reply."""
+    return Fault(name="delivered_then_timeout", raise_exc=httpx.ReadTimeout, store_first=True)
+
+
+def reset_after_store() -> Fault:
+    """send_text: the message is stored, then the connection is reset."""
+    return Fault(name="reset_after_store", raise_exc=httpx.RemoteProtocolError, store_first=True)
+
+
+def server_error_after_store(status: int = 500) -> Fault:
+    """send_text: the message is stored, then the server answers 5xx."""
+    fault = server_error(status)
+    fault.name = f"server_{status}_after_store"
+    fault.store_first = True
+    return fault
+
+
+def malformed_2xx(body: bytes = b'{"id": "msg-') -> Fault:
+    """send_text: the message is stored, then a 200 with a body that is not valid JSON."""
+    return Fault(
+        name="malformed_2xx",
+        status=200,
+        body=body,
+        headers={"Content-Type": "application/json"},
+        store_first=True,
+    )
+
+
+def ok_without_id() -> Fault:
+    """send_text: the message is stored, then a 200 JSON object without ``id``."""
+    fault = Fault.json_status("ok_without_id", 200, {"created": BASE_TS, "type": "text"})
+    fault.store_first = True
+    return fault
+
+
 def redirect(location: str = "https://elsewhere.invalid/") -> Fault:
     return Fault(name="redirect", status=302, headers={"Location": location})
 
@@ -163,6 +215,7 @@ class RecordedRequest:
     query: dict[str, list[str]]
     authorized: bool
     form: dict[str, list[str]] = field(default_factory=dict, repr=False)
+    json_body: Any = field(default=None, repr=False)
 
 
 @dataclass
@@ -217,6 +270,8 @@ class AvitoMock:
         self.items: list[dict[str, Any]] = []
         self.requests: list[RecordedRequest] = []
         self.forbidden_hits: list[RecordedRequest] = []
+        # Messages stored through send_text, in order (each also appended to its chat).
+        self.sent_messages: list[dict[str, Any]] = []
         self.issued_tokens: list[str] = []
         self._valid_tokens: set[str] = set()
         self._faults: list[_QueuedFault] = []
@@ -357,17 +412,27 @@ class AvitoMock:
                 break
         query = parse_qs(request.url.query.decode(), keep_blank_values=True)
         form: dict[str, list[str]] = {}
+        json_body: Any = None
         if endpoint == "token":
             form = parse_qs(request.content.decode(), keep_blank_values=True)
+        elif endpoint == "send_text":
+            try:
+                json_body = json.loads(request.content or b"null")
+            except ValueError:
+                json_body = None
         auth = request.headers.get("Authorization", "")
         authorized = auth.startswith("Bearer ") and auth[7:] in self._valid_tokens
-        record = RecordedRequest(request.method, path, endpoint, query, authorized, form)
+        record = RecordedRequest(request.method, path, endpoint, query, authorized, form, json_body)
         self.requests.append(record)
         if endpoint is None:
             self.forbidden_hits.append(record)
             return httpx.Response(405, json=_error_body(405, "Not allowed by mock"))
 
         fault = self._take_fault(endpoint)
+        if fault is not None and fault.store_first and endpoint == "send_text":
+            normal = self._respond(endpoint, params, query, authorized, json_body)
+            if not 200 <= normal.status_code <= 299:
+                return normal  # nothing stored: the fault does not apply
         if fault is not None:
             if fault.delay_s:
                 await asyncio.sleep(fault.delay_s)
@@ -380,13 +445,53 @@ class AvitoMock:
         if self.response_delay_s:
             await asyncio.sleep(self.response_delay_s)
             authorized = auth.startswith("Bearer ") and auth[7:] in self._valid_tokens
+        return self._respond(endpoint, params, query, authorized, json_body)
+
+    def _respond(
+        self,
+        endpoint: str,
+        params: dict[str, str],
+        query: dict[str, list[str]],
+        authorized: bool,
+        json_body: Any,
+    ) -> httpx.Response:
         if not authorized:
             return httpx.Response(401, json=_error_body(401, "Unauthorized"))
         if "user_id" in params and int(params["user_id"]) != self.user_id:
             return httpx.Response(403, json=_error_body(403, "Forbidden"))
+        if endpoint == "send_text":
+            return self._send_text(params, json_body)
         handler = getattr(self, f"_{endpoint}")
         response: httpx.Response = handler(params, query)
         return response
+
+    def _send_text(self, params: dict[str, str], body: Any) -> httpx.Response:
+        chat = self.chats.get(params["chat_id"])
+        if chat is None:
+            return httpx.Response(404, json=_error_body(404, "Not found"))
+        message = body.get("message") if isinstance(body, dict) else None
+        text = message.get("text") if isinstance(message, dict) else None
+        if (
+            not isinstance(body, dict)
+            or body.get("type") != "text"
+            or not isinstance(text, str)
+            or not text.strip()
+            or len(text.encode("utf-16-le")) // 2 > 1000
+        ):
+            return httpx.Response(400, json=_error_body(400, "Bad request"))
+        stored = self.add_message(chat.id, text, from_seller=True)
+        self.sent_messages.append(stored)
+        # Reply shape from the spec copy: {id, created, type, direction, content}.
+        return httpx.Response(
+            200,
+            json={
+                "id": stored["id"],
+                "created": stored["created"],
+                "type": "text",
+                "direction": "out",
+                "content": {"text": text},
+            },
+        )
 
     async def _token(self, form: dict[str, list[str]]) -> httpx.Response:
         if self.token_delay_s:
@@ -567,6 +672,25 @@ class AvitoMock:
                 "vas": [],
             },
         )
+
+
+def send_authorization(
+    mock: AvitoMock,
+    text: str,
+    *,
+    chat_id: str = "u2i-synthetic0000~chat",
+    outbound_message_id: str = "outbox-synthetic-1",
+    attempt: int = 1,
+) -> SendAuthorization:
+    """A synthetic stand-in for what the outbox builds after its intent CAS (tests only)."""
+    return SendAuthorization.for_text(
+        outbound_message_id=outbound_message_id,
+        user_id=mock.user_id,
+        chat_id=chat_id,
+        text=text,
+        attempt=attempt,
+        intent_at=datetime.now(UTC),
+    )
 
 
 def config_for_mock(**overrides: Any) -> GatewayConfig:

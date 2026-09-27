@@ -130,12 +130,40 @@ def test_gateway_source_has_no_write_calls() -> None:
                 and node.value.upper() in {"POST", "PUT", "PATCH", "DELETE"}
             ):
                 offenders.append(f"{source.name}:{node.lineno} {node.value!r}")
-    assert offenders == ["endpoints.py:" + str(_token_line()) + " 'POST'"]
+    # Exactly two: the /token endpoint (read side) and the single send endpoint (send.py, T-018).
+    assert offenders == [
+        f"endpoints.py:{_line('endpoints.py', 'TOKEN')} 'POST'",
+        f"send.py:{_line('send.py', 'SEND_TEXT')} 'POST'",
+    ]
 
 
-def _token_line() -> int:
-    source = Path(endpoints.__file__).read_text(encoding="utf-8").splitlines()
-    return next(i for i, line in enumerate(source, 1) if line.startswith("TOKEN"))
+def _line(module: str, prefix: str) -> int:
+    path = Path(endpoints.__file__).resolve().parent / module
+    source = path.read_text(encoding="utf-8").splitlines()
+    start = next(i for i, line in enumerate(source, 1) if line.startswith(prefix))
+    return next(i for i, line in enumerate(source[start - 1 :], start) if '"POST"' in line)
+
+
+def test_read_side_does_not_know_the_send_endpoint() -> None:
+    """The read client's allowlist and modules never reference the send module."""
+    from app.avito_gateway import send
+
+    assert send.SEND_TEXT not in endpoints.ALLOWLIST
+    assert endpoints.match("POST", send.SEND_TEXT.path(user_id=U, chat_id=C)) is None
+    package = Path(endpoints.__file__).resolve().parent
+    for module in ("client.py", "endpoints.py", "http.py", "token.py", "pagination.py"):
+        tree = ast.parse((package / module).read_text(encoding="utf-8"))
+        imported = {
+            node.module
+            for node in ast.walk(tree)
+            if isinstance(node, ast.ImportFrom) and node.module is not None
+        } | {
+            alias.name
+            for node in ast.walk(tree)
+            if isinstance(node, ast.Import)
+            for alias in node.names
+        }
+        assert "app.avito_gateway.send" not in imported, module
 
 
 @pytest.mark.parametrize(

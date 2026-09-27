@@ -65,6 +65,8 @@ DEFAULT_RATE_LIMITS: dict[str, RateLimit] = {
     "voice_files": RateLimit(per_minute=10, burst=1),  # UNVERIFIED (T-010 M8)
     "items_list": RateLimit(per_minute=25, burst=5),  # spec copy: 25/min; burst UNVERIFIED
     "item_detail": RateLimit(per_minute=500, burst=10),  # spec copy: 500/min; burst UNVERIFIED
+    # Sending (T-018): limit not documented, UNVERIFIED; one message every 3 s at most.
+    "send_text": RateLimit(per_minute=20, burst=1),
 }
 
 

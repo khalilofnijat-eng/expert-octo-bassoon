@@ -67,17 +67,26 @@ AttemptHook = Callable[[AttemptRecord], None]
 
 
 class AllowlistTransport(httpx.AsyncBaseTransport):
-    """Wraps the real transport; refuses every request that is not on the read allowlist."""
+    """Wraps the real transport; refuses every request that is not on ``allowlist`` (default:
+    the read allowlist) or not addressed to the configured host."""
 
-    def __init__(self, inner: httpx.AsyncBaseTransport, *, host: str, port: int | None) -> None:
+    def __init__(
+        self,
+        inner: httpx.AsyncBaseTransport,
+        *,
+        host: str,
+        port: int | None,
+        allowlist: tuple[Endpoint, ...] = endpoints.ALLOWLIST,
+    ) -> None:
         self._inner = inner
+        self._allowlist = allowlist
         self._host = host
         self._port = port
 
     async def handle_async_request(self, request: httpx.Request) -> httpx.Response:
         if request.url.host != self._host or request.url.port != self._port:
             raise ForbiddenEndpointError("request to a host other than the configured Avito host")
-        endpoints.check_allowed(request.method, request.url.path)
+        endpoints.check_allowed(request.method, request.url.path, self._allowlist)
         return await self._inner.handle_async_request(request)
 
     async def aclose(self) -> None:
@@ -85,7 +94,10 @@ class AllowlistTransport(httpx.AsyncBaseTransport):
 
 
 def build_http_client(
-    config: GatewayConfig, transport: httpx.AsyncBaseTransport | None = None
+    config: GatewayConfig,
+    transport: httpx.AsyncBaseTransport | None = None,
+    *,
+    allowlist: tuple[Endpoint, ...] = endpoints.ALLOWLIST,
 ) -> httpx.AsyncClient:
     """An httpx client with the gateway's rules: allowlist guard, no retries, no redirects."""
     parts = urlsplit(config.base_url)
@@ -93,7 +105,9 @@ def build_http_client(
     inner = transport if transport is not None else httpx.AsyncHTTPTransport(retries=0)
     return httpx.AsyncClient(
         base_url=config.base_url,
-        transport=AllowlistTransport(inner, host=parts.hostname, port=parts.port),
+        transport=AllowlistTransport(
+            inner, host=parts.hostname, port=parts.port, allowlist=allowlist
+        ),
         timeout=httpx.Timeout(
             connect=config.connect_timeout_s,
             read=config.read_timeout_s,
@@ -199,6 +213,12 @@ def classify(endpoint: str, response: httpx.Response, config: GatewayConfig) -> 
     return AvitoClientError(endpoint, status=status, api_code=code)
 
 
+def default_limiter(config: GatewayConfig) -> PriorityRateLimiter:
+    return PriorityRateLimiter(
+        config.rate_limits, default=config.default_rate_limit, bulk_share=config.bulk_share
+    )
+
+
 class GatewayHTTP:
     """Sends one allowlisted request per call: rate limit → one HTTP attempt → classify."""
 
@@ -209,12 +229,12 @@ class GatewayHTTP:
         transport: httpx.AsyncBaseTransport | None = None,
         limiter: PriorityRateLimiter | None = None,
         on_attempt: AttemptHook | None = None,
+        allowlist: tuple[Endpoint, ...] = endpoints.ALLOWLIST,
     ) -> None:
         self.config = config
-        self.client = build_http_client(config, transport)
-        self.limiter = limiter or PriorityRateLimiter(
-            config.rate_limits, default=config.default_rate_limit, bulk_share=config.bulk_share
-        )
+        self.allowlist = allowlist
+        self.client = build_http_client(config, transport, allowlist=allowlist)
+        self.limiter = limiter or default_limiter(config)
         self._on_attempt = on_attempt
         # Attempts per endpoint name (T-010 reports request counts per endpoint).
         self.attempt_counts: Counter[str] = Counter()
@@ -238,8 +258,8 @@ class GatewayHTTP:
     ) -> httpx.Response:
         """Return a 2xx reply or raise a typed error. Exactly one HTTP attempt is made."""
         # Checked here as well as in the transport so a mistake fails before rate limiting.
-        if endpoints.match(endpoint.method, path) is not endpoint:
-            raise ForbiddenEndpointError(f"{endpoint.method} request is not on the read allowlist")
+        if endpoints.match(endpoint.method, path, self.allowlist) is not endpoint:
+            raise ForbiddenEndpointError(f"{endpoint.method} request is not on the allowlist")
         await self.limiter.acquire(endpoint.name, priority)
         request = self.client.build_request(
             endpoint.method,

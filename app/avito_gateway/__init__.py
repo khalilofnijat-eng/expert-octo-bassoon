@@ -9,6 +9,9 @@ Read side only (T-017). Modules:
 * ``ratelimit``  – per-endpoint buckets, ``live`` before ``bulk``, bulk share cap, 429 pause.
 * ``client``     – ``AvitoReadClient``: accounts/self, chats, chat, messages, voice files, items.
 * ``pagination`` – ``paginate_chats`` / ``paginate_messages`` with guaranteed termination.
+* ``send``       – T-018 text-only ``AvitoSendClient`` with its own one-endpoint write
+                   allowlist. Deliberately not re-exported here: importing it is an explicit act,
+                   and the read modules never import it.
 
 Everything about Avito here comes from a community copy of the official spec and is not verified
 live (docs/INTEGRATIONS.md §3); assumptions are marked ``UNVERIFIED (T-010 M#)`` in the code.

@@ -84,6 +84,12 @@ class TokenManager:
     def invalidate(self) -> None:
         self._token = None
 
+    def mark_unauthorized(self, failed_generation: int) -> None:
+        """Forget the token that got a 401 without fetching a new one now (the send client must
+        not make any request besides its single send attempt). The next ``get()`` fetches."""
+        if self._token is not None and self._token.generation == failed_generation:
+            self._token = None
+
     async def _refresh(self) -> AccessToken:
         if self._inflight is None:
             self._inflight = asyncio.ensure_future(self._fetch())
