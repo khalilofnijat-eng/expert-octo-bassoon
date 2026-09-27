@@ -1,24 +1,28 @@
 # STATE — Projenin mevcut gerçek durumu
 
-**Son güncelleme:** 2026-09-27 (T-009, Dokümantasyon agent'ı)
+**Son güncelleme:** 2026-09-27 (T-013, Dokümantasyon agent'ı)
 
-## Özet
+Görev durumları burada tekrar edilmez: **[TASKS.md](TASKS.md)**. Engeller: [BLOCKERS.md](BLOCKERS.md). Kararlar: [docs/DECISIONS.md](docs/DECISIONS.md).
+
+## Şu anki durum
 
 | Konu | Durum |
 |---|---|
-| Aşama | 1 (keşif) ve 2 (kayıt düzeni ve mimari) sürüyor — bkz. [docs/PLAN.md](docs/PLAN.md) |
+| Aşama | 1 (keşif) ve 2 (kayıt düzeni ve mimari) — bkz. [docs/PLAN.md](docs/PLAN.md) |
+| Mimari | Taslak var: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). Henüz karar değil; bağımsız inceleme bekliyor. Önerdiği kararlar onaylanmadı. |
+| Kayıt düzeni | Bağımsız inceleme (T-005) bulguları T-013 ile düzeltildi. |
 | Uygulama kodu | Yok |
-| Bağlı dış sistem | Yok. Avito üretim kanalı olarak resmî Messenger API seçildi (D-011) ama bağlı değil; bu bulut ortamından avito.ru'ya erişim engelli (B-009). Ayrıntı: [docs/INTEGRATIONS.md](docs/INTEGRATIONS.md) |
+| Bağlı dış sistem | Yok. Avito üretim kanalı resmî Messenger API (D-011), ama bağlı değil; bu ortamdan avito.ru'ya erişim yok (B-009). Ayrıntı: [docs/INTEGRATIONS.md](docs/INTEGRATIONS.md) |
 | Toplanan Avito verisi | Yok |
-| Asistan modu | Taslak (asistan henüz mevcut değil; canlı yetki verilmedi — bkz. [docs/DECISIONS.md](docs/DECISIONS.md)) |
-| Kayıt düzeni | T-003 kabul edildi; T-001/T-002 bulguları T-009 ile kayıtlara işlendi |
-| Görev raporları | Alt agent'lar rapor dosyası yazamıyor; T-001/T-002/T-009 raporları repoda yok (B-012) |
-| GitHub deposu | Public — sahibin özel yapması önerildi (B-008) |
-| Çalışma ortamı | Geçici bulut konteyner; sahibin bilgisayarı değil; sahibin Chrome'una erişim yok (B-001) |
+| Asistan modu | Taslak (asistan henüz yok; canlı yetki verilmedi — D-006) |
+| Sahip cevapları | Hiçbir engel için cevap gelmedi — [BLOCKERS.md](BLOCKERS.md) "Sahibe soruldu" sütunu |
+| GitHub | Geliştirme dalı D-014; depo görünürlüğü ve kullanımı sahip onayı bekliyor (B-008) |
+| Çalışma ortamı | Geçici bulut konteyner; sahibin bilgisayarı değil (B-001) |
 
-## Sürmekte olan işler
+## Sıradaki eylem
 
-- T-004 Mimari taslağı — sürüyor (Mimari agent'ı)
-- T-009 Bulguların kayıtlara işlenmesi — teslim edildi, Main Agent incelemesi bekliyor
+1. T-012 (mimari taslağının bağımsız incelemesi) teslimi ve Main Agent'ın değerlendirmesi.
+2. Main Agent'ın mimari kararı; onaylanan kararlar D-015'ten itibaren kaydedilir.
+3. Uygulama dalgası; görev kimlikleri T-014'ten başlar.
 
-Ayrıntı ve tüm görevler: [TASKS.md](TASKS.md). Açık engeller (B-001…B-012): [BLOCKERS.md](BLOCKERS.md).
+Ayrıntılı adımlar ve uyarılar: [HANDOFF.md](HANDOFF.md).

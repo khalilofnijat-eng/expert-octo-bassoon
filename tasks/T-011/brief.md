@@ -13,7 +13,7 @@ Alt agent'ların rapor dosyası yazamaması ([BLOCKERS](../../BLOCKERS.md) B-012
 - Hariç: `docs/ARCHITECTURE.md` (T-004'e ait); diğer kayıtlar.
 
 ## Bağımlılıklar
-- T-009 (kabul edildi).
+- T-009.
 
 ## Dosya sahipliği
 - Yazabileceği dosyalar: `AGENTS.md`, `tasks/README.md`, `tasks/_TEMPLATE/brief.md`, `tasks/_TEMPLATE/report.md`, `tasks/T-001/brief.md`, `tasks/T-002/brief.md`, `tasks/T-011/brief.md`, `TASKS.md`, `CHANGELOG.md`, `docs/INTEGRATIONS.md` (yalnızca GitHub satırı), `docs/LESSONS_LEARNED.md` (yalnızca B-012 kaydı).

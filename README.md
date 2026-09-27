@@ -1,14 +1,10 @@
 # Avito Müşteri Asistanı — Başlangıç Sayfası
 
-Bu depo, Avito'da otomotiv parçası satan işletme için kurulacak müşteri asistanının proje klasörüdür (ileride Obsidian Vault içindeki `Avito-Assistant/` klasörü olacak; bkz. [BLOCKERS.md](BLOCKERS.md) B-003). Asistan; müşteri mesajını ve ilanı anlayacak, depodaki gerçek ürün/stok/fiyat/fotoğraf bilgisini kullanacak ve konuşmayı işletmenin kuralları içinde siparişe taşıyacak. Şu an uygulama kodu yoktur; proje keşif ve kayıt düzeni aşamasındadır. Güncel durum için: **[STATE.md](STATE.md)**.
+Bu depo, Avito'da otomotiv parçası satan işletme için kurulacak müşteri asistanının proje klasörüdür (ileride Obsidian Vault içindeki `Avito-Assistant/` klasörü olacak; bkz. [BLOCKERS.md](BLOCKERS.md) B-003). Asistan; müşteri mesajını ve ilanı anlayacak, depodaki gerçek ürün/stok/fiyat/fotoğraf bilgisini kullanacak ve konuşmayı işletmenin kuralları içinde siparişe taşıyacak. Güncel durum için: **[STATE.md](STATE.md)**.
 
-## Yeni oturum okuma sırası
+## Yeni oturum
 
-1. [AGENTS.md](AGENTS.md) — ortak agent kuralları
-2. [STATE.md](STATE.md) — projenin mevcut gerçek durumu
-3. [HANDOFF.md](HANDOFF.md) — devam özeti ve sonraki adımlar
-4. [TASKS.md](TASKS.md) — görevler ve durumları
-5. [BLOCKERS.md](BLOCKERS.md) — engeller ve gereken müdahaleler
+Önce [AGENTS.md](AGENTS.md)'yi oku; oturum başı okuma sırası orada (§1).
 
 ## Tüm kayıtlar
 
@@ -39,7 +35,7 @@ Bu depo, Avito'da otomotiv parçası satan işletme için kurulacak müşteri as
 | Klasör | Amaç |
 |---|---|
 | kök | Oturum başında okunan ortak kayıtlar |
-| [docs/](docs/PROJECT_BRIEF.md) | Referans belgeler (talep, özet, mimari, plan, kararlar, notlar, entegrasyon, test, runbook) |
+| `docs/` (giriş: [docs/PROJECT_BRIEF.md](docs/PROJECT_BRIEF.md)) | Referans belgeler (talep, özet, mimari, plan, kararlar, notlar, entegrasyon, test, runbook) |
 | [sessions/](sessions/README.md) | Oturum özetleri |
 | [tasks/](tasks/README.md) | Görev brief'leri ve teslim raporları |
 | [knowledge/](knowledge/README.md) | Onaylı, sürümlü bilgi tabanı kaynakları |

@@ -25,4 +25,4 @@ Her Main Agent oturumu için bir dosya: `YYYY-MM-DD-SNN.md` (aynı gün birden f
 
 ## Oturumlar
 
-- [2026-09-27-S01](2026-09-27-S01.md) — İlk oturum: talimat alındı, T-001/T-002/T-003 başlatıldı.
+- [2026-09-27-S01](2026-09-27-S01.md) — İlk oturum: talimat, keşif, kayıt düzeni, mimari taslağı ve bağımsız incelemeler.

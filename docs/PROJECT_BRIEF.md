@@ -21,13 +21,9 @@ Avito'da otomotiv parçası satan işletme için; Avito hesabına, depo ve muhas
 - Sahip onayı olmadan otomatik müşteri mesajı gönderimi (D-006).
 - Sahip onayı olmadan dış sistemlere yazma (D-006).
 
-## Bilgi öncelik sırası (D-005)
+## Bilgi öncelik sırası
 
-1. Güncel ve yetkili stok, fiyat ve sipariş sistemleri.
-2. Sahibin onayladığı işletme kuralları.
-3. Doğrulanmış ürün ve uyumluluk kaynakları.
-4. Onaylı bilgi tabanı.
-5. Tarihsel konuşma örnekleri.
+Tek kaynak: [DECISIONS.md](DECISIONS.md) D-005.
 
 ## Başarı ölçütleri (talep §14)
 

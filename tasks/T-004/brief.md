@@ -14,7 +14,7 @@ Keşif bulgularına dayanarak sistemin mimarisini ve veri akışlarını taslak 
 - Hariç: uygulama kodu; kurulum; dış sisteme çağrı.
 
 ## Bağımlılıklar
-- T-001, T-002 (kabul edildi).
+- T-001, T-002.
 
 ## Dosya sahipliği
 - Yazabileceği dosya: yalnızca `docs/ARCHITECTURE.md`.

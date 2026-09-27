@@ -12,14 +12,13 @@ Yalnızca kaynağı belirtilmiş notlar yazılır. Kararlar [DECISIONS.md](DECIS
 
 ## Avito platform notları
 
-Kaynak: T-002 raporu (Main Agent kabul etti; repoda dosya olarak yok — B-012). Aksi belirtilmedikçe **ikincil kaynak**.
+Kaynak: T-002 teslim metni (Main Agent kabul etti; metin repoda yok — bkz. B-012). Güven etiketleri: [INTEGRATIONS.md](INTEGRATIONS.md) başındaki tablo.
 
-- "Товары" sohbetlerinde iletişim bilgisi (telefon, e-posta, sosyal ağ kullanıcı adı) göndermek ve istemek yasak (2024'ten beri; belgeyle doğrulanmış profesyonel profiller hariç); ihlal hesabın engellenmesine yol açabiliyor. → Giden mesajlar için bu bilgileri engelleyen bir çıktı filtresi gerekir. — ikincil kaynak
-- Avito'nun yerleşik "Автоответы" (otomatik yanıt) özelliği asistanla birlikte çalışırsa müşteriye çift yanıt gidebilir; kapatılmalı veya asistanla koordine edilmeli. — ikincil kaynak (otomatik yanıt mesajlarının sistem mesajı olarak göründüğü: resmî spec kopyası)
-- Metin mesajı en fazla 1000 karakter; uzun cevaplar bölünmeli. — resmî spec kopyası
-- API ile mesaj okumak sohbeti okundu olarak işaretlemez; okundu yapmak ayrı bir çağrıdır (`chatRead`). — resmî spec kopyası
-- Gönderilen mesaj yalnızca 1 saat içinde silinebilir; hatalı gönderimi geri alma bu süreyle sınırlı. — resmî spec kopyası
-- Resmî spec'teki metin gönderme gövde şemasında hata var (gereksiz yere `required: ["url"]`); istemci yazılırken şemaya körü körüne güvenilmemeli. — resmî spec kopyası
+- "Товары" sohbetlerinde iletişim bilgisi (telefon, e-posta, sosyal ağ kullanıcı adı) göndermek ve istemek yasak (22 Mayıs 2024'ten beri; belgeyle doğrulanmış profesyonel profiller hariç); ihlal hesabın engellenmesine yol açabiliyor. → Giden mesajlar için bu bilgileri engelleyen bir çıktı filtresi gerekir. — ikincil kaynak
+- Platform dışı ödeme veya anlaşma önermemek entegratörlerin tavsiyesi; resmî kural metni doğrulanamadı. → Çıktı filtresi bu önerileri de engellemeli. — ikincil kaynak
+- Avito'nun yerleşik "Автоответы" (otomatik yanıt) özelliği satıcı yaklaşık 5 dakika çevrimdışı olduğunda çalışıyor; asistanla birlikte çalışırsa müşteriye çift yanıt gidebilir, kapatılmalı veya asistanla koordine edilmeli. — ikincil kaynak (otomatik yanıtların sistem mesajı olarak görünmesi: [INTEGRATIONS.md](INTEGRATIONS.md) §3.2)
+- Anında gönderilen, hep aynı metinli, spam benzeri yanıtların yaptırıma yol açtığı iddia ediliyor. AI asistan kullanımını yasaklayan veya ifşa zorunluluğu getiren bir kural bulunamadı (doğrulanamadı). — ikincil kaynak
+- API'den gelen tasarım kısıtları (metin uzunluk sınırı → uzun cevap bölünür; silme penceresi → hatalı gönderimi geri alma bu süreyle sınırlı; okuma sohbeti okundu yapmaz, `chatRead` ayrı çağrı): değerler ve etiketleri [INTEGRATIONS.md](INTEGRATIONS.md) §3.1'de.
 
 ## Ürün ve uyumluluk notları
 

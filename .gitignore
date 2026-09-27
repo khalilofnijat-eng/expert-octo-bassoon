@@ -1,32 +1,67 @@
 # UYARI: Müşteri konuşmaları, fotoğraflar, kimlik bilgileri (şifre, token, çerez,
 # API anahtarı) ve üretim veritabanları ASLA commit edilmez.
 # Bkz. AGENTS.md (Git kuralları) ve data/README.md.
+# İstisna: tests/fixtures/ yalnızca SENTETİK görsel/jsonl/csv içerebilir
+# (gerçek müşteri verisi veya gerçek ürün fotoğrafı girmez; bkz. tests/README.md).
 
 # Gizli değerler / kimlik bilgileri
 .env
+.env.*
 *.env
 !.env.example
 secrets/
 *.key
 *.pem
+*.p12
+*.pfx
+id_rsa*
+credentials*.json
+token*.json
+
+# Tarayıcı oturumu / çerezler / profiller
+*cookie*
+storage_state*.json
+*.har
+*profile*/
 
 # Canlı veri (yalnızca data/README.md Git'te)
 data/*
 !data/README.md
 
-# Veritabanları
+# Veritabanları, dökümler, yedekler
 *.db
 *.sqlite
 *.sqlite3
 *-journal
 *-wal
 *-shm
+*.dump
+*.bak
+backups/
 
-# Günlükler, ham veri, dışa aktarımlar
+# Fotoğraflar / görseller (büyük-küçük harf uzantılar dahil)
+*.[jJ][pP][gG]
+*.[jJ][pP][eE][gG]
+*.[pP][nN][gG]
+*.[hH][eE][iI][cC]
+*.[wW][eE][bB][pP]
+*.[gG][iI][fF]
+!tests/fixtures/**/*.[jJ][pP][gG]
+!tests/fixtures/**/*.[jJ][pP][eE][gG]
+!tests/fixtures/**/*.[pP][nN][gG]
+!tests/fixtures/**/*.[hH][eE][iI][cC]
+!tests/fixtures/**/*.[wW][eE][bB][pP]
+!tests/fixtures/**/*.[gG][iI][fF]
+
+# Günlükler, ham veri, dışa aktarımlar (tests/fixtures/ dışında)
 logs/
 *.log
 raw/
 exports/
+*.jsonl
+*.csv
+!tests/fixtures/**/*.jsonl
+!tests/fixtures/**/*.csv
 
 # Python / Node
 __pycache__/
