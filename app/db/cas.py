@@ -12,7 +12,8 @@ from typing import Any, cast
 from sqlalchemy import Connection, Table, text, update
 
 from app.db.models import Base
-from app.queue.locks import singleton_fence_sql
+from app.db.settings import SENDING_MODES
+from app.queue.locks import SingletonToken, singleton_fence_sql
 
 
 def cas_update(
@@ -44,12 +45,17 @@ def cas_update(
     return conn.execute(stmt).rowcount == 1
 
 
+_SENDING_MODES_SQL = ", ".join(f"'{m}'" for m in SENDING_MODES)
+
 _INTENT_SQL = f"""
 UPDATE outbound_message AS o
 SET status = 'sending', intent_at = now(), attempts = o.attempts + 1, version = o.version + 1
 WHERE o.id = :id AND o.status = 'pending' AND o.version = :version
-  -- kill switch; a missing settings row yields NULL, which also blocks the send
-  AND NOT (SELECT s.kill_switch FROM system_setting AS s WHERE s.id = 1)
+  -- positive allowlist: the settings row must exist, the kill switch be off and the mode be a
+  -- sending mode; a missing row or NULL blocks the send (every part, not only part 1)
+  AND EXISTS (
+    SELECT 1 FROM system_setting AS s
+    WHERE s.id = 1 AND s.kill_switch = false AND s.automation_mode IN ({_SENDING_MODES_SQL}))
   AND EXISTS (
     SELECT 1 FROM draft AS d JOIN conversation AS c ON c.id = d.conversation_id
     WHERE d.id = o.draft_id AND c.automation = 'active'
@@ -65,17 +71,19 @@ WHERE o.id = :id AND o.status = 'pending' AND o.version = :version
 
 
 def claim_send_intent(
-    conn: Connection, outbound_id: int, expected_version: int, singleton_pid: int
+    conn: Connection, outbound_id: int, expected_version: int, token: SingletonToken
 ) -> bool:
     """Intent CAS for one outbox part: ``pending`` → ``sending`` (§6.5 item 1).
 
-    Succeeds only if the kill switch is off, the conversation's automation is ``active``, the
-    draft is not stale (part 1) or the previous part is ``sent`` (parts 2..n), and the worker
-    singleton lock is still held by ``singleton_pid`` (fencing, see ``app.queue.locks``).
-    ``attempts`` counts HTTP attempts, so it grows here. The send itself is T-025.
+    Succeeds only if the settings row allows sending (kill switch off, mode in
+    ``SENDING_MODES``), the conversation's automation is ``active``, the draft is not stale
+    (part 1) or the previous part is ``sent`` (parts 2..n), and ``token`` is still the live
+    worker singleton (fencing, see ``app.queue.locks``). ``attempts`` counts HTTP attempts, so it
+    grows here. The send itself is T-025. If sending stops mid-group, the group rule in
+    ``app.db.settings.stop_open_outbox_groups`` applies.
     """
     result = conn.execute(
         text(_INTENT_SQL),
-        {"id": outbound_id, "version": expected_version, "singleton_pid": singleton_pid},
+        {"id": outbound_id, "version": expected_version, **token.params()},
     )
     return result.rowcount == 1

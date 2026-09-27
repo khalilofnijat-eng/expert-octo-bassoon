@@ -1,9 +1,15 @@
 """Core tables: conversation, message, job, draft, outbound_message, system_setting, audit_event.
 
-Also creates the runtime role ``assistant_app`` (NOLOGIN) with DML on the core tables but only
-SELECT/INSERT on ``audit_event``, and a trigger that refuses UPDATE/DELETE/TRUNCATE on
-``audit_event`` for every role, including the owner. Creating the role needs CREATEROLE; roles are
-cluster-wide, so downgrade leaves the role in place.
+Also creates ``worker_singleton`` (epoch for singleton fencing), the runtime role
+``assistant_app`` (NOLOGIN) with DML on the core tables but only SELECT/INSERT on ``audit_event``,
+and a trigger that refuses UPDATE/DELETE/TRUNCATE on ``audit_event``. The trigger binds the
+runtime role, but the table owner (not only a superuser) can disable it, so the application must
+never connect as the owner (app/README.md). Creating the role needs CREATEROLE; roles are
+cluster-wide, so downgrade leaves the role in place. Downgrade is refused when APP_ENV is
+production (or unset).
+
+Seeds: ``system_setting`` with ``kill_switch = true`` and ``automation_mode`` from the
+``AUTOMATION_MODE`` environment value (the DB row is the source of truth afterwards).
 
 Revision ID: 0001
 Revises:
@@ -18,13 +24,35 @@ import sqlalchemy as sa
 from alembic import op
 from sqlalchemy.dialects import postgresql
 
+from app.config import AppEnv, Settings
+
 revision: str = "0001"
 down_revision: str | None = None
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 
 APP_ROLE = "assistant_app"
-DML_TABLES = ("conversation", "message", "job", "draft", "outbound_message", "system_setting")
+DML_TABLES = (
+    "conversation",
+    "message",
+    "job",
+    "draft",
+    "outbound_message",
+    "system_setting",
+    "worker_singleton",
+)
+PAUSED_REASONS = (
+    "owner_takeover",
+    "owner_intervened",
+    "owner_modified",
+    "send_unknown",
+    "group_incomplete",
+    "unknown_author",
+    "unsupported_content",
+    "llm_outage",
+    "budget",
+    "restore_gap",
+)
 
 
 def _in(column: str, values: tuple[str, ...]) -> str:
@@ -82,6 +110,18 @@ def upgrade() -> None:
         sa.CheckConstraint(
             _in("automation", ("active", "paused")), name="ck_conversation_automation"
         ),
+        sa.CheckConstraint(
+            "paused_reason IS NULL OR " + _in("paused_reason", PAUSED_REASONS),
+            name="ck_conversation_paused_reason",
+        ),
+        sa.CheckConstraint(
+            "automation <> 'paused' OR paused_reason IS NOT NULL",
+            name="ck_conversation_paused_has_reason",
+        ),
+        sa.CheckConstraint(
+            "(state = 'closed') = (close_reason IS NOT NULL)",
+            name="ck_conversation_closed_reason",
+        ),
     )
 
     op.create_table(
@@ -98,7 +138,7 @@ def upgrade() -> None:
         sa.Column("status", sa.Text(), nullable=False, server_default="queued"),
         _ts("run_after", nullable=False, now=True),
         sa.Column("attempts", sa.Integer(), nullable=False, server_default="0"),
-        sa.Column("max_attempts", sa.Integer(), nullable=False, server_default="8"),
+        sa.Column("max_attempts", sa.Integer(), nullable=False, server_default="12"),
         sa.Column("claimed_by", sa.Text()),
         _ts("claimed_at"),
         sa.Column("last_error_code", sa.Text()),
@@ -176,6 +216,14 @@ def upgrade() -> None:
             name="ck_draft_status",
         ),
     )
+    op.create_index(
+        "uq_draft_open_per_seq",
+        "draft",
+        ["conversation_id", "based_on_seq"],
+        unique=True,
+        postgresql_where=sa.text("status IN ('proposed', 'approved')"),
+    )
+    op.create_index("ix_draft_conversation_id", "draft", ["conversation_id"])
 
     op.create_table(
         "outbound_message",
@@ -215,6 +263,7 @@ def upgrade() -> None:
             "draft_id", "generation", "part_no", name="uq_outbound_message_draft_generation_part"
         ),
     )
+    op.create_index("ix_outbound_message_status", "outbound_message", ["status"])
 
     op.create_table(
         "message",
@@ -250,7 +299,7 @@ def upgrade() -> None:
     op.create_table(
         "system_setting",
         sa.Column("id", sa.SmallInteger(), primary_key=True, autoincrement=False),
-        sa.Column("kill_switch", sa.Boolean(), nullable=False, server_default="false"),
+        sa.Column("kill_switch", sa.Boolean(), nullable=False, server_default="true"),
         sa.Column("automation_mode", sa.Text(), nullable=False, server_default="draft_only"),
         _ts("activation_at"),
         sa.Column("images_enabled", sa.Boolean(), nullable=False, server_default="false"),
@@ -261,7 +310,23 @@ def upgrade() -> None:
             name="ck_system_setting_mode",
         ),
     )
-    op.execute("INSERT INTO system_setting (id) VALUES (1)")
+    # The environment value only seeds the row; afterwards the DB row is the source of truth.
+    op.get_bind().execute(
+        sa.text(
+            "INSERT INTO system_setting (id, kill_switch, automation_mode) VALUES (1, true, :m)"
+        ),
+        {"m": Settings().automation_mode.value},
+    )
+
+    op.create_table(
+        "worker_singleton",
+        sa.Column("id", sa.SmallInteger(), primary_key=True, autoincrement=False),
+        sa.Column("epoch", sa.BigInteger(), nullable=False, server_default="0"),
+        sa.Column("pid", sa.Integer()),
+        _ts("acquired_at"),
+        sa.CheckConstraint("id = 1", name="ck_worker_singleton_single_row"),
+    )
+    op.execute("INSERT INTO worker_singleton (id) VALUES (1)")
 
     op.create_table(
         "audit_event",
@@ -284,7 +349,8 @@ def upgrade() -> None:
         sa.Column("prompt_version", sa.Text()),
         sa.CheckConstraint("char_length(reason_short) <= 200", name="ck_audit_event_reason_short"),
     )
-    # Append-only for everyone, owner included (a superuser could still disable the trigger).
+    # Refuses UPDATE/DELETE/TRUNCATE for every role while enabled. The owner can disable it, so
+    # the owner must not be the application's login (see module docstring).
     op.execute(
         """
         CREATE FUNCTION audit_event_append_only() RETURNS trigger LANGUAGE plpgsql AS $$
@@ -321,7 +387,20 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    for table in ("audit_event", "system_setting", "message", "outbound_message", "draft", "job"):
+    if Settings().app_env is AppEnv.PRODUCTION:
+        raise RuntimeError(
+            "Refusing to downgrade 0001 in production (APP_ENV unset or 'production'): it drops "
+            "every core table, including audit_event."
+        )
+    for table in (
+        "audit_event",
+        "worker_singleton",
+        "system_setting",
+        "message",
+        "outbound_message",
+        "draft",
+        "job",
+    ):
         op.drop_table(table)
     op.drop_table("conversation")
     op.execute("DROP FUNCTION audit_event_append_only()")

@@ -11,22 +11,27 @@ from __future__ import annotations
 import logging
 import os
 import socket
+import time
 import uuid
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 
 from sqlalchemy import Engine
 
+from app.config import Settings, get_settings
+from app.db.roles import check_runtime_role
 from app.queue import jobs
 from app.queue.jobs import Job
-from app.queue.locks import ConversationLock, WorkerSingleton, conversation_lock
+from app.queue.locks import (
+    ConversationLock,
+    SingletonNotHeldError,
+    WorkerSingleton,
+    conversation_lock,
+)
 
 log = logging.getLogger(__name__)
 
 Handler = Callable[[Job, ConversationLock | None], None]
-
-# Delay before a job whose conversation lock was busy runs again (Y6).
-LOCK_BUSY_DELAY_S = 5.0
 
 
 @dataclass(frozen=True)
@@ -41,26 +46,40 @@ def new_worker_id() -> str:
 
 
 class Worker:
+    """Timing comes from ``Settings``: the watchdog polls every ``worker_singleton_poll_s`` (each
+    probe has the same deadline), a new worker waits ``2 x worker_singleton_poll_s`` after taking
+    the singleton before recovery (so a previous worker that lost the lock has detected it and
+    exited), and a busy conversation lock delays a job by ``worker_lock_busy_delay_s``."""
+
     def __init__(
         self,
         engine: Engine,
         handlers: Mapping[str, Handler],
         worker_id: str | None = None,
         singleton: WorkerSingleton | None = None,
-        lock_busy_delay_s: float = LOCK_BUSY_DELAY_S,
+        settings: Settings | None = None,
+        sleep: Callable[[float], None] = time.sleep,
     ) -> None:
+        self.settings = settings or get_settings()
         self.engine = engine
         self.worker_id = worker_id or new_worker_id()
         self.handlers = handlers
-        self.singleton = singleton or WorkerSingleton(engine)
-        self.lock_busy_delay_s = lock_busy_delay_s
+        poll_s = self.settings.worker_singleton_poll_s
+        self.singleton = singleton or WorkerSingleton(engine, check_timeout_s=poll_s)
+        self._sleep = sleep
 
-    def start(self, watchdog_interval_s: float | None = None) -> dict[int, str]:
-        """Take the singleton lock (raises ``SingletonBusyError`` if held), then recover jobs
-        left ``running`` by a dead worker with the merge rule (Y1)."""
+    def start(self, watchdog: bool = True) -> dict[int, str]:
+        """Check the DB role, take the singleton (raises ``SingletonBusyError`` if held), start
+        the watchdog, wait for the takeover delay, then recover orphaned jobs (Y1)."""
+        poll_s = self.settings.worker_singleton_poll_s
+        with self.engine.connect() as conn:
+            check_runtime_role(conn, self.settings.app_env)
         self.singleton.acquire()
-        if watchdog_interval_s is not None:
-            self.singleton.start_watchdog(watchdog_interval_s)
+        if watchdog:
+            self.singleton.start_watchdog(poll_s)
+        self._sleep(2 * poll_s)
+        # TODO(T-025): before recovery, move outbox rows in 'sending' to 'unknown' and reconcile
+        # them; sending stays off until that is done (§6.8).
         with self.engine.begin() as conn:
             recovered = jobs.recover_orphaned(conn, self.worker_id)
         if recovered:
@@ -68,9 +87,12 @@ class Worker:
         return recovered
 
     def run_once(self) -> RunResult | None:
-        """Claim and run one due job. Returns ``None`` when the queue has nothing due."""
+        """Claim and run one due job. Returns ``None`` when nothing is due (or claimable)."""
+        token = self.singleton.token
+        if token is None:
+            raise SingletonNotHeldError("run_once needs the worker singleton")
         with self.engine.begin() as conn:
-            job = jobs.claim(conn, self.worker_id)
+            job = jobs.claim(conn, self.worker_id, token)
         if job is None:
             return None
         conversation_id = job.payload.get("conversation_id")
@@ -81,13 +103,15 @@ class Worker:
             else:
                 with conversation_lock(self.engine, int(conversation_id)) as lock:
                     if lock is None:
-                        # Y6: never mark done without the lock; requeue with the merge rule.
+                        # Y6: never mark done without the lock; requeue with the merge rule and
+                        # give the attempt back (a busy lock is not the job's failure).
                         with self.engine.begin() as conn:
                             status = jobs.requeue(
                                 conn,
                                 job.id,
-                                delay_s=self.lock_busy_delay_s,
+                                delay_s=self.settings.worker_lock_busy_delay_s,
                                 worker_id=self.worker_id,
+                                refund_attempt=True,
                             )
                         return RunResult(job.id, f"lock_busy:{status}")
                     handler(job, lock)

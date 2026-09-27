@@ -1,4 +1,7 @@
-"""Guarded inserts: message dedup (§6.3), the fenced draft INSERT (§6.1) and audit append."""
+"""Guarded inserts: message dedup (§6.3) and the fenced, idempotent draft INSERT (§6.1).
+
+Audit rows: ``app.db.audit``.
+"""
 
 from __future__ import annotations
 
@@ -76,30 +79,47 @@ def insert_draft_fenced(
     prompt_version: str | None = None,
     model_id: str | None = None,
 ) -> int | None:
-    """Conditional draft INSERT from the lock-holding connection (§6.1 write-time fencing).
+    """Fenced, idempotent draft INSERT from the lock-holding connection (§6.1).
 
-    Inserts nothing (returns ``None``) if a newer customer message arrived
-    (``last_inbound_seq != based_on_seq``) or if this session no longer holds the conversation
-    lock. ``FOR SHARE`` makes a concurrent seq update wait for us, or makes us re-check the new
-    seq, so a stale draft cannot slip in between. Runs in the caller's transaction on
-    ``lock.connection``.
+    Returns ``None`` (writes nothing) if a newer customer message arrived
+    (``last_inbound_seq != based_on_seq``) or if this session does not hold the conversation
+    lock. Otherwise returns the open draft for this seq: the new one, or, when a job is re-run
+    after a crash, the one it already wrote (partial UNIQUE ``uq_draft_open_per_seq``), and moves
+    ``last_processed_seq`` forward in the same transaction.
+
+    ``FOR SHARE`` on the conversation row keeps the fence true until commit: a concurrent ingest
+    that raises ``last_inbound_seq`` waits for us (and then marks this draft stale), or we wait
+    for it and see the new seq. Runs in the caller's transaction on ``lock.connection``.
     """
-    row = lock.connection.execute(
+    conn = lock.connection
+    params = {"conversation_id": lock.conversation_id, "seq": based_on_seq}
+    fenced = conn.execute(
         text(
             f"""
-            INSERT INTO draft (conversation_id, based_on_seq, action, parts, fact_sheet,
-                               prompt_version, model_id)
-            SELECT c.id, :seq, :action, :parts, :fact_sheet, :prompt_version, :model_id
-            FROM conversation AS c
+            SELECT 1 FROM conversation AS c
             WHERE c.id = :conversation_id AND c.last_inbound_seq = :seq
               AND {conversation_lock_held_here_sql()}
             FOR SHARE OF c
+            """
+        ),
+        params,
+    ).first()
+    if fenced is None:
+        return None
+    draft_id = conn.execute(
+        text(
+            """
+            INSERT INTO draft (conversation_id, based_on_seq, action, parts, fact_sheet,
+                               prompt_version, model_id)
+            VALUES (:conversation_id, :seq, :action, :parts, :fact_sheet,
+                    :prompt_version, :model_id)
+            ON CONFLICT (conversation_id, based_on_seq) WHERE status IN ('proposed', 'approved')
+            DO NOTHING
             RETURNING id
             """
         ).bindparams(bindparam("fact_sheet", type_=JSONB)),
         {
-            "conversation_id": lock.conversation_id,
-            "seq": based_on_seq,
+            **params,
             "action": action,
             "parts": parts,
             "fact_sheet": fact_sheet,
@@ -107,42 +127,19 @@ def insert_draft_fenced(
             "model_id": model_id,
         },
     ).scalar()
-    return None if row is None else int(row)
-
-
-def append_audit(
-    conn: Connection,
-    *,
-    op_id: str,
-    actor: str,
-    action: str,
-    result: str,
-    entity_ids: dict[str, Any] | None = None,
-    reason_code: str | None = None,
-    reason_short: str | None = None,
-    correlation_id: str | None = None,
-) -> int:
-    """Append one audit row (ids and codes only, AGENTS.md §7). There is no update or delete."""
-    return int(
-        conn.execute(
+    if draft_id is None:  # replay: the open draft for this seq already exists
+        draft_id = conn.execute(
             text(
-                """
-                INSERT INTO audit_event (op_id, correlation_id, actor, action, entity_ids,
-                                         reason_code, reason_short, result)
-                VALUES (:op_id, :correlation_id, :actor, :action, :entity_ids,
-                        :reason_code, :reason_short, :result)
-                RETURNING id
-                """
-            ).bindparams(bindparam("entity_ids", type_=JSONB)),
-            {
-                "op_id": op_id,
-                "correlation_id": correlation_id,
-                "actor": actor,
-                "action": action,
-                "entity_ids": entity_ids or {},
-                "reason_code": reason_code,
-                "reason_short": reason_short,
-                "result": result,
-            },
+                "SELECT id FROM draft WHERE conversation_id = :conversation_id "
+                "AND based_on_seq = :seq AND status IN ('proposed', 'approved')"
+            ),
+            params,
         ).scalar_one()
+    conn.execute(
+        text(
+            "UPDATE conversation SET last_processed_seq = :seq "
+            "WHERE id = :conversation_id AND last_processed_seq < :seq"
+        ),
+        params,
     )
+    return int(draft_id)

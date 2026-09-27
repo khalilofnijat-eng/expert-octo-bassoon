@@ -19,6 +19,8 @@ from sqlalchemy import Connection, Engine, create_engine, text
 from sqlalchemy.engine import make_url
 
 from app.config import REPO_ROOT
+from app.queue.locks import SingletonToken, WorkerSingleton
+from tests.db.factories import ExitRecorder
 
 
 def _admin_url() -> str:
@@ -78,8 +80,9 @@ def _session_engine(db_url: str) -> Iterator[Engine]:
 
 @pytest.fixture
 def engine(_session_engine: Engine) -> Engine:
-    """Engine on a migrated database, emptied before each test (audit_event is append-only and
-    is left alone; tests use unique op ids)."""
+    """Engine on a migrated database, emptied before each test and reset to the seed settings
+    (kill switch on, draft_only). audit_event is append-only and is left alone; tests use unique
+    op ids or count relative to a baseline."""
     with _session_engine.begin() as conn:
         conn.execute(
             text(
@@ -89,8 +92,23 @@ def engine(_session_engine: Engine) -> Engine:
         )
         conn.execute(
             text(
-                "UPDATE system_setting SET kill_switch = false, automation_mode = 'draft_only', "
-                "version = 0 WHERE id = 1"
+                "INSERT INTO system_setting (id) VALUES (1) ON CONFLICT (id) DO UPDATE SET "
+                "kill_switch = true, automation_mode = 'draft_only', version = 0"
             )
         )
     return _session_engine
+
+
+@pytest.fixture
+def singleton(engine: Engine) -> Iterator[WorkerSingleton]:
+    """A held worker singleton whose loss is recorded instead of ending the test process."""
+    s = WorkerSingleton(engine, on_lost=ExitRecorder(), check_timeout_s=2.0)
+    s.acquire()
+    yield s
+    s.release()
+
+
+@pytest.fixture
+def token(singleton: WorkerSingleton) -> SingletonToken:
+    assert singleton.token is not None
+    return singleton.token

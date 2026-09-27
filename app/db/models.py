@@ -6,7 +6,7 @@ add values without ``ALTER TYPE``. Every table with a status has a version colum
 ``conversation`` calls it ``state_version`` as in §5.
 
 The migration in ``migrations/versions`` is written by hand and must stay equal to these models;
-``tests/db/test_migration.py`` compares them.
+``tests/db/test_db_migration.py`` compares them.
 """
 
 from __future__ import annotations
@@ -48,6 +48,19 @@ CONVERSATION_STATES = (
 )
 CLOSE_REASONS = ("customer_withdrew", "inactive", "owner_closed")
 AUTOMATION_STATES = ("active", "paused")
+# Every paused(...) reason named in ARCHITECTURE rev.2 (§4.4, §6.3-§6.13, MA-4).
+PAUSED_REASONS = (
+    "owner_takeover",
+    "owner_intervened",
+    "owner_modified",
+    "send_unknown",
+    "group_incomplete",
+    "unknown_author",
+    "unsupported_content",
+    "llm_outage",
+    "budget",
+    "restore_gap",
+)
 AUTHOR_ROLES = ("customer", "assistant", "owner_manual", "system", "unknown")
 DIRECTIONS = ("in", "out")
 ATTACHMENT_STATUSES = ("none", "stored", "attachment_unavailable")
@@ -97,6 +110,19 @@ class Conversation(Base):
             name="ck_conversation_close_reason",
         ),
         CheckConstraint(_in("automation", AUTOMATION_STATES), name="ck_conversation_automation"),
+        CheckConstraint(
+            f"paused_reason IS NULL OR {_in('paused_reason', PAUSED_REASONS)}",
+            name="ck_conversation_paused_reason",
+        ),
+        CheckConstraint(
+            "automation <> 'paused' OR paused_reason IS NOT NULL",
+            name="ck_conversation_paused_has_reason",
+        ),
+        # A close reason exactly when closed (and never otherwise).
+        CheckConstraint(
+            "(state = 'closed') = (close_reason IS NOT NULL)",
+            name="ck_conversation_closed_reason",
+        ),
     )
 
     id: Mapped[int] = mapped_column(BigInteger, Identity(), primary_key=True)
@@ -171,7 +197,8 @@ class Job(Base):
         DateTime(timezone=True), nullable=False, server_default=func.now()
     )
     attempts: Mapped[int] = mapped_column(Integer, nullable=False, server_default="0")
-    max_attempts: Mapped[int] = mapped_column(Integer, nullable=False, server_default="8")
+    # 12 claims: the backoff reaches its 1 h cap (app.queue.jobs.backoff_seconds).
+    max_attempts: Mapped[int] = mapped_column(Integer, nullable=False, server_default="12")
     claimed_by: Mapped[str | None] = mapped_column(Text)
     claimed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     last_error_code: Mapped[str | None] = mapped_column(Text)
@@ -181,13 +208,27 @@ class Job(Base):
 
 class Draft(Base):
     __tablename__ = "draft"
-    __table_args__ = (CheckConstraint(_in("status", DRAFT_STATUSES), name="ck_draft_status"),)
+    __table_args__ = (
+        CheckConstraint(_in("status", DRAFT_STATUSES), name="ck_draft_status"),
+        # One open draft per (conversation, seq): a job re-run after a crash cannot add a second
+        # one (app.db.writes.insert_draft_fenced is idempotent on this index).
+        Index(
+            "uq_draft_open_per_seq",
+            "conversation_id",
+            "based_on_seq",
+            unique=True,
+            postgresql_where=text("status IN ('proposed', 'approved')"),
+        ),
+        Index("ix_draft_conversation_id", "conversation_id"),
+    )
 
     id: Mapped[int] = mapped_column(BigInteger, Identity(), primary_key=True)
     conversation_id: Mapped[int] = mapped_column(ForeignKey("conversation.id"), nullable=False)
     based_on_seq: Mapped[int] = mapped_column(BigInteger, nullable=False)
     action: Mapped[str] = mapped_column(Text, nullable=False)
-    # Final rendered parts (<= 1000 chars each; enforced by the renderer/filter, §7.2).
+    # Final rendered parts. No DB CHECK on part length on purpose: the limit is measured in
+    # UTF-16 units by the output filter (app.safety.filter, FilterConfig.max_part_units,
+    # reason PART_TOO_LONG) before a draft is written, and SQL char_length would count differently.
     parts: Mapped[list[str]] = mapped_column(
         ARRAY(Text), nullable=False, server_default=text("'{}'::text[]")
     )
@@ -223,6 +264,7 @@ class OutboundMessage(Base):
         UniqueConstraint(
             "draft_id", "generation", "part_no", name="uq_outbound_message_draft_generation_part"
         ),
+        Index("ix_outbound_message_status", "status"),
     )
 
     id: Mapped[int] = mapped_column(BigInteger, Identity(), primary_key=True)
@@ -247,7 +289,9 @@ class OutboundMessage(Base):
 
 
 class SystemSetting(Base):
-    """Single-row table (``id = 1``). Seeded by the initial migration."""
+    """Single-row table (``id = 1``), the runtime source of truth for these settings. Seeded by
+    the initial migration with ``kill_switch = true`` (nothing is sent until the owner turns it
+    off) and ``automation_mode`` from the ``AUTOMATION_MODE`` environment value."""
 
     __tablename__ = "system_setting"
     __table_args__ = (
@@ -258,15 +302,36 @@ class SystemSetting(Base):
     )
 
     id: Mapped[int] = mapped_column(SmallInteger, primary_key=True, autoincrement=False)
-    kill_switch: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default="false")
+    kill_switch: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default="true")
     automation_mode: Mapped[str] = mapped_column(Text, nullable=False, server_default="draft_only")
     activation_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     images_enabled: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default="false")
     version: Mapped[int] = mapped_column(Integer, nullable=False, server_default="0")
 
 
+class WorkerSingleton(Base):
+    """Single-row table (``id = 1``): the epoch of the current worker singleton (§6.1, Y5).
+
+    Each worker increments ``epoch`` right after taking advisory lock (1, 0). Fenced writes check
+    the epoch as well as the backend pid, so a reused pid cannot pass for an old worker.
+    """
+
+    __tablename__ = "worker_singleton"
+    __table_args__ = (CheckConstraint("id = 1", name="ck_worker_singleton_single_row"),)
+
+    id: Mapped[int] = mapped_column(SmallInteger, primary_key=True, autoincrement=False)
+    epoch: Mapped[int] = mapped_column(BigInteger, nullable=False, server_default="0")
+    pid: Mapped[int | None] = mapped_column(Integer)
+    acquired_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
 class AuditEvent(Base):
-    """Append-only (AGENTS.md §7). Ids and codes only: no message text, contacts or reasoning."""
+    """Append-only (AGENTS.md §7). Ids and codes only: no message text, contacts or reasoning.
+
+    Enforced by privileges (the runtime role has SELECT/INSERT only) and by a trigger. The trigger
+    alone is not enough: the table owner, not only a superuser, can disable it. The application
+    therefore never connects as the owner (app.db.roles, app/README.md).
+    """
 
     __tablename__ = "audit_event"
     __table_args__ = (
