@@ -1,0 +1,4 @@
+# SYNTHETIC Bases view (T-043)
+views:
+  - type: table
+    name: Все
