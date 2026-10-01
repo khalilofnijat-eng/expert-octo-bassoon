@@ -68,6 +68,7 @@ Kaynak: [docs/OWNER_REQUEST_2026-09-27.md](docs/OWNER_REQUEST_2026-09-27.md) (b�
 - Sahipten şifre, anahtar, token veya çerezi sohbete yapıştırması **asla** istenmez; bu değerler yalnızca çalışacak makinenin ortam ayarlarına veya `.env` dosyasına girilir ([BLOCKERS.md](BLOCKERS.md) B-011). Hesap şifresi, oturum çerezleri ve erişim anahtarları kayıt dosyalarına taşınmaz (§3).
 - Sahibin mevcut Obsidian Vault dosyaları ve ayarları izinsiz değiştirilmez (§10).
 - Örnek veya sentetik veriyle yapılan iş açıkça işaretlenir ve gerçek entegrasyon tamamlanmış gibi sunulmaz (§13); testlerde ayrım: [docs/TEST_REPORT.md](docs/TEST_REPORT.md).
+- Main Agent, sahibin daha önce cevapladığı soruları yeniden sormaz; önce [BLOCKERS.md](BLOCKERS.md)'deki cevaplara bakar. Sahip 2026-09-27'de hesap türü, tarife ve erişim konularının tekrar sorulmamasını istedi (kaynak: sahibin o günkü sohbet mesajı, BLOCKERS B-001, B-007, B-011; OWNER_REQUEST'te değil).
 
 ## 7. Denetim kaydı biçimi
 

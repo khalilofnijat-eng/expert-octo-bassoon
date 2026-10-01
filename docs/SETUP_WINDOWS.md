@@ -29,7 +29,7 @@ winget install Git.Git astral-sh.uv
 
 ## 2. Projeyi indirin (clone)
 
-Projeyi koymak istediğiniz klasöre geçin (örnek: Belgeler) ve indirin:
+**Proje klasörünün yeri:** önerilen yer Obsidian kasanızın içindeki `Avito-Assistant` klasörüdür; adımlar ve gerekli ayar (`UV_PROJECT_ENVIRONMENT`): [VAULT_PLACEMENT.md](VAULT_PLACEMENT.md). Kasayı kullanmak istemezseniz başka bir klasöre geçip (örnek: Belgeler) indirin:
 
 ```powershell
 cd $HOME\Documents
@@ -40,9 +40,9 @@ git switch claude/youthful-goldberg-l427nm
 
 - Son satır, geliştirmenin yapıldığı dalı açar ([docs/DECISIONS.md](DECISIONS.md) D-014). Dal değişirse Main Agent size bildirir.
 - **Depo özel (private) yapıldıktan sonra** `git clone` ve `git pull` sırasında GitHub girişi istenir: açılan pencerede/tarayıcıda kendi GitHub hesabınızla giriş yapın. GitHub şifrenizi de sohbete yazmayın.
-- Proje klasörünü Obsidian kasanızın **içine** koymayın.
+- Gizli değer dosyası ve veritabanı her durumda proje klasörünün ve kasanın **dışında** durur (4. adım).
 
-Sonraki tüm komutlar bu proje klasöründe (`expert-octo-bassoon`) çalıştırılır.
+Sonraki tüm komutlar proje klasöründe (`expert-octo-bassoon` ya da kasada `Avito-Assistant`) çalıştırılır.
 
 ## 3. Bağımlılıkları kurun
 
@@ -120,13 +120,13 @@ Komutun çıkış kodu: `0` her şey erişilebilir, `1` en az bir kontrol başar
 
 **Tarife değişikliğinden sonra:** Avito tarifenizi değiştirdiyseniz (ör. «Расширенный» tarifesine geçiş) bu kontrolü yeniden çalıştırın ve çıktıyı Main Agent'a iletin. Messenger API'nin o tarifede açık olup olmadığına belgeler değil, bu kontrolün sonucu karar verir.
 
-**Sonraki adım:** erişim kontrolünden sonra `docs/VAULT_SURVEY.md` belgesindeki adımlara geçin (T-043; belge hazırlanıyor, henüz yoksa Main Agent size haber verir).
+**Sonraki adım:** erişim kontrolünden sonra [VAULT_SURVEY.md](VAULT_SURVEY.md) belgesindeki adımlara geçin (T-043).
 
 ## 6. Main Agent'ın bu bilgisayarda çalışması için yerel Claude oturumu
 
 *Aşağıdaki iki yol Main Agent'ın ortam belgelerine göredir; ekran ve menü adları sürüme göre değişebilir, burada yalnızca belgelerde geçen adlar kullanıldı.*
 
-- **Claude Desktop uygulaması:** uygulamanın **Code** özelliğini açın ve çalışma klasörü olarak bu proje klasörünü (`expert-octo-bassoon`) seçin.
+- **Claude Desktop uygulaması:** uygulamanın **Code** özelliğini açın ve çalışma klasörü olarak proje klasörünü (`expert-octo-bassoon` ya da kasada `Avito-Assistant`) seçin.
 - **Terminal:** PowerShell'de proje klasörüne geçip şunu çalıştırın:
 
   ```powershell

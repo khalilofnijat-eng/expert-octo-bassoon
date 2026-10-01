@@ -2,7 +2,21 @@
 
 En yeni kayıt en üstte. Her kayıt, değişikliği içeren commit'in kısa hash'ini taşır; kaydı içeren commit'in kendi hash'i bir sonraki kayıt güncellemesinde eklenir.
 
-## 2026-09-27 (T-036, kayıt eşitlemesi) — commit: bir sonraki güncellemede eklenecek
+## 2026-10-01 (T-042 + T-044, bulut aşamasının son devri) — commit: bu kaydı içeren commit (hash'i TASKS/HANDOFF güncellemesinde eklenecek)
+
+- Yeni: [LOCAL_SESSION_PROMPT.md](LOCAL_SESSION_PROMPT.md) (yerel oturuma ilk mesaj), [docs/VAULT_PLACEMENT.md](docs/VAULT_PLACEMENT.md) (kasaya yerleştirme, `UV_PROJECT_ENVIRONMENT`); README'ye "Buradan başla" kutusu.
+- TASKS: T-039/T-039b (`1ee147b`, `cd0def9`), T-040b (`c358f4e`), T-041 (`6d013f8`), T-043 (`7cb06d9`) kabul; T-033b yarıda kaldı, yerel oturumda yeniden; yeni T-044, T-045 (T-041 doğrulaması); sıradaki kimlik T-046.
+- DECISIONS: D-044 uygulandı (T-041). BLOCKERS: B-009'a yerel oturum notu. LESSONS_LEARNED: kullanım sınırı → küçük görev, yeşil ara adımları commit et.
+- `.env.example`: `AVITO_USER_ID`, yorumlu `ASSISTANT_SECRETS_FILE`. `docs/SETUP_WINDOWS.md`: kasaya yerleştirmeyle uyum. `scripts/README.md`, `tests/README.md` güncellendi. STATE, HANDOFF, oturum kaydı: bulut aşamasının son durumu.
+
+## 2026-09-27 (T-042) — aynı commit
+
+- BLOCKERS: sahip cevapları aynen alıntıyla kaydedildi — B-001 (Windows, "khalilofnijat" Chrome profili; T-039), B-007 (Pro, Базовый'da API yok, «Расширенный»'e geçiş; spec kopyası «Максимальный» diyor, canlı doğrulanacak), B-011 (yerel gizli değer dosyası), B-002 kısmen çözüldü (Vault), B-004 kısmen çözüldü (sahibin Windows bilgisayarı), B-003 (kurulumda bulunacak), B-010 (beklemede). "Tekrar sorulmasın" notu — [BLOCKERS.md](BLOCKERS.md). AGENTS §6: cevaplanan sorular yeniden sorulmaz.
+- DECISIONS: D-043 (T-034 filtre kararları D-a…D-l; D-l değiştirildi), D-044 (T-041 filtre kararları), D-045 (pilot barındırma), D-046 (Vault envanter kaynağı); D-039 takibi T-041'e bağlandı — [docs/DECISIONS.md](docs/DECISIONS.md).
+- TASKS: T-016, T-018, T-018b, T-036, T-038, T-040 kabul; T-034, T-032b düzeltmelerle kabul; yeni T-040b, T-041, T-042, T-043; T-039 ve T-040 sahipleri; sıradaki kimlik T-044 — [TASKS.md](TASKS.md).
+- `app/README.md`: mimari kabul edildi, modül listesi, `APP_ENV`; DB rol adımları [docs/RUNBOOK.md](docs/RUNBOOK.md) → "Veritabanı rolleri"ne taşındı. `.env.example`: `AUTOMATION_MODE` yorumundan `auto_scoped` çıkarıldı. ARCHITECTURE §16 durum satırı. STATE, HANDOFF, oturum kaydı.
+
+## 2026-09-27 (T-036, kayıt eşitlemesi) — commit `030bd6e`
 
 - TASKS: T-004 commit edildi, T-013b yapıldı; T-015, T-017, T-019, T-022, T-022b, T-018c, T-035, T-037 kabul; T-032, T-033 düzeltmelerle kabul; T-016 ve T-036 teslim edildi; T-018, T-034, T-033b, T-039, T-040 sürüyor; T-018b, T-038 eklendi; B-012 listesi genişletildi — [TASKS.md](TASKS.md).
 - BLOCKERS: B-013 çözüldü; B-005 kısmen çözüldü (ödeme yöntemleri, ИП, Avito Доставка); B-002, B-004 yeniden soruldu; yeni B-015 (poisk.vin API) — [BLOCKERS.md](BLOCKERS.md).

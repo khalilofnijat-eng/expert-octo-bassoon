@@ -2,7 +2,7 @@
 
 Kararların **tek kaynağı** bu dosyadır. Durum değerleri: `geçerli` · `kabul (YYYY-MM-DD)` (Main Agent'ın kabul ettiği mimari ve uygulama kararları; geçerli sayılır) · `değiştirildi (→ D-xxx)` · `iptal`. Güven etiketleri: [INTEGRATIONS.md](INTEGRATIONS.md) başındaki tablo.
 
-Sıradaki karar kimliği: **D-039**.
+Sıradaki karar kimliği: **D-047**.
 
 | ID | Tarih | Karar | Gerekçe | Durum |
 |---|---|---|---|---|
@@ -61,10 +61,49 @@ Main Agent 2026-09-27'de mimariyi rev.2 olarak kabul etti. D-015–D-021, [ARCHI
 
 | ID | Tarih | Karar | Gerekçe | Durum |
 |---|---|---|---|---|
-| D-039 | 2026-09-27 | **Ödeme yöntemleri:** hepsi kabul edilir — nakit (нал), QR kodla ödeme (СБП/QR), karta havale ve şirketler için banka havalesi (безнал; tutara +%10). **+%10 yalnızca şirketlere (B2B banka havalesi) uygulanır;** tüketiciden kart/QR/СБП için ek ücret alınması yasaktır (ЗоЗПП md. 16.1 p.4, Rospotrebnadzor — T-037, ikincil kaynak). Sahip bunu teyit etti; muhasebeci henüz teyit etmedi. Ödeme yöntemleri müşteriye açık bilgi olduğundan public depoya yazılabilir ([../AGENTS.md](../AGENTS.md) §5 yasağına bu bilgi için istisna). İndirim sınırları, maliyetler ve tedarikçi bilgileri [../BLOCKERS.md](../BLOCKERS.md) B-008 açıkken git dışında kalır. Ödeme **ayrıntıları** yalnızca Avito'nun izin verdiği kanallardan paylaşılır (D-040). **Takip:** output filter'ın nakit için verdiği `PAYMENT_TERMS_UNCONFIRMED` reddi ([../app/safety/filter.py](../app/safety/filter.py)) sonraki bir kod görevinde gevşetilecek (görev kimliği henüz atanmadı). | Sahip cevabı ve teyidi (B-005, 2026-09-27); depoya yazma: Main Agent kararı; +%10 sınırı: T-037. | geçerli |
+| D-039 | 2026-09-27 | **Ödeme yöntemleri:** hepsi kabul edilir — nakit (нал), QR kodla ödeme (СБП/QR), karta havale ve şirketler için banka havalesi (безнал; tutara +%10). **+%10 yalnızca şirketlere (B2B banka havalesi) uygulanır;** tüketiciden kart/QR/СБП için ek ücret alınması yasaktır (ЗоЗПП md. 16.1 p.4, Rospotrebnadzor — T-037, ikincil kaynak). Sahip bunu teyit etti; muhasebeci henüz teyit etmedi. Ödeme yöntemleri müşteriye açık bilgi olduğundan public depoya yazılabilir ([../AGENTS.md](../AGENTS.md) §5 yasağına bu bilgi için istisna). İndirim sınırları, maliyetler ve tedarikçi bilgileri [../BLOCKERS.md](../BLOCKERS.md) B-008 açıkken git dışında kalır. Ödeme **ayrıntıları** yalnızca Avito'nun izin verdiği kanallardan paylaşılır (D-040). **Takip:** output filter'ın nakit için verdiği `PAYMENT_TERMS_UNCONFIRMED` reddi ([../app/safety/filter.py](../app/safety/filter.py)) T-041 ile değiştirildi (`6d013f8`): ödeme ifadesi yalnızca sahibin onayladığı `rule_payment` span'ında serbest, kodun yeni adı `PAYMENT_TERMS_OUTSIDE_RULE` (D-043 → D-l, D-044). | Sahip cevabı ve teyidi (B-005, 2026-09-27); depoya yazma: Main Agent kararı; +%10 sınırı: T-037. | geçerli |
 | D-040 | 2026-09-27 | **Avito moderasyonu atlatılmaz.** Sistem, Avito'nun denetimlerini aşacak biçimde tasarlanmaz: ödeme veya iletişim bilgileri metin denetiminden kaçmak için görsel olarak gönderilmez; Avito sohbetlerinde müşteri platform dışına yönlendirilmez. Ödeme bilgileri yalnızca Avito'nun izin verdiği kanallardan paylaşılır. Meşru alternatifler T-037'de araştırılır: Avito'nun doğrulanmış işletme profili istisnası, Avito'nun izin verdiği yerde web sitesi bağlantısı, Avito'nun kendi ödeme/teslimat hizmeti, aramayla web sitesine veya diğer kanallara gelen müşterilere doğrudan hizmet. | Sahibin kuralı: "Platformun erişim sınırlarını, hız sınırlarını ve güvenlik kontrollerini aşmaya çalışma" ([OWNER_REQUEST_2026-09-27.md](OWNER_REQUEST_2026-09-27.md) §3); Товары sohbetlerinde iletişim bilgisi yasağı ([NOTES.md](NOTES.md), [INTEGRATIONS.md](INTEGRATIONS.md) — ikincil kaynak); hesap engeli riski. Main Agent kararı, sahibe bildirildi. | geçerli |
 | D-041 | 2026-09-27 | Web sitesi **ayrı bir projedir**; başlangıç dosyalarını T-038 hazırlar. Sahip iki projeyi birleştirene kadar bu projenin kapsamı dışındadır. | Main Agent kararı. | geçerli |
 | D-042 | 2026-09-27 | **Messenger API tarifesi için sahibe üç seçenek sunulur:** (1) tam API otomasyonu için «Максимальный» tarifeye geçmek; (2) Messenger API kullanmayan "elle aktarma" pilotu: sahip müşteri mesajını yönetim ekranına kopyalar, asistan taslak cevap üretir, sahip cevabı Avito'ya yapıştırır — `draft_only` moduyla uyumlu; (3) tarayıcı otomasyonu üretim seçeneği **değildir** (D-011). Mevcut tarifenin gerçekte neye izin verdiğini T-039'un salt okunur erişim kontrolü gösterecek. | Sahip cevabı (2026-09-27): Pro profili, Базовый tarife (engel: [../BLOCKERS.md](../BLOCKERS.md) B-007); spec kopyasına göre (canlı doğrulanmadı) Товары için Messenger API «Максимальный» gerektirir ([INTEGRATIONS.md](INTEGRATIONS.md) §3.2). Main Agent kararı. | geçerli |
+| D-045 | 2026-09-27 | **Pilot barındırma = sahibin Windows bilgisayarı.** Servisler oturum açmadan başlayan Windows servisleri olarak çalışır; uyku kapatılır; webhook'suz, yalnızca poller modu (D-026) — açık port ve tünel yok; yönetim ekranı yalnızca localhost'a bağlanır; yedekler makine dışında tutulur. 152-FZ yerelleştirme sorusu teyit edilene kadar beklemede: veri sahibin bilgisayarında kalır, LLM sağlayıcısı sonra seçilir ([../BLOCKERS.md](../BLOCKERS.md) B-006, B-010). Gerekirse sonra sunucuya taşınır. | Sahip cevabı (2026-09-27): sistem önce kendi bilgisayarına kurulsun, gerekirse sonra sunucuya geçilsin ([../BLOCKERS.md](../BLOCKERS.md) B-004). [ARCHITECTURE.md](ARCHITECTURE.md) §12: "PC, yalnızca poller" seçeneği ve Windows'ta oturum açmadan başlayan servis gereği; belge Windows yerine Linux VPS'i önermişti, pilot için sahip tercihi seçildi. Main Agent kararı. | geçerli |
+| D-046 | 2026-09-27 | **Envanter kaynağı = sahibin Obsidian Vault'u (salt okunur).** Vault sahibin doğruluk kaynağı olarak kalır (D-008). Veritabanımız Vault'un `fetched_at` zaman damgalı, salt okunur senkron kopyasını tutar. Vault'a geri yazma (ör. rezervasyon) yalnızca sahibin ayrı onayıyla yapılır; Vault izinsiz değiştirilmez ([../AGENTS.md](../AGENTS.md) §6). Sıra: T-043 (salt okunur, anonimleştirilmiş Vault taraması) → salt okunur Vault envanter adaptörünün tasarımı. | Sahip cevabı (2026-09-27): stok, fiyat ve fotoğrafların hepsi Vault'ta, ayrı depo yazılımı yok ([../BLOCKERS.md](../BLOCKERS.md) B-002). Main Agent kararı. | geçerli |
+
+## Output filter kararları (T-034, T-041)
+
+Kodda (`app/safety/`) kararlar T-034 brief'indeki harf kimlikleriyle anılır ("D-a" … "D-l"); karşılıkları D-043'tedir. Brief: [../tasks/T-034/brief.md](../tasks/T-034/brief.md). Testler yalnızca sentetik veriyle ([TEST_REPORT.md](TEST_REPORT.md)).
+
+### D-043 — T-034 filtre kararları (D-a…D-l)
+
+- **Tarih:** 2026-09-27 · **Kaynak:** T-034 brief'i (T-032 bulgularının düzeltmesi), Main Agent kararları · **Durum:** kabul (2026-09-27); D-l değiştirildi (aşağıda).
+
+| Alt kimlik | Karar (tek satır özet) | Durum |
+|---|---|---|
+| D-a | Maskeleyici ve filtre ortak normalleştirme katmanını (`app/safety/normalize.py`) kullanır; gizleme girişimi `OBFUSCATION`, geçersiz karakter `INVALID_TEXT` ile reddedilir. | kabul |
+| D-b | Filtre kalıpları genişletildi (T-032'nin yeniden üretimleri regresyon testi). | kabul |
+| D-c | Olumlu uyumluluk iddiası ("подойдёт") doğrulama olmadan reddedilir (`UNVERIFIED_FITMENT`); soru/çekince (hedge) cümlesi istisnadır. | kabul; çekince istisnası D-044 ile daraltıldı |
+| D-d | URL host'u katı biçimde ayrıştırılır; izin listesindeki URL de temiz olmalıdır. | kabul |
+| D-e | Liste beklenen yerde tek `str` argümanı `TypeError` verir. | kabul |
+| D-f | Şablon muafiyeti yalnızca kodun verdiği span'lara (başlangıç, bitiş) göredir; şablon metnini tekrar eden metin muaf olmaz. | kabul; D-044'te tipli span'lara genişletildi |
+| D-g | Filtre fail-closed çalışır; sahip düzeltmesinde bulgulu parça `overridable` işaretlenir, gönderim denetimli sahip onayı ister. | kabul |
+| D-h | Maskeleyicide handle ve telefon tespiti düzeltmeleri. | kabul |
+| D-i | `extract_part_number_candidates` maskelenmemiş müşteri metninde, maskelemeden önce çalışır; maskeleyicinin telefon sandığı parça numaraları katalog eşleştirmesine yine ulaşır. | kabul |
+| D-j | `allowed_literals` sözleşmesi: yalnızca olgu kağıdı ve ürün kayıtlarından gelir, müşteri metninden türetilmez; yazım varyantları `literal_variants` ile eklenir. | kabul |
+| D-k | Muhafazakâr parça uzunluğu: ≤1000 UTF-16 birimi **ve** ≤1000 UTF-8 bayt (`measure_part`; Avito'nun sayım birimi doğrulanmadı). | kabul |
+| D-l | Nakit ödeme ifadesi işletme kuralları belli olana kadar reddedilir (`PAYMENT_TERMS_UNCONFIRMED`). | değiştirildi (→ D-039, D-044): ödeme ifadesi yalnızca sahibin onayladığı `rule_payment` span'ında serbest |
+
+### D-044 — T-041 filtre kararları (T-032b doğrulamasından)
+
+- **Tarih:** 2026-09-27 · **Kaynak:** T-032b doğrulaması (düzeltmelerle kabul), Main Agent kararları · **Durum:** geçerli — T-041 ile uygulandı (`6d013f8`); bağımsız doğrulaması T-045 ([../TASKS.md](../TASKS.md)).
+
+- **Tipli span'lar:** `rule_payment`, `rule_generic`, `offer`, `confirmation`, `bot_disclosure`, `wait_message`; her türün kendi kod başına muafiyetleri vardır.
+- `PAYMENT_CARD` ve `CONTACT_PHONE` sert engeldir; sahip düzeltmesinde de geçersiz kılınamaz.
+- Çekince (hedge) istisnası yalnızca soru biçimlerine ve gelecek zamanlı doğrulama fiillerine daraltıldı.
+- Unicode izin listesi (whitelist) politikası.
+- Bölünmüş kelimeler için sıkıştırılmış görünümde (compact view) eşleştirme.
+- `mask()` girdi sınırı 50 bin karakter; aşan girdi sahibe gider.
+- Küçük sayı kelimeleri pilot boyunca reddedilmeye devam eder; etkisi ölçülecek.
+- Sahibin ödeme kuralı metni "по QR-коду (СБП)" der, "по номеру телефона" demez (D-039).
+- `PAYMENT_TERMS_UNCONFIRMED` kodunun yeni adı `PAYMENT_TERMS_OUTSIDE_RULE`.
 
 ## Verilen canlı yetkiler
 

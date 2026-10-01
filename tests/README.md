@@ -9,6 +9,8 @@ Birim testleri (pytest). Tüm test verisi **sentetiktir**: telefon, e-posta, kar
 | `test_health.py` | `GET /healthz`. |
 | `test_filter.py` | Output filter ([../docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md) §7.2; T-019, T-034): her `reason_code` için ret ve kabul örnekleri, sahip düzeltmesi modu, `measure_part`. Bilinen sınırlamalar `xfail(strict=True)`. |
 | `test_filter_t032.py` | T-032 güvenlik incelemesinin tüm yeniden üretimleri, regresyon testi olarak (T-034); veri: `fixtures/filter/t032_cases.json` (etiketli sentetik vakalar). |
+| `test_filter_t032b.py` | T-032b doğrulamasının yeniden üretimleri, regresyon testi olarak (T-041); veri: `fixtures/filter/t032b_cases.json`. Kalan bilinen sınırlamalar `xfail(strict=True)`. |
+| `tools/` | Betikler: gizli değer dosyası kuralları ve salt okunur erişim kontrolü (T-039), Vault taraması (T-043; veri: `fixtures/synthetic_vault/`, uydurma). Gerçek gizli değer dosyasına dokunmaz. |
 | `avito/` | Avito gateway (T-017) ve gönderim istemcisi (T-018): izin listesi (yazan uç yok), yapılandırma, hata sınıfları (tek HTTP denemesi), sayfalama (her zaman sonlanır), ayrıştırma, öncelikli rate limiter (sanal zaman), gizli değerlerin loglara/`repr`'e girmemesi, token yönetimi, gönderim. Ağ yok: spec tabanlı mock ([../scripts/dev/avito_mock/](../scripts/dev/avito_mock/)) ve `fixtures/avito/`. |
 | `catalog/` | Catalog/fitment (T-022, T-022b): sentetik veri seti yükleyicisi, fitment kuralları, W213 ön tampon senaryosu; veri: `fixtures/synthetic_catalog/w213_front_bumper.json` (uydurma SKU, fiyat ve fotoğraf anahtarları). |
 | `inventory/` | Inventory portu sözleşmesi sentetik adaptörde (köken, hata modları, iddialar) ve migration 0002 gerçek PostgreSQL'de (`test_inventory_db.py`). |

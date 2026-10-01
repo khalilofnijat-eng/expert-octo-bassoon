@@ -733,7 +733,7 @@ Sentetik/mock ile şimdi yapılabilenler: T-015 … T-031 (mock/sentetik; sonuç
 | MA-6 | Saklama/silme mekanizması şimdi tasarlanır; süreler sahip kararıdır (B-010). |
 | MA-7 | `draft_only`'de sahip rakamları veya seçenek/teyit bloğunu değiştirirse teklif/teyit `owner_modified` olur; otomatik teyit ve hold yapılmaz, konuşma sahibe gider (T-012b, Y8). |
 
-**Bu belgenin önerileri (onay bekliyor):**
+**Bu belgenin önerileri — kabul edildi (D-015–D-035):**
 
 - ÖK-1: Modüler monolit (`webhook`, `admin`, tek `worker`, PostgreSQL), Docker Compose.
 - ÖK-2: Kuyruk PostgreSQL `job` tablosunda; tekillik yalnızca `queued` için.

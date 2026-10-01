@@ -2,6 +2,11 @@
 
 Bu depo, Avito'da otomotiv parçası satan işletme için kurulacak müşteri asistanının proje klasörüdür (ileride Obsidian Vault içindeki `Avito-Assistant/` klasörü olacak; bkz. [BLOCKERS.md](BLOCKERS.md) B-003). Asistan; müşteri mesajını ve ilanı anlayacak, depodaki gerçek ürün/stok/fiyat/fotoğraf bilgisini kullanacak ve konuşmayı işletmenin kuralları içinde siparişe taşıyacak. Güncel durum için: **[STATE.md](STATE.md)**.
 
+> [!tip] Buradan başla (sahip, Windows bilgisayarı)
+> 1. Klasörü kasaya yerleştir: [docs/VAULT_PLACEMENT.md](docs/VAULT_PLACEMENT.md)
+> 2. Kurulum, Avito kimlik bilgileri ve erişim kontrolü: [docs/SETUP_WINDOWS.md](docs/SETUP_WINDOWS.md)
+> 3. Yerel Claude oturumuna ilk mesaj: [LOCAL_SESSION_PROMPT.md](LOCAL_SESSION_PROMPT.md)
+
 ## Yeni oturum
 
 Önce [AGENTS.md](AGENTS.md)'yi oku; oturum başı okuma sırası orada (§1).
@@ -27,6 +32,10 @@ Bu depo, Avito'da otomotiv parçası satan işletme için kurulacak müşteri as
 | [docs/INTEGRATIONS.md](docs/INTEGRATIONS.md) | Bağlantılar ve doğrulanmış yetenekler |
 | [docs/TEST_REPORT.md](docs/TEST_REPORT.md) | Çalıştırılan testler (sentetik / gerçek ayrı) |
 | [docs/RUNBOOK.md](docs/RUNBOOK.md) | Başlatma, durdurma, yedekleme, arıza giderme |
+| [docs/SETUP_WINDOWS.md](docs/SETUP_WINDOWS.md) | Windows kurulumu, Avito kimlik bilgileri, erişim kontrolü |
+| [docs/VAULT_PLACEMENT.md](docs/VAULT_PLACEMENT.md) | Proje klasörünü Obsidian kasasına yerleştirme |
+| [docs/VAULT_SURVEY.md](docs/VAULT_SURVEY.md) | Kasanın salt okunur yapı taraması |
+| [LOCAL_SESSION_PROMPT.md](LOCAL_SESSION_PROMPT.md) | Yerel oturuma ilk mesaj |
 | [sessions/README.md](sessions/README.md) | Oturum özetleri |
 | [tasks/README.md](tasks/README.md) | Alt agent görev kayıtları ve teslimleri |
 

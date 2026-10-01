@@ -4,7 +4,7 @@ Görev durumunun **tek kaynağı** bu dosyadır; başka kayıtlar görev durumun
 
 Durum değerleri: `planlandı` · `sürüyor` · `teslim edildi — Main Agent incelemesi bekliyor` · `teslim edildi — <inceleme görevi> bağımsız incelemesi sürüyor` · `kabul edildi` · `düzeltmelerle kabul edildi` · `düzeltme istendi` · `engelli`
 
-Sıradaki görev kimliği: **T-041**.
+Sıradaki görev kimliği: **T-046**.
 
 ## Keşif, kayıt düzeni ve mimari
 
@@ -16,7 +16,7 @@ Sıradaki görev kimliği: **T-041**.
 | T-004 | Mimari (teknoloji seçimi keşif sonrası) | 2 | Mimari agent'ı | T-001, T-002 | kabul edildi (rev.2) ve commit edildi (`1f7c2dc`, T-036; sahip onayı 2026-09-27, B-013 kapandı) | [brief](tasks/T-004/brief.md) | metin, rev.1 ve rev.2 (B-012 listesi); çıktı: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) rev.2 (`1f7c2dc`; rev.1 `667d96d`); kararlar: [DECISIONS](docs/DECISIONS.md) D-015–D-035 |
 | T-005 | Kayıt düzeninin bağımsız incelemesi | 2 | İnceleme agent'ı | T-009 | düzeltmelerle kabul edildi (düzeltme görevi: T-013) | [brief](tasks/T-005/brief.md) | metin (B-012 listesi) |
 | T-006 | Avito geçmiş konuşmalarının salt okunur aktarımı | 3 | — | API yolu (D-011): B-007, B-009, B-011 + T-010. Tarayıcı yedeği (yalnızca API'nin ulaşamadığı eski geçmiş için): ayrıca B-001 | engelli | — | — |
-| T-007 | Depo/muhasebe sistemi keşfi ve salt okunur bağlantı | 1/5 | — | B-002 | engelli | — | — |
+| T-007 | Depo/muhasebe sistemi keşfi ve salt okunur bağlantı — kaynak sahibin Obsidian Vault'u ([DECISIONS](docs/DECISIONS.md) D-046) | 1/5 | — | B-002 (kısmen çözüldü), T-043 | engelli — Vault taraması sahibin bilgisayarında çalıştırılıp raporu alınınca salt okunur Vault adaptörü tasarlanır (yerel oturum) | — | — |
 | T-008 | Obsidian Vault yerleşimi ve senkronizasyon kontrolü | 10 | — | B-003 | engelli | — | — |
 | T-009 | T-001/T-002 bulgularının ortak kayıtlara işlenmesi | 2 | Dokümantasyon agent'ı | T-001, T-002 | kabul edildi | [brief](tasks/T-009/brief.md) | metin (B-012 listesi) |
 | T-010 | Salt okunur Avito geçmiş derinlik ölçüm betiği (GET-only, `chatRead` yok; sahibin makinesinde) | 3 | — | T-016, T-017, B-007, B-009, B-011 | engelli (B-007, B-009, B-011 açık; T-017 kabul edildi) | [brief](tasks/T-010/brief.md) | — |
@@ -37,9 +37,9 @@ Kaynak: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) §14 (rev.2, `1f7c2dc`). Ta
 | ID | Başlık | Aşama | Sahip (agent rolü) | Bağımlılık | Kabul ölçütleri (özet; tam metin ARCHITECTURE §14) | Bağımsız inceleme | Durum | Brief |
 |---|---|---|---|---|---|---|---|---|
 | T-015 | Çekirdek tablolar + kilitler + CAS | 6, 9 | Geliştirici agent'ı | T-014 | Temiz migration; Y1, Y2, Y5, Y6 testleri; `queued` tekilliği, koşullu draft INSERT, CAS yarışı, audit rolü UPDATE/DELETE yapamıyor. Fencing yöntemi testlerle seçilir (D-024). | zorunlu — T-033 yapıldı | kabul edildi — commit `747775e`, CI #4 başarılı; T-033 bulgularının düzeltmesi T-035'te | [brief](tasks/T-015/brief.md) |
-| T-016 | T-010 kapsam genişletmesi (yalnızca belge) + mimari kabulü sonrası kayıt eşitlemesi | 3 | Dokümantasyon agent'ı | T-004 onayı | T-010 brief'i M1–M9 kalemlerini, ölçüm yöntemini ve çıktı biçimini içeriyor. | — | teslim edildi — Main Agent incelemesi bekliyor (commit `93d2ee5`, CI #2 başarılı) | [brief](tasks/T-016/brief.md) |
+| T-016 | T-010 kapsam genişletmesi (yalnızca belge) + mimari kabulü sonrası kayıt eşitlemesi | 3 | Dokümantasyon agent'ı | T-004 onayı | T-010 brief'i M1–M9 kalemlerini, ölçüm yöntemini ve çıktı biçimini içeriyor. | — | kabul edildi — commit `93d2ee5`, CI #2 başarılı | [brief](tasks/T-016/brief.md) |
 | T-017 | Avito gateway (okuma) + spec tabanlı mock | 3 | Geliştirici agent'ı | T-014 | Chats, chat detay, v3 messages; token (`expires_in`); öncelikli rate limiter (`live` > `bulk`); okuma hata sınıfları; mock kararlı ve kayan offset'le sayfalıyor. | — | kabul edildi — commit `57e2029`, CI #6 başarılı | [brief](tasks/T-017/brief.md) |
-| T-018 | Gönderim istemcisi (yalnızca metin) | 7 | Geliştirici agent'ı | T-017 | Metin gönderimi; hata sınıflandırması; transport retry / retry middleware / redirect yok; her HTTP denemesi ayrı attempt; hata enjeksiyonu; otomatik yeniden deneme olmadığını kanıtlayan test. | zorunlu (T-025 ile) | sürüyor — dalda `c86b942` (CI #8 başarılı); ek görevler T-018b ve T-018c aşağıda | [brief](tasks/T-018/brief.md) |
+| T-018 | Gönderim istemcisi (yalnızca metin) | 7 | Geliştirici agent'ı | T-017 | Metin gönderimi; hata sınıflandırması; transport retry / retry middleware / redirect yok; her HTTP denemesi ayrı attempt; hata enjeksiyonu; otomatik yeniden deneme olmadığını kanıtlayan test. | zorunlu (T-025 ile) | kabul edildi — commit `c86b942`, CI #8 başarılı; ek görevler T-018b ve T-018c aşağıda | [brief](tasks/T-018/brief.md) |
 | T-019 | Output filter (saf fonksiyon) | 6 | Geliştirici agent'ı | T-014 | ARCHITECTURE §7.2 kuralları (rakam/para, iletişim, ödeme, vaat, tamamlanma iddiası, ≤1000 karakter); girdi = son parçalar + olgu kağıdı; sahip düzeltmesi için uyarı modu. | zorunlu (T-028 ile); masker+filter incelemesi T-032 yapıldı | kabul edildi — commit `ecb73e0`, CI #3 başarılı; T-032 bulgularının düzeltmesi T-034'te | [brief](tasks/T-019/brief.md) |
 | T-020 | History importer + ana anahtar yönetimi | 3 | — | T-015, T-017 | Mock üzerinde kesinti + devam, dedup, tombstone, yeniden listeleme farkı, şifreli ham depo, `attachment_unavailable`, rapor; ana anahtar yalnızca bellekte; canlı servis anahtarsız çalışıyor (D-034). | — | planlandı | — |
 | T-021 | Ingest: webhook, poller, filigran, yazar sınıflandırması | 6 | — | T-015, T-017 | Webhook yalnızca chat_id/hash, p99 < 2 sn; 3 yoldan gelen aynı mesaj tek kayıt; tombstone; `activation_at` filigranı; yazar sınıfları ve `unknown` → pause. | — | planlandı | — |
@@ -55,26 +55,33 @@ Kaynak: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) §14 (rev.2, `1f7c2dc`). Ta
 | T-030 | Admin UI b: kalan ekranlar | 8 | — | T-024, T-027, T-028, T-029 | ARCHITECTURE §11 tablosunun geri kalanı. | — | planlandı | — |
 | T-031 | Yedek, geri yükleme tatbikatı, aylık doğrulama, retention | 9 | — | T-020, T-025, T-027 | Boş makineye geri yükleme; §6.8 zorunlu testi; aylık otomatik doğrulama; kripto-silme ve tombstone testi; RUNBOOK girdisi. | zorunlu | planlandı | — |
 
-## İncelemeler, düzeltmeler ve ek görevler (T-018b…T-040)
+## İncelemeler, düzeltmeler ve ek görevler (T-018b…T-045)
 
 | ID | Başlık | Aşama | Sahip (agent rolü) | Bağımlılık | Durum | Brief | Teslim |
 |---|---|---|---|---|---|---|---|
-| T-018b | Gönderimde `ProxyError` → `unknown` (not_delivered değil) | 7 | Geliştirici agent'ı | T-018 | kayıtta yok — dalda commit `3a5f198` (CI #10 başarılı) | — | — |
+| T-018b | Gönderimde `ProxyError` → `unknown` (not_delivered değil) | 7 | Geliştirici agent'ı | T-018 | kabul edildi — commit `3a5f198`, CI #10 başarılı | — | Git geçmişi |
 | T-018c | Gönderim istemcisi output filter'ın `measure_part` ölçüsünü kullanır (≤1000 UTF-16 birimi ve ≤1000 UTF-8 bayt) | 7 | Geliştirici agent'ı | T-018, T-034 | kabul edildi — commit `afd6ad5`, CI #13 başarılı | — | Git geçmişi |
 | T-032 | Masker (T-014) ve output filter (T-019) bağımsız güvenlik incelemesi | 6 | İnceleme agent'ı | T-014, T-019 | düzeltmelerle kabul edildi (düzeltme görevi: T-034) | [brief](tasks/T-032/brief.md) | metin (B-012 listesi) |
 | T-033 | T-015 (çekirdek tablolar, kuyruk, kilitler, CAS) bağımsız incelemesi | 6, 9 | İnceleme agent'ı | T-015 | düzeltmelerle kabul edildi (düzeltme görevi: T-035) | [brief](tasks/T-033/brief.md) | metin (B-012 listesi) |
-| T-034 | Masker + filter düzeltmeleri (T-032 bulguları) | 6 | Geliştirici agent'ı | T-032 | sürüyor — dalda commit `9bb67b7` var (CI #9 başarılı); teslim/kabul kararı kayıtta yok | [brief](tasks/T-034/brief.md) | — |
+| T-034 | Masker + filter düzeltmeleri (T-032 bulguları) | 6 | Geliştirici agent'ı | T-032 | düzeltmelerle kabul edildi — commit `9bb67b7`, CI #9 başarılı; T-032b bulgularının düzeltmesi T-041'de | [brief](tasks/T-034/brief.md) | Git geçmişi; kararlar: [DECISIONS](docs/DECISIONS.md) D-043 |
 | T-035 | T-015 düzeltmeleri (T-033 bulguları) | 6, 9 | Geliştirici agent'ı | T-033 | kabul edildi — commit `15da795`, CI #11 başarılı; T-033b doğrulaması sürüyor | [brief](tasks/T-035/brief.md) | metin (B-012 listesi) |
-| T-033b | T-035 düzeltmelerinin bağımsız doğrulaması | 6, 9 | İnceleme agent'ı | T-035 | sürüyor | — | — |
-| T-036 | `docs/ARCHITECTURE.md` rev.2 commit'i (sahip onayı) + kayıt eşitlemesi | 2 | Dokümantasyon agent'ı | B-013 (sahip onayı 2026-09-27) | teslim edildi — Main Agent incelemesi bekliyor (ARCHITECTURE commit `1f7c2dc`; kayıt eşitlemesi ayrı commit) | [brief](tasks/T-036/brief.md) | metin |
+| T-032b | T-034 düzeltmelerinin bağımsız doğrulaması | 6 | İnceleme agent'ı | T-034 | düzeltmelerle kabul edildi (düzeltme görevi: T-041) | — | metin (B-012 listesi); kararlar: [DECISIONS](docs/DECISIONS.md) D-044 |
+| T-033b | T-035 düzeltmelerinin bağımsız doğrulaması | 6, 9 | İnceleme agent'ı | T-035 | yarıda kaldı (bulut oturumunda kullanım sınırı) — yerel oturumda yeniden çalıştırılacak | — | — |
+| T-036 | `docs/ARCHITECTURE.md` rev.2 commit'i (sahip onayı) + kayıt eşitlemesi | 2 | Dokümantasyon agent'ı | B-013 (sahip onayı 2026-09-27) | kabul edildi — commit'ler `1f7c2dc` (ARCHITECTURE), `030bd6e` (kayıt eşitlemesi) | [brief](tasks/T-036/brief.md) | metin (B-012 listesi) |
 | T-037 | Araştırma: Avito kurallarına uygun meşru alternatifler — doğrulanmış işletme profili istisnası, Avito'nun izin verdiği yerde web sitesi bağlantısı, Avito'nun kendi ödeme/teslimat hizmeti, aramayla web sitesine veya diğer kanallara gelen müşteriler ([DECISIONS](docs/DECISIONS.md) D-040) | 1 | Araştırma agent'ı | D-040 | kabul edildi | — | metin (B-012 listesi); özet: [docs/NOTES.md](docs/NOTES.md), [docs/INTEGRATIONS.md](docs/INTEGRATIONS.md) §4 |
-| T-038 | Web sitesi projesi için başlangıç (kickoff) dosyaları — ayrı proje, bu projenin kapsamı dışında ([DECISIONS](docs/DECISIONS.md) D-041) | — | kayıtta yok | D-041 | tamamlandı (Main Agent bildirimi) — commit'ler `60688d5`, `a49a565`; dalda ek commit'ler `51db517`, `d18799d`; dosyalar `website-kickoff/` | — | Git geçmişi |
-| T-039 | Sahibin Windows bilgisayarında yerel kurulum: kurulum rehberi (`docs/SETUP_WINDOWS.md`), yerel gizli değer dosyası (Avito kimlik bilgileri için), salt okunur erişim kontrolü (mevcut tarifenin API'de neye izin verdiğini gösterir) | 1 | kayıtta yok | B-001, B-007, B-011 | sürüyor | — | — |
-| T-040 | Avito desteğine ve poisk.vin'e (API erişimi) Rusça mektup taslakları, `docs/letters/`; mektupları sahip gönderir | 1 | kayıtta yok | D-040, B-015 | sürüyor | — | — |
+| T-038 | Web sitesi projesi için başlangıç (kickoff) dosyaları — ayrı proje, bu projenin kapsamı dışında ([DECISIONS](docs/DECISIONS.md) D-041) | — | kayıtta yok | D-041 | kabul edildi — commit'ler `60688d5`, `a49a565`, `51db517`, `d18799d`; dosyalar `website-kickoff/` | — | Git geçmişi |
+| T-039 | Sahibin Windows bilgisayarında yerel kurulum: kurulum rehberi (`docs/SETUP_WINDOWS.md`), yerel gizli değer dosyası (Avito kimlik bilgileri için), salt okunur erişim kontrolü (mevcut tarifenin API'de neye izin verdiğini gösterir) | 1 | Geliştirici agent'ı | B-001, B-007, B-011 | kabul edildi — commit'ler `1ee147b` (T-039), `cd0def9` (T-039b); çıktı: [docs/SETUP_WINDOWS.md](docs/SETUP_WINDOWS.md), `scripts/windows/`, `scripts/avito_access_check.py`; sahip henüz çalıştırmadı | — | Git geçmişi |
+| T-040 | Avito desteğine ve poisk.vin'e (API erişimi) Rusça mektup taslakları, `docs/letters/`; mektupları sahip gönderir | 1 | Dokümantasyon agent'ı | D-040, B-015 | kabul edildi — commit `14a03c6`; mektupları sahip gönderir | — | Git geçmişi; taslaklar `docs/letters/` |
+| T-040b | Avito desteği mektubundan tarife sorusunun çıkarılması (sahip: "bu soruyu mailde yazmana gerek yok", [BLOCKERS](BLOCKERS.md) B-007) | 1 | kayıtta yok | T-040 | kabul edildi — commit `c358f4e` | — | Git geçmişi |
+| T-041 | Masker + filter düzeltmeleri (T-032b bulguları): tipli span'lar, sert engeller, çekince istisnasının daraltılması, `PAYMENT_TERMS_OUTSIDE_RULE` ([DECISIONS](docs/DECISIONS.md) D-044) | 6 | Geliştirici agent'ı | T-032b | kabul edildi — commit `6d013f8`; T-032b bulguları kapandı (tipli span'lar, `PAYMENT_TERMS_OUTSIDE_RULE`, `PAYMENT_CARD`/`CONTACT_PHONE` sert engel); kalan bilinen sınırlamalar testlerde `xfail(strict=True)` (`tests/test_filter_t032b.py` vb.); bağımsız doğrulama: T-045 | — | Git geçmişi |
+| T-042 | Sahip cevaplarının kaydı (B-001, B-002, B-003, B-004, B-007, B-010, B-011), görev durumlarının düzeltilmesi, T-034/T-041 filtre kararları (D-043, D-044), D-045, D-046, belge eşitlemesi | 2 | Dokümantasyon agent'ı | — | teslim edildi — Main Agent incelemesi bekliyor (T-044 commit'inde birlikte) | — | metin |
+| T-043 | Salt okunur, anonimleştirilmiş Obsidian Vault tarama betiği (Vault yapısını çıkarır; Vault'u değiştirmez; sahibin bilgisayarında çalışır) — sonra salt okunur Vault envanter adaptörü tasarlanır ([DECISIONS](docs/DECISIONS.md) D-046) | 1/5 | — | T-039 (yerel kurulum; Vault yolu kurulumda bulunur, B-003) | kabul edildi — commit `7cb06d9`; kullanım: [docs/VAULT_SURVEY.md](docs/VAULT_SURVEY.md); sahibin bilgisayarında henüz çalıştırılmadı | — | Git geçmişi |
+| T-044 | Bulut aşamasının son devri: T-042'nin tamamlanması, [LOCAL_SESSION_PROMPT.md](LOCAL_SESSION_PROMPT.md), [docs/VAULT_PLACEMENT.md](docs/VAULT_PLACEMENT.md), başlangıç sayfası, son durum kayıtları | 2 | Dokümantasyon agent'ı | T-042 | teslim edildi — Main Agent incelemesi bekliyor | — | metin |
+| T-045 | T-041 düzeltmelerinin bağımsız doğrulaması (T-019 + T-028 inceleme kapsamı) | 6 | İnceleme agent'ı | T-041 | planlandı — yerel oturumda | — | — |
 
-Takip (görev kimliği henüz atanmadı): filtrenin nakit için `PAYMENT_TERMS_UNCONFIRMED` kuralının gevşetilmesi — [DECISIONS](docs/DECISIONS.md) D-039.
+Filtrenin nakit için `PAYMENT_TERMS_UNCONFIRMED` kuralının değiştirilmesi (D-039 takibi) T-041'de yapıldı (`6d013f8`): ödeme ifadesi yalnızca sahibin onayladığı `rule_payment` span'ında serbest ([DECISIONS](docs/DECISIONS.md) D-043 → D-l, D-044).
 
-Gerçek erişim gerektirenler (sentetik/mock dışında): T-010 çalıştırması (B-007, B-009, B-011), gerçek inventory adaptörü (B-002), LLM sağlayıcısı (B-006), pilot (B-004).
+Gerçek erişim gerektirenler (sentetik/mock dışında): T-010 çalıştırması (B-007, B-009, B-011), gerçek inventory adaptörü (Vault, B-002, T-043), LLM sağlayıcısı (B-006), pilot (sahibin Windows bilgisayarı, D-045).
 
 ## B-012 listesi — repoda olmayan teslim metinleri
 
@@ -101,7 +108,17 @@ Bu liste [BLOCKERS.md](BLOCKERS.md) B-012'nin **tek** listesidir; diğer kayıtl
 | T-018c | Git geçmişi (`afd6ad5`); [docs/TEST_REPORT.md](docs/TEST_REPORT.md) |
 | T-035 | Git geçmişi (`15da795`); [app/README.md](app/README.md); [docs/TEST_REPORT.md](docs/TEST_REPORT.md) |
 | T-037 | [docs/NOTES.md](docs/NOTES.md) → "T-037 bulguları"; [docs/INTEGRATIONS.md](docs/INTEGRATIONS.md) §4; [docs/DECISIONS.md](docs/DECISIONS.md) D-039 (+%10 notu) |
-| T-032 | T-034 düzeltmeleri ve regresyon testleri: `tests/test_filter_t032.py`, `tests/fixtures/filter/t032_cases.json` (commit `9bb67b7`; T-034 kabulü bekleniyor) |
+| T-032 | T-034 düzeltmeleri ve regresyon testleri: `tests/test_filter_t032.py`, `tests/fixtures/filter/t032_cases.json` (commit `9bb67b7`; T-034 düzeltmelerle kabul edildi) |
+| T-016 | Git geçmişi (`93d2ee5`); [tasks/T-010/brief.md](tasks/T-010/brief.md) |
+| T-018, T-018b | Git geçmişi (`c86b942`, `3a5f198`); [docs/TEST_REPORT.md](docs/TEST_REPORT.md) |
+| T-034 | Git geçmişi (`9bb67b7`); [docs/DECISIONS.md](docs/DECISIONS.md) D-043 |
+| T-032b | [docs/DECISIONS.md](docs/DECISIONS.md) D-044; düzeltmeleri T-041'de (`6d013f8`) |
+| T-036 | Git geçmişi (`1f7c2dc`, `030bd6e`) |
+| T-038 | Git geçmişi (`60688d5`, `a49a565`, `51db517`, `d18799d`); `website-kickoff/` |
+| T-040, T-040b | Git geçmişi (`14a03c6`, `c358f4e`); `docs/letters/` |
+| T-039, T-039b | Git geçmişi (`1ee147b`, `cd0def9`); [docs/SETUP_WINDOWS.md](docs/SETUP_WINDOWS.md) |
+| T-041 | Git geçmişi (`6d013f8`); [docs/DECISIONS.md](docs/DECISIONS.md) D-044; `tests/test_filter_t032b.py` |
+| T-043 | Git geçmişi (`7cb06d9`); [docs/VAULT_SURVEY.md](docs/VAULT_SURVEY.md) |
 | T-033 | T-035 düzeltmeleri (commit `15da795`) |
 
 Her yeni metin teslimi kabul edildiğinde bu listeye eklenir.
