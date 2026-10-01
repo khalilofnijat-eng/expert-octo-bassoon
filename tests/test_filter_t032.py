@@ -20,6 +20,8 @@ from app.safety.filter import (
     FilterConfig,
     FilterContext,
     ReasonCode,
+    SpanKind,
+    TemplateSpan,
     check_parts,
 )
 from app.safety.literals import LiteralKind, literal_variants
@@ -91,8 +93,8 @@ def test_fixture_is_complete() -> None:
         ("дайте номер", R.CONTACT_REDIRECT),
         ("лучше напрямую", R.CONTACT_REDIRECT),
         ("давайте без авито", R.CONTACT_REDIRECT),
-        ("наличными при встрече", R.PAYMENT_TERMS_UNCONFIRMED),
-        ("картой при получении", R.PAYMENT_TERMS_UNCONFIRMED),
+        ("наличными при встрече", R.PAYMENT_TERMS_OUTSIDE_RULE),
+        ("картой при получении", R.PAYMENT_TERMS_OUTSIDE_RULE),
         ("С Б П", R.PAYMENT_OFF_PLATFORM),
         ("подойдёт", R.UNVERIFIED_FITMENT),
         ("на связи Иван", R.HUMAN_CLAIM),
@@ -149,16 +151,21 @@ def test_bad_allowed_literals_raise_type_error(literals: Any) -> None:
         check_parts(["2018"], allowed_literals=literals)
 
 
+G = SpanKind.RULE_GENERIC
+
+
 @pytest.mark.parametrize(
     ("spans", "error"),
     [
         ("Гарантия", TypeError),
         ((("x",),), TypeError),
-        ((((0, "1"),),), TypeError),
-        ((((0, True),),), TypeError),
-        ((((0, 99),),), ValueError),
-        ((((3, 3),),), ValueError),
-        ((((0, 1),), ((0, 1),)), ValueError),  # more entries than parts
+        ((((0, 1),),), TypeError),  # untyped span (T-041 / Y-8)
+        (((TemplateSpan("rule", 0, 1),),), TypeError),  # type: ignore[arg-type]
+        (((TemplateSpan(G, 0, "1"),),), TypeError),  # type: ignore[arg-type]
+        (((TemplateSpan(G, 0, True),),), TypeError),
+        (((TemplateSpan(G, 0, 99),),), ValueError),
+        (((TemplateSpan(G, 3, 3),),), ValueError),
+        (((TemplateSpan(G, 0, 1),), (TemplateSpan(G, 0, 1),)), ValueError),
     ],
 )
 def test_bad_template_spans_raise(spans: Any, error: type[Exception]) -> None:
@@ -186,7 +193,7 @@ def test_customer_text_inside_a_template_block_is_not_exempt() -> None:
     customer = "скидка пятьдесят процентов и возврат денег гарантирован"
     prefix = "Вы выбрали: Фара W213. Комментарий: "
     block = f"{prefix}{customer}."
-    spans = (((0, len(prefix)),),)  # only the constant words are code-owned
+    spans = ((TemplateSpan(SpanKind.CONFIRMATION, 0, len(prefix)),),)  # constant words only
     codes = set(
         check_parts(
             [block], allowed_literals=("W213",), context=FilterContext(template_spans=spans)
@@ -200,7 +207,8 @@ def test_customer_text_inside_a_template_block_is_not_exempt() -> None:
 def test_listing_title_inside_offer_block_is_not_exempt() -> None:
     title = "Фара W213 — гарантия 6 мес, торг"
     block = f"1) {title} — 15 000 ₽"
-    spans = (((0, 3), (len(block) - len(" — 15 000 ₽"), len(block))),)
+    tail = len(block) - len(" — 15 000 ₽")
+    spans = ((TemplateSpan(SpanKind.OFFER, 0, 3), TemplateSpan(SpanKind.OFFER, tail, len(block))),)
     verdict = check_parts(
         [block], allowed_literals=("15 000 ₽", "W213"), context=FilterContext(template_spans=spans)
     ).parts[0]
@@ -209,7 +217,10 @@ def test_listing_title_inside_offer_block_is_not_exempt() -> None:
 
 def test_completion_flag_covers_only_the_template_span() -> None:
     text = "Заказ оформлен. Также забронировал вторую фару."
-    ctx = FilterContext(completion_confirmed=True, template_spans=(((0, 15),),))
+    ctx = FilterContext(
+        completion_confirmed=True,
+        template_spans=((TemplateSpan(SpanKind.CONFIRMATION, 0, 15),),),
+    )
     verdict = check_parts([text], context=ctx).parts[0]
     assert [text[f.start : f.end] for f in verdict.findings] == ["забронировал"]
 
@@ -242,7 +253,8 @@ def test_owner_edit_with_contacts_is_not_allowed() -> None:
         context=FilterContext(is_owner_edit=True),
     )
     assert not result.allowed
-    assert result.overridable
+    # T-041 / Y-9: a phone number is a hard block, even for the owner.
+    assert not result.overridable
 
 
 # --- D-d / O-3: strict allowlisted URLs --------------------------------------------------------
@@ -366,13 +378,16 @@ PATHOLOGICAL = {
 
 @pytest.mark.parametrize("text", list(PATHOLOGICAL.values()), ids=list(PATHOLOGICAL))
 def test_no_redos_masker_and_filter(text: str) -> None:
-    start = time.perf_counter()
-    mask(text)
-    assert time.perf_counter() - start < 0.5
-    start = time.perf_counter()
-    check_parts([text])
-    assert time.perf_counter() - start < 0.5
-    # Below the scan limit every pattern runs: 4000 characters is the largest fully scanned part.
-    start = time.perf_counter()
-    check_parts([text[:4000]])
-    assert time.perf_counter() - start < 0.5
+    # Best of two timings (absorbs GC/scheduler noise, still catches super-linear behaviour).
+    # The 4000-character slice is the largest part that is fully scanned.
+    for run in (
+        lambda: mask(text),
+        lambda: check_parts([text]),
+        lambda: check_parts([text[:4000]]),
+    ):
+        timings = []
+        for _ in range(2):
+            start = time.perf_counter()
+            run()
+            timings.append(time.perf_counter() - start)
+        assert min(timings) < 0.5

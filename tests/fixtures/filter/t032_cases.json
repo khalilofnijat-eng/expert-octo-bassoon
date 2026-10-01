@@ -1,5 +1,5 @@
 {
- "_comment": "SYNTHETIC regression inputs from the T-032 security review scripts (t032/*.py), labelled for T-034. expect=deny/allow; 'xfail' marks a documented limitation (strict xfail); 'note' explains a deliberate deny. literals: LIT = the review's h.py literals, L_VARIANTS = over2.py's L expanded with literal_variants().",
+ "_comment": "SYNTHETIC regression inputs from the T-032 security review scripts (t032/*.py), labelled for T-034. expect=deny/allow; 'xfail' marks a documented limitation (strict xfail); 'note' explains a deliberate deny. literals: LIT = the review's h.py literals, L_VARIANTS = over2.py's L expanded with literal_variants(). T-041 relabelled six cases per decisions Y-1, Y-2, Y-11 and labels 1, 3, 5 (see 'note'/'xfail').",
  "LIT": [
   "W213",
   "2018",
@@ -1781,7 +1781,8 @@
    "group": "b3-promises",
    "text": "будет в пятницу",
    "expect": "deny",
-   "literals": "LIT"
+   "literals": "LIT",
+   "xfail": "T-041 / Y-11: a bare 'будет' without a subject is not read as a delivery promise"
   },
   {
    "group": "b3-promises",
@@ -1997,8 +1998,9 @@
   {
    "group": "b4-completion",
    "text": "трек-номер пришлю",
-   "expect": "deny",
-   "literals": "LIT"
+   "expect": "allow",
+   "literals": "LIT",
+   "note": "T-041 label 1: only 'трек-номер: <value>' / 'вот трек' is a completion claim"
   },
   {
    "group": "b4-completion",
@@ -2189,8 +2191,9 @@
   {
    "group": "b4-completion",
    "text": "sent",
-   "expect": "deny",
-   "literals": "LIT"
+   "expect": "allow",
+   "literals": "LIT",
+   "note": "T-041 label 5: bare 'sent' passes ('I sent you the photos'); 'order sent' is denied"
   },
   {
    "group": "b4-completion",
@@ -2711,8 +2714,9 @@
   {
    "group": "over-ordinary-replies",
    "text": "Вернуть товар можно по правилам Авито Доставки.",
-   "expect": "allow",
-   "literals": "LIT"
+   "expect": "deny",
+   "literals": "LIT",
+   "note": "T-041 / Y-2: a verb between the promise and 'по правилам Авито' voids the exemption"
   },
   {
    "group": "over-ordinary-replies",
@@ -2814,7 +2818,7 @@
    "text": "Подходит для обеих сторон.",
    "expect": "deny",
    "literals": "LIT",
-   "note": "affirmative fitment claim without verified fitment (D-c)"
+   "note": "T-041 label 3: product-attribute claim without fact"
   },
   {
    "group": "over-ordinary-replies",
@@ -3260,8 +3264,9 @@
   {
    "group": "over-ordinary-replies",
    "text": "Для вашего авто подойдёт, если VIN совпадёт.",
-   "expect": "allow",
-   "literals": "LIT"
+   "expect": "deny",
+   "literals": "LIT",
+   "note": "T-041 / Y-1: 'если' is not a hedge"
   },
   {
    "group": "over-ordinary-replies",

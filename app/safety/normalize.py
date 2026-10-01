@@ -10,8 +10,10 @@ Steps, per grapheme cluster (a base character and the combining marks that follo
    removed and recorded in ``invalid`` (the filter reports ``INVALID_TEXT``).
 2. Invisible characters are removed and recorded in ``hidden`` (the filter reports
    ``OBFUSCATION``): every format character (Unicode category Cf: zero-width space/joiner,
-   soft hyphen, BOM, word joiner, bidi controls, ...) plus the invisible fillers that are not
-   Cf: Hangul fillers, Braille blank, combining grapheme joiner, Khmer inherent vowels.
+   soft hyphen, BOM, word joiner, bidi controls, ...), unassigned (Cn) and private-use (Co)
+   code points, the object replacement character U+FFFC (T-041 / Y-13), and the invisible
+   fillers that are not Cf: Hangul fillers, Braille blank, combining grapheme joiner, Khmer
+   inherent vowels.
 3. NFKC: fullwidth, superscript, subscript, circled and mathematical digits/letters become
    plain ASCII (``⁸``, ``８``, ``①``, ``𝟖`` -> ``8``), ``＠`` -> ``@``, ``．`` -> ``.``,
    non-breaking spaces -> space. ``№`` is kept as is (NFKC would turn it into ``No``).
@@ -25,6 +27,18 @@ Views (all the same length as ``text``, one character per normalized character):
   Russian patterns match on this view.
 - ``lat``: Cyrillic and Greek look-alike letters folded to Latin (``WhаtsApp`` -> ``WhatsApp``).
   Latin patterns (English, URLs, handles) match on this view.
+
+Detectors for the filter's ``OBFUSCATION`` code (T-041):
+
+- ``foreign_letter_spans``: any letter outside the allowed sets (Y-3): ASCII, Latin-1, Turkish
+  (ğ ı İ ş), Russian Cyrillic and ё. IPA, small caps, Greek, Coptic, Armenian, Cherokee, Lisu,
+  non-Russian Cyrillic ("ѕ", "і") and every other script are foreign.
+- ``mixed_script_spans``: a word mixing Latin and Cyrillic, except a Latin brand name plus a
+  Russian case ending ("Mercedesа", "BMWшный").
+- ``spaced_letter_spans``: a word spelled letter by letter with 1-3 whitespace characters or
+  one of ``- . _ * · / | + ~`` between the letters (Y-4).
+- ``compact``: a view without whitespace and those separators, used to find high-risk stems
+  split across words ("Позв оните", "бес платно").
 
 ``to_original(start, end)`` maps a span of the views back to the original text. A removed
 character that sits between two kept characters of a span is inside the mapped span.
@@ -41,6 +55,8 @@ from dataclasses import dataclass
 
 __all__ = [
     "NormalizedText",
+    "compact",
+    "foreign_letter_spans",
     "mixed_script_spans",
     "normalize",
     "spaced_letter_spans",
@@ -57,6 +73,7 @@ _INVISIBLE_EXTRA = frozenset(
         0x2800,  # Braille pattern blank
         0x3164,  # Hangul filler
         0xFFA0,  # halfwidth Hangul filler
+        0xFFFC,  # object replacement character
     }
 )
 _ALLOWED_CONTROLS = frozenset("\t\n\r")
@@ -116,12 +133,9 @@ def _script(ch: str) -> str | None:
 
 
 def _is_invisible(ch: str, category: str) -> bool:
-    return category == "Cf" or ord(ch) in _INVISIBLE_EXTRA
-
-
-def _is_variation_selector(ch: str) -> bool:
-    cp = ord(ch)
-    return 0xFE00 <= cp <= 0xFE0F or 0xE0100 <= cp <= 0xE01EF
+    # Cf format characters, invisible fillers, unassigned (Cn) and private-use (Co) code points
+    # and the object replacement character (Y-13).
+    return category in ("Cf", "Cn", "Co") or ord(ch) in _INVISIBLE_EXTRA
 
 
 def _clean(chunk: str) -> str:
@@ -187,21 +201,70 @@ def normalize(text: str) -> NormalizedText:
 
 
 _LETTER_RUN_RE = re.compile(r"[^\W\d_]+")
-# Four or more single letters separated by one separator: "т е л е г р а м", "П-о-з-в-о-н-и".
-_SPACED_LETTERS_RE = re.compile(r"(?<![^\W\d_])(?:[^\W\d_][ \-._*·/]){3,}[^\W\d_](?![^\W\d_])")
+# Single letters separated by 1-3 whitespace characters or one of - . _ * · / | + ~
+# ("т е л е г р а м", "П-о-з-в-о-н-и", "т|е|л|е|г|р|а|м").
+_SPACED_LETTERS_RE = re.compile(
+    r"(?<![^\W\d_])(?:[^\W\d_](?:\s{1,3}|[-._*·/|+~])){3,}[^\W\d_](?![^\W\d_])"
+)
+# Latin brand name + Russian case ending ("Mercedesа", "BMWшный") is ordinary Russian usage.
+_BRAND_SUFFIX_RE = re.compile(
+    r"[A-Za-z]{3,}(?:а|у|е|ом|ой|ы|ов|ам|ами|ах|ский|ская|ское|ские|шный|шная|шное|шные)"
+)
+# Separators removed in the compacted view (Y-4): whitespace and - | + ~ _ * · .
+_COMPACT_SEPARATORS = frozenset("-|+~_*·.")
+
+
+def _allowed_letter(ch: str) -> bool:
+    """Letters of the allowed sets (Y-3): ASCII, Latin-1, Turkish, Russian Cyrillic + ё."""
+    cp = ord(ch)
+    return (
+        ch.isascii()
+        or (0x00C0 <= cp <= 0x00FF and cp not in (0xD7, 0xF7))
+        or cp in (0x011E, 0x011F, 0x0130, 0x0131, 0x015E, 0x015F)
+        or 0x0410 <= cp <= 0x044F
+        or cp in (0x0401, 0x0451)
+    )
+
+
+def foreign_letter_spans(text: str) -> list[tuple[int, int]]:
+    """Spans of letters outside the allowed sets (IPA, small caps, Coptic, Greek, Armenian,
+    Cherokee, Lisu, CJK, non-Russian Cyrillic such as "ѕ", ...): all of them are obfuscation."""
+    spans: list[tuple[int, int]] = []
+    for index, ch in enumerate(text):
+        if ch.isalpha() and not _allowed_letter(ch):
+            if spans and spans[-1][1] == index:
+                spans[-1] = (spans[-1][0], index + 1)
+            else:
+                spans.append((index, index + 1))
+    return spans
 
 
 def mixed_script_spans(text: str) -> list[tuple[int, int]]:
-    """Spans of letter runs that mix Latin, Cyrillic and/or Greek letters ("Cкидка")."""
+    """Spans of letter runs that mix Latin and Cyrillic letters ("Cкидка"), except a Latin
+    brand name followed by a Russian case ending ("Mercedesа")."""
     spans: list[tuple[int, int]] = []
     for match in _LETTER_RUN_RE.finditer(text):
         scripts = {_script(ch) for ch in match.group()}
         scripts.discard(None)
-        if len(scripts) > 1:
+        if len(scripts) > 1 and not _BRAND_SUFFIX_RE.fullmatch(match.group()):
             spans.append(match.span())
     return spans
 
 
 def spaced_letter_spans(text: str) -> list[tuple[int, int]]:
-    """Spans of words spelled out letter by letter ("З в о н и т е")."""
-    return [m.span() for m in _SPACED_LETTERS_RE.finditer(text)]
+    """Spans of words spelled out letter by letter ("З в о н и т е"): at least four letters
+    when one of them is Cyrillic, at least six when all are Latin ("A B C D" is a marking)."""
+    spans: list[tuple[int, int]] = []
+    for match in _SPACED_LETTERS_RE.finditer(text):
+        letters = [ch for ch in match.group() if ch.isalpha()]
+        cyrillic = any(_script(ch) == "cyrillic" for ch in letters)
+        if len(letters) >= (4 if cyrillic else 6):
+            spans.append(match.span())
+    return spans
+
+
+def compact(view: str) -> tuple[str, tuple[int, ...]]:
+    """``view`` without whitespace and the separators - | + ~ _ * · . (Y-4), plus the index in
+    ``view`` of every kept character. Used to find high-risk stems split across words."""
+    index = tuple(i for i, ch in enumerate(view) if not (ch.isspace() or ch in _COMPACT_SEPARATORS))
+    return "".join(view[i] for i in index), index

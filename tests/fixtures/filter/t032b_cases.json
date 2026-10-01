@@ -1,0 +1,2878 @@
+{
+ "_comment": "SYNTHETIC regression inputs from the T-032b verification scripts (t032b/*.py), labelled for T-041. expect=deny/allow; 'xfail' = documented limitation or decision (strict xfail); default literals are the review's h.py LIT unless 'literals' is given.",
+ "LIT": [
+  "W213",
+  "2018",
+  "2016",
+  "2020",
+  "A2138851400",
+  "90915-10003",
+  "15 000 ₽",
+  "2 шт."
+ ],
+ "cases": [
+  {
+   "group": "rerun-1",
+   "text": "Для связи: ⁸⁹⁰⁰⁰⁰⁰⁰⁰⁰¹",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-1",
+   "text": "Итого ¹⁴ ⁵⁰⁰",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-1",
+   "text": "Цена ₁₄ ₅₀₀",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-1",
+   "text": "Итого ⑭⑤⓪⓪",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-1",
+   "text": "Цена ¹⁴⁵⁰⁰р",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-2",
+   "text": "Позво​ните мне",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-2",
+   "text": "Пред­оплата",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-2",
+   "text": "Гаран​тия год",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-2",
+   "text": "Гaрантия год",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-2",
+   "text": "Cкидка",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-2",
+   "text": "Зaказ оформлен",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-2",
+   "text": "Оплaта получена",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-2",
+   "text": "Я менеджeр",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-2",
+   "text": "CБП",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-2",
+   "text": "прeдоплата",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-2",
+   "text": "Vіber",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-2",
+   "text": "ｗｈａｔｓａｐｐ",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-2",
+   "text": "З в о н и т е",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-2",
+   "text": "Пишите в т е л е г р а м",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-2",
+   "text": "забpонировал",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-2",
+   "text": "я нe бот",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-3",
+   "text": "держу для вас",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-3",
+   "text": "придержу",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-3",
+   "text": "оставил для вас",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-3",
+   "text": "закрепил за вами",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-3",
+   "text": "оформил",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-3",
+   "text": "всё оформлено",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-3",
+   "text": "принял заказ",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-3",
+   "text": "подтвердил заказ",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-3",
+   "text": "отправил",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-3",
+   "text": "уже в пути",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-3",
+   "text": "передал в доставку",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-3",
+   "text": "сдал в СДЭК",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-3",
+   "text": "снял с продажи",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-3",
+   "text": "ставлю в резерв",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-3",
+   "text": "деньги получил",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-3",
+   "text": "оплату вижу",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-3",
+   "text": "платёж прошёл",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-3",
+   "text": "деньги дошли",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-3",
+   "text": "set aside for you",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-3",
+   "text": "on hold for you",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-4",
+   "text": "оплата переводом",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-4",
+   "text": "можно по номеру",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-4",
+   "text": "переведите по номеру",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-4",
+   "text": "на тиньк",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-4",
+   "text": "на альфу",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-4",
+   "text": "на ВТБ",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-4",
+   "text": "на Райф",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-4",
+   "text": "аванс",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-4",
+   "text": "задаток",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-4",
+   "text": "оплата заранее",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-4",
+   "text": "на счёт",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-4",
+   "text": "оплатите мне напрямую",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-4",
+   "text": "без безопасной сделки",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-4",
+   "text": "без Авито Доставки",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-5",
+   "text": "пишите в WA",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-5",
+   "text": "пишите в вотс ап",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-5",
+   "text": "пишите в what's app",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-5",
+   "text": "пишите в воцап",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-5",
+   "text": "ищите в insta",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-5",
+   "text": "ищите в Одноклассниках",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-5",
+   "text": "Напишите в Сигнал",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-5",
+   "text": "Discord: syn_parts",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-5",
+   "text": "пишите в директ",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-5",
+   "text": "@ syn_parts",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-5",
+   "text": "оставьте номер",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-5",
+   "text": "дайте номер",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-5",
+   "text": "скиньте свой номерок",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-5",
+   "text": "давайте без авито",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-5",
+   "text": "свяжемся напрямую",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-5",
+   "text": "Звякните",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-5",
+   "text": "телефон в профиле",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-5",
+   "text": "Каталог: syn-parts.kz",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-5",
+   "text": "bit.ly/abcd",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-5",
+   "text": "Каталог: ftp://syn-parts.ru",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-5",
+   "text": "Каталог: //syn-parts.ru",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-5",
+   "text": "Каталог: syn-parts[.]ru",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-5",
+   "text": "Каталог: syn-parts .ru",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-5",
+   "text": "Каталог: syn-parts．ru",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-5",
+   "text": "Каталог: syn-parts точка ру",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-5",
+   "text": "пишите в мессенджер макс",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-5",
+   "text": "пишите в личные сообщения",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-5",
+   "text": "ник: syn_parts",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-6",
+   "text": "Да, подойдёт",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-6",
+   "text": "подходит на ваш W213",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-6",
+   "text": "идеально подойдет",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-6",
+   "text": "встанет как родная",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-6",
+   "text": "стопудово подойдет",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-7",
+   "text": "договоримся по цене",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-7",
+   "text": "скину цену",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-7",
+   "text": "сбавлю",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-7",
+   "text": "можно дешевле",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-7",
+   "text": "дешевле отдам",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-7",
+   "text": "в подарок",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-7",
+   "text": "доставка за наш счёт",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-7",
+   "text": "вернуть можно",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-7",
+   "text": "заменим",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-7",
+   "text": "примем назад",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-7",
+   "text": "ручаюсь",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-7",
+   "text": "доставим за сутки",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-7",
+   "text": "будет в пятницу",
+   "expect": "deny",
+   "xfail": "Y-11: a bare 'будет' without a subject is not a delivery promise"
+  },
+  {
+   "group": "rerun-7",
+   "text": "завтра у вас",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-7",
+   "text": "на днях отправлю",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-8",
+   "text": "я Иван, менеджер",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-8",
+   "text": "Иван, менеджер магазина",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-8",
+   "text": "вам отвечает оператор",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-8",
+   "text": "с вами на связи менеджер",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-8",
+   "text": "я владелец",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-8",
+   "text": "это не автоответ",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-8",
+   "text": "I'm the seller",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-8",
+   "text": "ben satıcıyım",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-8",
+   "text": "я оператор",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-8",
+   "text": "я хозяин",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-8",
+   "text": "я сам продавец",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-8",
+   "text": "I'm Ivan, the manager",
+   "expect": "deny"
+  },
+  {
+   "group": "rerun-9",
+   "text": "Ссылка: https://example.com\\.avito.ru/x",
+   "expect": "deny",
+   "url_allowlist": [
+    "avito.ru"
+   ]
+  },
+  {
+   "group": "rerun-9",
+   "text": "Ссылка: https://example.com\\@avito.ru",
+   "expect": "deny",
+   "url_allowlist": [
+    "avito.ru"
+   ]
+  },
+  {
+   "group": "rerun-10",
+   "text": "Пишите в WA: 83212365946",
+   "expect": "deny",
+   "literals": [
+    "83212365946"
+   ]
+  },
+  {
+   "group": "rerun-10",
+   "text": "Для связи: 83212365946",
+   "expect": "deny",
+   "literals": [
+    "83212365946"
+   ]
+  },
+  {
+   "group": "rerun-11",
+   "text": "Это не программа лояльности.",
+   "expect": "allow"
+  },
+  {
+   "group": "rerun-11",
+   "text": "Это не робот-пылесос, а фара.",
+   "expect": "allow"
+  },
+  {
+   "group": "rerun-11",
+   "text": "Я консультант-бот",
+   "expect": "allow"
+  },
+  {
+   "group": "new1-1",
+   "text": "ⲥкидка для вас",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "сᴋидка для вас",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "пⲟзвоните мне",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "Пoзвoните",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "гⲁрантия",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "WhᴀtsApp",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "Whɑtsapp",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "Telegrɑm",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "Teʟegram",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "ʙотсап",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "ꓔелеграм",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "Ꭲелеграм",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "Տкидка",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "ѕкидка",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "զ",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "предоплатɑ",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "предоплaта",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "предоплата",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "прeдоплата",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "гарантиꙗ",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "гарантия́",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "скидка⃝",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "с̶кидка",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "с к и д к а",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "ск ид ка",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "те ле грам",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "по зво ни те",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "т  е  л  е  г  р  а  м",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "т|е|л|е|г|р|а|м",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "т+е+л+е+г+р+а+м",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "т~е~л~е~г~р~а~м",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "т\nе\nл\nе\nг\nр\nа\nм",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "т_е_л_е_г_р_а_м",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "Т.е.л.е.г.р.а.м",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "мессeнджер",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "‮маргелет в итешип",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "маргелет в етишиП",
+   "expect": "deny",
+   "xfail": "reversed text is not detected"
+  },
+  {
+   "group": "new1-1",
+   "text": "👨‍🔧 Фара есть",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "Фара есть 👍",
+   "expect": "allow",
+   "note": "benign emoji"
+  },
+  {
+   "group": "new1-1",
+   "text": "Фара есть ❤️",
+   "expect": "allow",
+   "note": "benign emoji (variation selector dropped)"
+  },
+  {
+   "group": "new1-1",
+   "text": "Фара есть 🇷🇺",
+   "expect": "allow",
+   "note": "benign emoji"
+  },
+  {
+   "group": "new1-1",
+   "text": "П‍о‍з‍в",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "Позвоните󠀠",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "Позвᅟоните",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "Позв⠀оните",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "Позв　оните",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "Позв оните",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "Позв оните",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "Позв᲻оните",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "Позв᠎оните",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "Позв؜оните",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "Позв𝅳оните",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "Позв‏оните",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "Позв️оните",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "Позв󠄀оните",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "Позв͏оните",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "Позв឴оните",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "Позвᅟоните",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "Позвㅤоните",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "Позвﾠоните",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "Позв⁢оните",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "Позвᅠоните",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "Позв​оните",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "Позв\u0000оните",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "Позв­оните",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "Позв￼оните",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "Позв⁤оните",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "Позвᅚоните",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "Позв𛲠оните",
+   "expect": "deny"
+  },
+  {
+   "group": "new1-1",
+   "text": "Позвᵻоните",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-1",
+   "text": "Пишите в теле грам",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-1",
+   "text": "Пишите в теле-грам",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-1",
+   "text": "Пишите в Whats App",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-1",
+   "text": "Пишите в W h a t s A p p",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-1",
+   "text": "по-зво-ни-те",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-1",
+   "text": "Позво ните мне",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-1",
+   "text": "Позв оните мне",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-1",
+   "text": "Скид ка для вас",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-1",
+   "text": "Скид-ка для вас",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-1",
+   "text": "Гаран тия год",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-1",
+   "text": "Гарант ия год",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-1",
+   "text": "Пред оплата на карту",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-1",
+   "text": "бес платно",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-1",
+   "text": "бесплат но",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-1",
+   "text": "возв рат денег",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-1",
+   "text": "Сбер банк",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-1",
+   "text": "Т банк",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-1",
+   "text": "Тинь кофф",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-1",
+   "text": "заброни ровал",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-2",
+   "text": "Скидка нет проблем, сделаем.",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-2",
+   "text": "Бесплатная нет вопросов.",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-2",
+   "text": "Гарантия нет вопросов, год.",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-2",
+   "text": "Не уступить вам просто нельзя!",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-2",
+   "text": "Не вернуть деньги мы не можем.",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-2",
+   "text": "Возврат нельзя не сделать, вернём.",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-2",
+   "text": "Вернём деньги без вопросов, по правилам Авито.",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-2",
+   "text": "Обмен и возврат денег в любое время — по правилам Авито.",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-2",
+   "text": "Возврат в течение года, всё по правилам Авито.",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-2",
+   "text": "Подойдёт 100%, проверено.",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-2",
+   "text": "Точно подойдёт, уточнять не нужно.",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-2",
+   "text": "Подойдёт, а если что — пишите.",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-2",
+   "text": "Подойдёт, проверено на сотнях машин.",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-2",
+   "text": "Встанет как родная, проверил лично.",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-2",
+   "text": "Совместима с вашим авто, проверено по каталогу.",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-2",
+   "text": "Подходит, вопросов нет.",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-2",
+   "text": "Подходит без вопросов",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-2",
+   "text": "Подойдёт? Конечно подойдёт, без сомнений.",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-2",
+   "text": "Подойдёт. Если нужно, пришлю фото.",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-2",
+   "text": "It fits, I checked.",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-2",
+   "text": "Заказ оформлен, если что — пишите.",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-2",
+   "text": "Не забронировал бы, если бы не вы — забронировал!",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-2",
+   "text": "Не волнуйтесь, отправил.",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-2",
+   "text": "Нет, уже отправил.",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-2",
+   "text": "Отправил, не переживайте.",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-2",
+   "text": "Оформил, не нужно ничего делать.",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-2",
+   "text": "Отправил — не нужно ждать.",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-2",
+   "text": "Заказ оформлен — не требуется ничего.",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-2",
+   "text": "Гарантия — не проблема.",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-2",
+   "text": "Гарантия не проблема.",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-2",
+   "text": "Гарантия не вопрос.",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-2",
+   "text": "Скидка не проблема!",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-2",
+   "text": "Возврат не проблема.",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-2",
+   "text": "Возврат не нужен будет, деталь надёжная, но если что — вернём.",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-2",
+   "text": "Звоните — не стесняйтесь.",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-2",
+   "text": "Позвоните, не нужно писать.",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-2",
+   "text": "Позвоните мне, не получится — напишите.",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-2",
+   "text": "Звоните, нет проблем.",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-2",
+   "text": "Наберите, нет вопросов.",
+   "expect": "deny"
+  },
+  {
+   "group": "new2-2",
+   "text": "Сбер нет, только Тинькофф",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Подойдёт, проверено.",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Подойдёт, проверял сам на такой же машине",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Подойдёт на все W213, проверено",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Подойдёт, уточнять не надо",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Подойдёт точно, если у вас W213",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Подходит, если что — вернём деньги",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Встанет без доработок, если руки прямые",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "это Иван.",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Иван на связи.",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Ваш менеджер Иван.",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "С уважением, Иван",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "С уважением, менеджер Иван",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Ответил вам Иван.",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Меня Иван зовут.",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Я Сергей.",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "я — Иван",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Я Иван из магазина",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Пишет вам Иван из магазина",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Отвечаю я, Иван.",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Продавец на связи.",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Продавец лично ответил.",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Ваш продавец на связи",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Сам продаю, сам отвечаю.",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Я не бот!",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Не робот я",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Робот? Нет.",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Бот? Нет, что вы.",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Я не ИИ",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "я не нейросеть, я Иван",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "I am Ivan.",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "It's Ivan here",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Ivan here.",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Hi, Ivan speaking",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Цена 15к",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Цена 15 тыр",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Цена 15 тр",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "пятнадцать тыр",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Цена: пятнарик",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Цена: 15 штук",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Цена полтинник",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Цена: чирик",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Цена: сотыга",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Цена: пятихатка",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Цена: пол-ляма",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "лям",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Цена: десятка",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Цена: 2 косаря",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Отправим, как только оформите — обычно в тот же день",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Доставка обычно 2-3 дня",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Доставка обычно пару дней",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Будет у вас через пару дней",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Будет у вас на неделе",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Приедет послезавтра",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Отгрузим в среду",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Отправка в среду",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "В среду отправим",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Отправка — среда",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Посылка будет в пункте выдачи завтра",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Скидка для постоянных",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Цена ниже рынка",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Отдам по оптовой цене",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Уступку сделаю",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Сделаю хорошую цену",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Цену сделаю приятную",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Цена приятная будет",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Можем обсудить цену",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Цену обсудим",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Обсудим стоимость",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Предложите свою цену",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Ваше предложение по цене?",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Готов рассмотреть предложение",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Если не подойдёт — примем обратно",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Не подойдёт — поменяем",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Не подойдёт — заберу",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Не подошла — заберём",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Если не подошла, деньги ваши",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Деньги верну",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Верну деньги",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Верну всю сумму",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Компенсирую",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Компенсируем доставку",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Доставку оплачу сам",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Доставка с меня",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Даю год на проверку",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Проверка 14 дней",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Можно проверить в течение недели",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "На проверку неделя",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Если не заработает — решим",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Отложу до завтра",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Подержу до вечера",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Не продам никому до вечера",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Жду вас до вечера, деталь ваша",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Деталь ваша",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Она ваша",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Считайте, что она ваша",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Уже упаковываю",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Собираю ваш заказ",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Отправляю",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Отправляем сегодня",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Отгружаем",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Уже выезжает",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Курьер уже едет",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Оплату получил, спасибо",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Спасибо за оплату!",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Оплату увидел",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Деньги на месте",
+   "expect": "deny"
+  },
+  {
+   "group": "new3-1",
+   "text": "Всё пришло, спасибо",
+   "expect": "deny"
+  },
+  {
+   "group": "fp-1",
+   "text": "Здравствуйте! Фара в наличии.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Добрый день! Да, деталь есть.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Добавьте объявление в избранное.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Добавьте в избранное, чтобы не потерять.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Пишите в рабочее время.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Напишите в ответе номер кузова.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Напишите в сообщении VIN.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Пишите в любое время.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Напишите, пожалуйста, VIN.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Напишите в чат, если будут вопросы.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Напишите в двух словах, что случилось.",
+   "expect": "allow",
+   "xfail": "label 2: small number words stay denied for the pilot"
+  },
+  {
+   "group": "fp-1",
+   "text": "Пишите в выходные тоже.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Напишите в комментарии к заказу.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Свяжитесь с продавцом через чат Авито.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Свяжемся с вами в этом чате.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Продавец свяжется с вами здесь.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Продавец ответит здесь в течение дня.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Ответ продавца придёт сюда.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Ответим в этом чате.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Трек-номер появится в приложении Авито после отправки.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Отслеживать посылку можно в приложении Авито.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Деталь будет отправлена после подтверждения продавцом.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "После оплаты через Авито продавец отправит заказ.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Фара подходит для левой стороны.",
+   "expect": "allow",
+   "xfail": "label 3: product-attribute claim without fact is denied"
+  },
+  {
+   "group": "fp-1",
+   "text": "Эта фара для левой стороны.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Подходит ли фара — проверим по VIN.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Пришлите VIN, проверим, подойдёт ли.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Для проверки совместимости нужен VIN.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Совместимость подтвердит продавец.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Совместимость уточним по VIN.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Это оригинальная деталь Mercedes.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Состояние хорошее, без трещин.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Крепления целые.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Есть небольшие потёртости.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Фото пришлю сегодня.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Сегодня пришлю фото.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Пришлю фото через час.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Уточню наличие и отвечу в течение дня.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Ответ будет в течение дня.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Уточню и напишу завтра.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Продавец ответит завтра.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Я помощник продавца, отвечаю автоматически.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Я автоматический помощник продавца.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Здравствуйте, это автоматический помощник продавца.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Здравствуйте! Я бот-помощник.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Меня зовут Помощник.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Это помощник продавца, Иван сейчас занят.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Продавец Иван ответит позже.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Спасибо, Иван!",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Иван, добрый день!",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Здравствуйте, Иван!",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Добрый день, Ольга!",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Хорошо, Сергей, уточню.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Вы писали про фару, Иван, уточню наличие.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Да, есть.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Нет в наличии.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Есть в наличии, могу зарезервировать после подтверждения продавца.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Пара фар в наличии.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Одна фара в наличии.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Обе стороны есть.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Нужна одна или обе?",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Вам левую или правую?",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Вам одну или две?",
+   "expect": "allow",
+   "xfail": "label 2: small number words stay denied for the pilot"
+  },
+  {
+   "group": "fp-1",
+   "text": "Сколько штук нужно?",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Какое количество нужно?",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Нужен комплект?",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Комплект из четырёх?",
+   "expect": "allow",
+   "xfail": "label 2: small number words stay denied for the pilot"
+  },
+  {
+   "group": "fp-1",
+   "text": "На обе оси?",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Оплата через Авито Доставку, так безопаснее.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Доставка через Авито Доставку.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Доставка — Авито Доставкой или СДЭК.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Посылка идёт через Авито Доставку, срок покажет приложение.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Срок доставки покажет Авито при оформлении.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Отправляем после оформления заказа на Авито.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Можно забрать самовывозом.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Самовывоз возможен, адрес пришлёт продавец в чате Авито.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Цена указана в объявлении.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Цена в объявлении актуальна.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Стоимость доставки рассчитает Авито.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Детали по оплате уточнит продавец.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Уточните, пожалуйста, модель и год.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Какой у вас кузов?",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "У вас рестайлинг или дорестайлинг?",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Какая комплектация — с ксеноном?",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Для точности пришлите фото старой детали.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Номер детали на корпусе поможет подобрать.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Спасибо за ожидание!",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Извините за задержку.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Хорошо, передам продавцу.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Продавец ответит, как только освободится.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Хорошего дня!",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Всего доброго!",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Обращайтесь!",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Фара без повреждений, всё работает.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Всё работает, проверено продавцом.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Деталь проверена, работает.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Проверено продавцом перед отправкой.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Фара с корректором.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Без корректора.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Под ксенон.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Под галоген.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "С блоком розжига.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Без блока.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Стекло целое.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Корпус без сколов.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Есть оригинал и аналог.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Аналог дешевле оригинала.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Аналог стоит дешевле.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Оригинал дороже аналога.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Доставка в ваш город возможна через Авито.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Отправка по всей России.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Отправка в день оформления невозможна.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Мы на связи в этом чате.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Ответим здесь.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Если что-то не так — напишите здесь.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Напишите здесь, если нужна помощь.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Товар новый, в упаковке.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Упаковка оригинальная.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Деталь упакована надёжно.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Будет упакована надёжно.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "С уважением, помощник продавца.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Подскажите, пожалуйста, ваш VIN?",
+   "expect": "allow"
+  },
+  {
+   "group": "fp-1",
+   "text": "Какая сторона: левая или правая?",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Пишите в чат Авито.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "пишите в этот чат",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Пишите в приложении Авито.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Пишите сюда.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Пишите в Авито.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "г.Москва, самовывоз.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Отправка из г.Москва.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "См. фото.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "и т.д.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "т.е. левая",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "т.к. рестайлинг",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "а/м Mercedes",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "АКПП",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "МКПП",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "ОЕМ номер уточню.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "КОМ.ТРАНС не работаем.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "ТК СДЭК.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "ТК ПЭК",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "ПЭК.РУ",
+   "expect": "allow",
+   "xfail": "domain-like brand name; '.ру' is denied as an obfuscated TLD"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Пр-во Германия.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Производство: Hella.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Бренд: Bosch.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Фирма Valeo.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Фара Depo, Тайвань.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Всё ок.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Ок, уточню.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "ОК, передам продавцу.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Окей!",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "На ОК-диске.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "В ОК состоянии.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Есть ТО-комплект.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Ремкомплект есть.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Фара с ПТФ.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Хэтчбек или седан?",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Кузов универсал.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Модель: Kia Ceed.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Цвет: серебро.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Цвет: чёрный металлик.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Состояние: б/у, ок.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Mercedes-Benz",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "E-Class",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "C-Class",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "AMG-line",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Hella/Bosch",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "LED-фара",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Би-ксенон",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Дёргает при переключении?",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Датчик ABS.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Датчик ESP.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Блок SAM.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Модуль SRS.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Самовывоз: м. Каширская.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "м. Ленинский проспект",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "ст. м. Сокол",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Прошу прощения за ожидание.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Сейчас посмотрю.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Секунду.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Минуту, уточню.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Одну минуту.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Пару минут.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Спасибо за покупку!",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Спасибо за заказ!",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Спасибо, что выбрали нас!",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Рады помочь!",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Отличный выбор!",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Качество хорошее.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Родная деталь.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Не китай.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp2-1",
+   "text": "Оригинал Германия.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp3-1",
+   "text": "Для Mercedesа есть.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp3-1",
+   "text": "BMWшный бампер",
+   "expect": "allow"
+  },
+  {
+   "group": "fp3-1",
+   "text": "Размеры: S/M/L/XL",
+   "expect": "allow"
+  },
+  {
+   "group": "fp3-1",
+   "text": "Маркировка A B C D на корпусе.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp3-1",
+   "text": "Класс защиты I P",
+   "expect": "allow"
+  },
+  {
+   "group": "fp3-1",
+   "text": "Фара 👍",
+   "expect": "allow"
+  },
+  {
+   "group": "fp3-1",
+   "text": "Готово 👨‍🔧",
+   "expect": "allow",
+   "xfail": "emoji ZWJ sequences stay denied (decision)"
+  },
+  {
+   "group": "fp3-1",
+   "text": "Спасибо 🙏🏻",
+   "expect": "allow"
+  },
+  {
+   "group": "fp3-1",
+   "text": "Фара ⚙️",
+   "expect": "allow"
+  },
+  {
+   "group": "fp3-1",
+   "text": "Фара — «Hella»",
+   "expect": "allow"
+  },
+  {
+   "group": "fp3-1",
+   "text": "Звонки не принимаем, пишите здесь.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp3-1",
+   "text": "Скидок нет, цена окончательная.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp3-1",
+   "text": "Торг не уместен.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp3-1",
+   "text": "Возврат по правилам Авито Доставки.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp3-1",
+   "text": "Гарантии от продавца нет.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp3-1",
+   "text": "Обмен не предусмотрен.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp3-1",
+   "text": "Скидку не делаем.",
+   "expect": "allow"
+  },
+  {
+   "group": "fp3-1",
+   "text": "Бесплатно не отправляем.",
+   "expect": "allow"
+  }
+ ]
+}

@@ -70,6 +70,7 @@ is excluded from ``repr()`` and must never be logged or persisted. This module d
 
 from __future__ import annotations
 
+import bisect
 import re
 from collections.abc import Callable, Iterator
 from dataclasses import dataclass, field
@@ -77,7 +78,23 @@ from enum import StrEnum
 
 from app.safety.normalize import NormalizedText, normalize
 
-__all__ = ["MaskResult", "PiiSpan", "PiiType", "detect_normalized", "mask"]
+__all__ = [
+    "MAX_MASK_INPUT",
+    "MaskInputTooLong",
+    "MaskResult",
+    "PiiSpan",
+    "PiiType",
+    "detect_normalized",
+    "mask",
+]
+
+#: Longest text ``mask()`` accepts (T-041 / Y-12). Longer input raises ``MaskInputTooLong``;
+#: the caller routes the message to the owner. Nothing is partially masked.
+MAX_MASK_INPUT = 50_000
+
+
+class MaskInputTooLong(ValueError):
+    """The text is longer than ``MAX_MASK_INPUT``; route it to the owner unmasked-unprocessed."""
 
 
 class PiiType(StrEnum):
@@ -160,8 +177,14 @@ _KEYWORD_HANDLE_RE = re.compile(
 _URL_SCHEME_RE = re.compile(r"(?<![\w@])(?:https?://|www\.)[^\s<>\"'«»]+", re.IGNORECASE)
 _URL_BARE_RE = re.compile(
     r"(?<![\w@./-])(?:[a-zа-яё0-9](?:[a-zа-яё0-9-]{0,61}[a-zа-яё0-9])?\.)+"
-    r"(?:ru|su|com|net|org|info|biz|pro|me|io|shop|store|online|site|рф|рус|москва"
+    r"(?:ru|su|com|net|org|info|biz|pro|me|io|shop|store|online|site"
     r"|kz|by|ua|uz|de|ly|cc|xyz|market" + _TLD_EXTRA + r")"
+    r"(?![\w-])(?:/[^\s<>\"'«»]*)?",
+    re.IGNORECASE,
+)
+# Cyrillic TLDs need a label of two or more characters: "г.Москва" is a city, not a domain.
+_URL_BARE_CYR_RE = re.compile(
+    r"(?<![\w@./-])(?:[a-zа-яё0-9][a-zа-яё0-9-]{0,61}[a-zа-яё0-9]\.)+(?:рф|рус|москва)"
     r"(?![\w-])(?:/[^\s<>\"'«»]*)?",
     re.IGNORECASE,
 )
@@ -389,6 +412,7 @@ def _link_candidates(view: str) -> Iterator[_Candidate]:
     yield from _from_regex(view, _KEYWORD_HANDLE_RE, PiiType.SOCIAL, group="handle", trim=True)
     yield from _from_regex(view, _URL_SCHEME_RE, PiiType.URL, trim=True)
     yield from _from_regex(view, _URL_BARE_RE, PiiType.URL, trim=True)
+    yield from _from_regex(view, _URL_BARE_CYR_RE, PiiType.URL, trim=True)
 
 
 def _candidates(nt: NormalizedText) -> Iterator[_Candidate]:
@@ -405,15 +429,23 @@ def _candidates(nt: NormalizedText) -> Iterator[_Candidate]:
 
 def _select(candidates: Iterator[_Candidate]) -> list[_Candidate]:
     """Resolve overlaps: the longer span wins (so an e-mail or link inside a URL stays inside it);
-    on equal length the higher-priority type wins, then the earlier span."""
+    on equal length the higher-priority type wins, then the earlier span.
+
+    O(k log k) comparisons (T-041 / Y-12): the chosen spans are kept sorted and never overlap,
+    so a candidate only has to be compared with its two neighbours."""
     ordered = sorted(
         set(candidates), key=lambda c: (-(c.end - c.start), _PRIORITY[c.type], c.start)
     )
+    starts: list[int] = []
     chosen: list[_Candidate] = []
     for cand in ordered:
-        if all(cand.end <= kept.start or cand.start >= kept.end for kept in chosen):
-            chosen.append(cand)
-    chosen.sort(key=lambda c: c.start)
+        i = bisect.bisect_right(starts, cand.start)
+        if i > 0 and chosen[i - 1].end > cand.start:
+            continue
+        if i < len(chosen) and chosen[i].start < cand.end:
+            continue
+        starts.insert(i, cand.start)
+        chosen.insert(i, cand)
     return chosen
 
 
@@ -435,7 +467,12 @@ def mask(text: str, *, keep_mapping: bool = False) -> MaskResult:
         text: Untrusted free text (customer message, listing text, log line).
         keep_mapping: When true, ``MaskResult.mapping`` maps each token to the first original
             value seen for it. Keep it in memory only; never log or store it.
+
+    Raises:
+        MaskInputTooLong: ``text`` is longer than ``MAX_MASK_INPUT`` characters.
     """
+    if len(text) > MAX_MASK_INPUT:
+        raise MaskInputTooLong(f"text longer than {MAX_MASK_INPUT} characters")
     nt = normalize(text)
     counters: dict[PiiType, int] = {}
     tokens_by_key: dict[tuple[PiiType, str], str] = {}

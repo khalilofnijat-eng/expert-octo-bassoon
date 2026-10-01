@@ -16,6 +16,8 @@ from app.safety.filter import (
     FilterConfig,
     FilterContext,
     ReasonCode,
+    SpanKind,
+    TemplateSpan,
     check_parts,
     measure_part,
     part_fits,
@@ -345,14 +347,15 @@ def test_allowlist_never_allows_social_links() -> None:
     assert R.CONTACT_SOCIAL in check_parts(["t.me/syn_parts_shop"], config=config).parts[0].codes
 
 
-# --- Template spans and confirmation flags (T-034 / D-f) ---------------------------------------
+# --- Template spans and confirmation flags (T-034 / D-f, T-041 / Y-8) --------------------------
 # The T-019 tests passed template TEXTS (``template_texts``); D-f replaced them with renderer-
-# provided SPANS, so repeating template wording no longer earns an exemption. Same intent below.
+# provided SPANS, and Y-8 made the spans typed (rule text is ``rule_generic``, the order/payment
+# confirmation is ``confirmation``, payment rules are ``rule_payment``). Same intent below.
 
 
-def span_of(text: str, fragment: str) -> tuple[int, int]:
+def span_of(text: str, fragment: str, kind: SpanKind = SpanKind.RULE_GENERIC) -> TemplateSpan:
     start = text.index(fragment)
-    return (start, start + len(fragment))
+    return TemplateSpan(kind, start, start + len(fragment))
 
 
 def test_rule_template_span_may_carry_promises() -> None:
@@ -373,16 +376,20 @@ def test_repeated_template_wording_gets_no_exemption() -> None:
 
 
 def test_template_span_does_not_exempt_contacts_or_payment() -> None:
+    # T-041 / Y-8: payment wording is exempt only inside a rule_payment span; contacts never.
     rule = "Предоплата на карту, звоните 8 900 000-00-01"
-    assert codes_of(rule, template_spans=(((0, len(rule)),),)) >= {
+    generic = ((TemplateSpan(SpanKind.RULE_GENERIC, 0, len(rule)),),)
+    assert codes_of(rule, template_spans=generic) >= {
         R.PAYMENT_OFF_PLATFORM,
         R.CONTACT_PHONE,
         R.CONTACT_REDIRECT,
     }
+    payment = ((TemplateSpan(SpanKind.RULE_PAYMENT, 0, len(rule)),),)
+    assert codes_of(rule, template_spans=payment) == {R.CONTACT_PHONE, R.CONTACT_REDIRECT}
 
 
 def test_completion_claim_needs_flag_and_template_span() -> None:
-    whole = (((0, len(RULE_CONFIRMED)),),)
+    whole = ((TemplateSpan(SpanKind.CONFIRMATION, 0, len(RULE_CONFIRMED)),),)
     assert codes_of(RULE_CONFIRMED) == {R.COMPLETION_CLAIM}
     assert codes_of(RULE_CONFIRMED, completion_confirmed=True) == {R.COMPLETION_CLAIM}
     assert codes_of(RULE_CONFIRMED, template_spans=whole) == {R.COMPLETION_CLAIM}
@@ -391,7 +398,7 @@ def test_completion_claim_needs_flag_and_template_span() -> None:
 
 
 def test_payment_claim_needs_its_own_flag() -> None:
-    whole = (((0, len(RULE_PAYMENT)),),)
+    whole = ((TemplateSpan(SpanKind.CONFIRMATION, 0, len(RULE_PAYMENT)),),)
     assert codes_of(RULE_PAYMENT, completion_confirmed=True, template_spans=whole) == {
         R.PAYMENT_RECEIVED_CLAIM
     }
@@ -410,7 +417,8 @@ def test_fitment_certainty_needs_verified_flag() -> None:
 
 
 def test_owner_edit_is_denied_but_overridable() -> None:
-    text = "Звоните 8 900 000-00-01, сделаю скидку"
+    # T-041 / Y-9: a phone number is a hard block, so this uses a phone-free text.
+    text = "Звоните, сделаю скидку"
     normal = check_parts([text])
     edit = check_parts([text], context=FilterContext(is_owner_edit=True))
     assert not normal.allowed
@@ -432,7 +440,10 @@ def test_owner_edit_without_findings_is_allowed_and_not_overridable() -> None:
 
 
 def test_owner_edit_cannot_override_hard_blocks() -> None:
-    assert frozenset({R.EMPTY_PART, R.PART_TOO_LONG, R.INVALID_TEXT}) == HARD_BLOCK_CODES
+    assert (
+        frozenset({R.EMPTY_PART, R.PART_TOO_LONG, R.INVALID_TEXT, R.PAYMENT_CARD, R.CONTACT_PHONE})
+        == HARD_BLOCK_CODES
+    )
     edit = check_parts(
         ["a" * 1001, "", "текст \x00", "скидка"], context=FilterContext(is_owner_edit=True)
     )
